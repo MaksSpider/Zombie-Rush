@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 4b4f5b809d80d89419340c35b50cf9c3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - selectedSlotSprite: {instanceID: 0}
+  - unselectedSlotSprite: {instanceID: 0}
+  - itemsData: {fileID: 11400000, guid: 3e4845b94285c7a48ae161fe14147c84, type: 2}
+  - weaponsData: {fileID: 11400000, guid: 97bf7207ef7369b498c4f0492982a163, type: 2}
+  - healingItemsData: {fileID: 11400000, guid: b14a27edf09549848811058014a77171, type: 2}
+  - dropedItemPrefab: {instanceID: 0}
+  - slotPrefab: {instanceID: 0}
+  - inventoryUI: {instanceID: 0}
+  executionOrder: -13
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

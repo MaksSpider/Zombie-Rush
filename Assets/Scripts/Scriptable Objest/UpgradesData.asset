@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630dcc6c48d58cd43b9b24f7dd028de0, type: 3}
+  m_Name: UpgradesData
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradesData
+  upgradesData:
+  - <name>k__BackingField: more_slots_0
+    <title>k__BackingField: More Slots
+    <description>k__BackingField: 'Inventory Slots: +1'
+    <type>k__BackingField: rare
+    <bonuses>k__BackingField:
+    - name: bonusInventorySlot
+      value: 1
+    <icon>k__BackingField: {fileID: 1580089959, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+  - <name>k__BackingField: more_slots_1
+    <title>k__BackingField: More Slots
+    <description>k__BackingField: 'Inventory Slots: +2'
+    <type>k__BackingField: epic
+    <bonuses>k__BackingField:
+    - name: bonusInventorySlot
+      value: 2
+    <icon>k__BackingField: {fileID: 241616146, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+  - <name>k__BackingField: more_slots_2
+    <title>k__BackingField: More Slots
+    <description>k__BackingField: 'Inventory Slots: +3'
+    <type>k__BackingField: legendary
+    <bonuses>k__BackingField:
+    - name: bonusInventorySlot
+      value: 3
+    <icon>k__BackingField: {fileID: 887105197, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
