@@ -2,46 +2,40 @@ using UnityEngine;
 
 public class EnemyController : ObjectController
 {
-    private PlayerController playerController;
-    private WorldGenerator worldGenerator;
+    private PlayerController _playerController;
+    private WorldGenerator _worldGenerator;
 
     public float moveSpeed = 2f;
     public int attack = 2;
 
-    [SerializeField] private GameObject killOrbPrefab;
+    [SerializeField] private GameObject _killOrbPrefab;
 
-    private Rigidbody2D rb;
-    private Transform target;
+    private Rigidbody2D _rb;
+    private Transform _target;
 
-    private float attackCooldown = 1f;
-    private float nextAttackTime;
+    private float _attackCooldown = 1f;
+    private float _nextAttackTime;
 
-    private bool isNearPlayer = true;
-    private float lastMoveTime;
+    private float _lastMoveTime;
 
     void Awake()
     {
-        playerController = PlayerController.Instance;
-        worldGenerator = WorldGenerator.Instance;
+        _playerController = PlayerController.Instance;
+        _worldGenerator = WorldGenerator.Instance;
 
-        rb = GetComponent<Rigidbody2D>();
-        target = playerController.transform;
+        _rb = GetComponent<Rigidbody2D>();
+        _target = _playerController.transform;
     }
 
     void Start()
     {
-        lastMoveTime = Time.time;
-
-        float randomOffset = Random.Range(0f, 2f);
-        InvokeRepeating(nameof(CheckProximity), randomOffset, 2f);
+        //float randomOffset = Random.Range(0f, 2f);
+        //InvokeRepeating(nameof(CheckProximity), randomOffset, 2f);
     }
 
     void FixedUpdate()
     {
-        if (!isNearPlayer) return;
-
-        HandleMovement(Time.fixedDeltaTime);
-        lastMoveTime = Time.time;
+        HandleMovement();
     }
 
     private void OnDestroy()
@@ -50,8 +44,8 @@ public class EnemyController : ObjectController
 
         if (!gameObject.scene.isLoaded) return;
 
-        playerController.Kills++;
-        Instantiate(killOrbPrefab, transform.position, Quaternion.identity);
+        _playerController.Kills++;
+        Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -62,31 +56,17 @@ public class EnemyController : ObjectController
         }
     }
 
-    private void HandleMovement(float time)
+    private void HandleMovement()
     {
-        Vector2 dir = (target.position - transform.position).normalized;
-        rb.MovePosition(rb.position + dir * moveSpeed * time);
-    }
-
-    private void CheckProximity()
-    {
-        float distance = Vector2.Distance(playerController.transform.position, gameObject.transform.position);
-
-        isNearPlayer = distance < worldGenerator.RenderDistance * 2f;
-
-        if (!isNearPlayer)
-        {
-            float delta = Time.time - lastMoveTime;
-            HandleMovement(delta);
-            lastMoveTime = Time.time;
-        }
+        Vector2 dir = (_target.position - transform.position).normalized;
+        _rb.MovePosition(_rb.position + dir * moveSpeed * Time.fixedDeltaTime);
     }
 
     private void AttackPlayer()
     {
-        if (Time.time < nextAttackTime) return;
-        nextAttackTime = Time.time + attackCooldown;
+        if (Time.time < _nextAttackTime) return;
+        _nextAttackTime = Time.time + _attackCooldown;
 
-        playerController.ChangeHealth(-attack);
+        _playerController.ChangeHealth(-attack);
     }
 }

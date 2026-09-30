@@ -48,16 +48,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b268a4a763db7d147909ec45eefd6a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  isDestructable: 1
-  health: 10
-  experience: 3
-  expSpawnRadius: 0.6
-  damageDisplayOffset: {x: 0, y: 0.25}
-  expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
-  damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  _isDestructable: 1
+  _health: 10
+  _experience: 3
+  _expSpawnRadius: 1.5
+  _damageDisplayOffset: {x: 0, y: 0.25}
+  _expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
+  _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
   moveSpeed: 1.3
   attack: 2
-  killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
+  _killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
 --- !u!212 &2933896828729506550
 SpriteRenderer:
   serializedVersion: 2

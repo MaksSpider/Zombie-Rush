@@ -2,38 +2,38 @@ using UnityEngine;
 
 public class ObjectController : MonoBehaviour
 {
-    [SerializeField] private bool isDestructable = false;
-    [SerializeField] private int health = 1;
+    [SerializeField] private bool _isDestructable = false;
+    [SerializeField] private int _health = 1;
 
-    [SerializeField] private int experience = 0;
-    [SerializeField] private float expSpawnRadius = 1.5f;
+    [SerializeField] private int _experience = 0;
+    [SerializeField] private float _expSpawnRadius = 1.5f;
 
-    [SerializeField] private Vector2 damageDisplayOffset = new Vector2(0, 0.25f);
-    [SerializeField] private GameObject expOrbPrefab;
-    [SerializeField] private GameObject damagePopupPrefab;
+    [SerializeField] private Vector2 _damageDisplayOffset = new Vector2(0, 0.25f);
+    [SerializeField] private GameObject _expOrbPrefab;
+    [SerializeField] private GameObject _damagePopupPrefab;
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isDestructable) return;
+        if (!_isDestructable) return;
 
         if (other.CompareTag("Bullet"))
         {
             int damage = other.gameObject.GetComponent<BulletController>().damage;
-            health -= damage;
+            _health -= damage;
             Destroy(other.gameObject);
             DisplayDamage(damage);
-            if (health <= 0) DestroyObject();
+            if (_health <= 0) DestroyObject();
         }
     }
 
     private void DestroyObject()
     {
-        for (int i = 0; i < experience; i++)
+        for (int i = 0; i < _experience; i++)
         {
-            Vector2 randomOffset = Random.insideUnitCircle * expSpawnRadius;
+            Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
             Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
 
-            GameObject orb = Instantiate(expOrbPrefab, transform.position, Quaternion.identity);
+            GameObject orb = Instantiate(_expOrbPrefab, transform.position, Quaternion.identity);
             ExpOrbController orbController = orb.GetComponent<ExpOrbController>();
             orbController.expValue = 1;
             orbController.Burst(targetPosition);
@@ -44,9 +44,9 @@ public class ObjectController : MonoBehaviour
 
     private void DisplayDamage(int damage)
     {
-        Vector3 spawnPosition = transform.position + new Vector3(damageDisplayOffset.x, damageDisplayOffset.y, 0f);
+        Vector3 spawnPosition = transform.position + new Vector3(_damageDisplayOffset.x, _damageDisplayOffset.y, 0f);
 
-        GameObject popup = Instantiate(damagePopupPrefab, spawnPosition, Quaternion.identity);
+        GameObject popup = Instantiate(_damagePopupPrefab, spawnPosition, Quaternion.identity);
         popup.GetComponent<DamagePopupController>().Setup(damage);
     }
 }

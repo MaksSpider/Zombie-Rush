@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class KillOrbController : MonoBehaviour
 {
-    private PlayerController playerController;
     private CameraController cameraController;
     private UIController uiController;
 
@@ -16,7 +15,6 @@ public class KillOrbController : MonoBehaviour
 
     void Awake()
     {
-        playerController = PlayerController.Instance;
         cameraController = CameraController.Instance;
         uiController = UIController.Instance;
 

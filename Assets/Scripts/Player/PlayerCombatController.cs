@@ -17,32 +17,32 @@ public class PlayerCombatController : MonoBehaviour
 {
     public static PlayerCombatController Instance { get; private set; }
 
-    private InputManager inputManager;
-    private InventoryController inventoryController;
-    private PlayerController playerController;
+    private InputManager _inputManager;
+    private InventoryController _inventoryController;
+    private PlayerController _playerController;
 
-    private float nextAttackTime;
+    [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private float _maxSpreadAngle = 15f;
 
+    private float _nextAttackTime;
+
+    private Dictionary<int, Ammo> _ammoInventory = new Dictionary<int, Ammo>();
+    
     public IWeapon currentWeapon;
-
-    private float maxSpreadAngle = 15f;
-    [SerializeField] private GameObject BulletPrefab;
-
-    private Dictionary<int, Ammo> ammoInventory = new Dictionary<int, Ammo>();
 
     private void Start()
     {
-        inventoryController.OnSlotChanged += GetNewWeapon;
-        inventoryController.OnDropItemOnSlot += GetNewWeapon;
+        _inventoryController.OnSlotChanged += GetNewWeapon;
+        _inventoryController.OnDropItemOnSlot += GetNewWeapon;
         GetNewWeapon();
     }
 
     private void OnDestroy()
     {
-        if (inventoryController != null)
+        if (_inventoryController != null)
         {
-            inventoryController.OnSlotChanged -= GetNewWeapon;
-            inventoryController.OnDropItemOnSlot -= GetNewWeapon;
+            _inventoryController.OnSlotChanged -= GetNewWeapon;
+            _inventoryController.OnDropItemOnSlot -= GetNewWeapon;
         }
     }
 
@@ -56,19 +56,27 @@ public class PlayerCombatController : MonoBehaviour
 
         Instance = this;
 
-        inputManager = InputManager.Instance;
-        inventoryController = InventoryController.Instance;
-        playerController = PlayerController.Instance;
-
-        inputManager.InputActions.Player.Reload.performed += ctx => ReloadWeapon(currentWeapon);
+        _inputManager = InputManager.Instance;
+        _inventoryController = InventoryController.Instance;
+        _playerController = PlayerController.Instance;
     }
 
-    void Update()
+    public void OnEnterState()
     {
-        if (inputManager.InputActions.Player.AttackShoot.IsPressed())
+        _inputManager.InputActions.Player.Reload.performed += ctx => ReloadWeapon(currentWeapon);
+    }
+
+    public void OnExitState()
+    {
+        _inputManager.InputActions.Player.Reload.performed -= ctx => ReloadWeapon(currentWeapon);
+    }
+
+    public void Tick()
+    {
+        if (_inputManager.InputActions.Player.AttackShoot.IsPressed())
         {
             if (currentWeapon == null) return;
-            if (inventoryController.inventoryBlocked) return;
+            if (_inventoryController.inventoryBlocked) return;
 
             Attack(currentWeapon);
         }
@@ -76,30 +84,30 @@ public class PlayerCombatController : MonoBehaviour
 
     private void GetNewWeapon()
     {
-        Item item = inventoryController.GetItemInHands();
+        Item item = _inventoryController.GetItemInHands();
 
-        if (!inventoryController.IsWeapon(item.id))
+        if (!_inventoryController.IsWeapon(item.id))
         {
             currentWeapon = null;
             return;
         }
 
-        currentWeapon = inventoryController.GetWeaponByItemId(item.id);
+        currentWeapon = _inventoryController.GetWeaponByItemId(item.id);
 
-        nextAttackTime = 0f;
+        _nextAttackTime = 0f;
     }
 
     private void Attack(IWeapon weapon)
     {
-        if (Time.time < nextAttackTime) return;
-        nextAttackTime = Time.time + weapon.attackRate;
+        if (Time.time < _nextAttackTime) return;
+        _nextAttackTime = Time.time + weapon.attackRate;
 
-        Vector2 mouseScreenPos = inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
+        Vector2 mouseScreenPos = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
         Vector3 mouseScreenPos3D = new Vector3(mouseScreenPos.x, mouseScreenPos.y, Mathf.Abs(Camera.main.transform.position.z));
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos3D);
         mouseWorldPos.z = 0f;
 
-        Rigidbody2D playerRb = playerController.GetComponent<Rigidbody2D>();
+        Rigidbody2D playerRb = _playerController.GetComponent<Rigidbody2D>();
         Vector2 baseDirection = ((Vector2)mouseWorldPos - playerRb.position).normalized;
 
         if (weapon is MeleeWeapon meleeWeapon)
@@ -126,7 +134,7 @@ public class PlayerCombatController : MonoBehaviour
 
         for (int i = 0; i < weapon.bulletsPerShot; i++)
         {
-            float spread = maxSpreadAngle * (1f - Mathf.Clamp01(weapon.accuracy));
+            float spread = _maxSpreadAngle * (1f - Mathf.Clamp01(weapon.accuracy));
             float randomAngleOffset = Random.Range(-spread * 0.5f, spread * 0.5f);
 
             Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
@@ -136,7 +144,7 @@ public class PlayerCombatController : MonoBehaviour
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
-            GameObject bulletGameObject = Instantiate(BulletPrefab, spawnPosition, rotation);
+            GameObject bulletGameObject = Instantiate(_bulletPrefab, spawnPosition, rotation);
 
             Rigidbody2D bulletRb = bulletGameObject.GetComponent<Rigidbody2D>();
             bulletRb.linearVelocity = direction * weapon.bulletSpeed;
@@ -158,18 +166,18 @@ public class PlayerCombatController : MonoBehaviour
         if (weapon is Weapon normalWeapon)
         {
             if (normalWeapon == null) return false;
-            if (!ammoInventory.ContainsKey(normalWeapon.itemId)) return false;
+            if (!_ammoInventory.ContainsKey(normalWeapon.itemId)) return false;
 
-            int amountToReload = Mathf.Min(normalWeapon.magazineSize - ammoInventory[normalWeapon.itemId].inMagazine, ammoInventory[normalWeapon.itemId].all);
+            int amountToReload = Mathf.Min(normalWeapon.magazineSize - _ammoInventory[normalWeapon.itemId].inMagazine, _ammoInventory[normalWeapon.itemId].all);
 
-            inventoryController.inventoryBlocked = true;
-            inventoryController.slots[inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {
-                Ammo current = ammoInventory[normalWeapon.itemId];
+            _inventoryController.inventoryBlocked = true;
+            _inventoryController.slots[_inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {
+                Ammo current = _ammoInventory[normalWeapon.itemId];
                 current.inMagazine += amountToReload;
                 current.all -= amountToReload;
-                ammoInventory[normalWeapon.itemId] = current;
+                _ammoInventory[normalWeapon.itemId] = current;
 
-                inventoryController.inventoryBlocked = false;
+                _inventoryController.inventoryBlocked = false;
             });
 
             return true;
@@ -181,32 +189,32 @@ public class PlayerCombatController : MonoBehaviour
     public (bool found, int inMagazine, int all) GetCurrentAmmo()
     {
         if (currentWeapon == null) return (false, 0, 0);
-        if (!ammoInventory.ContainsKey(currentWeapon.itemId)) return (true, 0, 0);
+        if (!_ammoInventory.ContainsKey(currentWeapon.itemId)) return (true, 0, 0);
 
-        return (true, ammoInventory[currentWeapon.itemId].inMagazine, ammoInventory[currentWeapon.itemId].all);
+        return (true, _ammoInventory[currentWeapon.itemId].inMagazine, _ammoInventory[currentWeapon.itemId].all);
     }
 
     public void AddAmmo(int weaponItemId, int amount)
     {
-        if (!ammoInventory.ContainsKey(weaponItemId))
+        if (!_ammoInventory.ContainsKey(weaponItemId))
         {
-            ammoInventory[weaponItemId] = new Ammo(0, amount);
+            _ammoInventory[weaponItemId] = new Ammo(0, amount);
             return;
         }
 
-        Ammo current = ammoInventory[weaponItemId];
+        Ammo current = _ammoInventory[weaponItemId];
         current.all += amount;
-        ammoInventory[weaponItemId] = current;
+        _ammoInventory[weaponItemId] = current;
     }
 
     public bool RemoveAmmoFromMag(int weaponItemId, int amount)
     {
-        if (!ammoInventory.ContainsKey(weaponItemId)) return false;
-        if (ammoInventory[weaponItemId].inMagazine < amount) return false;
+        if (!_ammoInventory.ContainsKey(weaponItemId)) return false;
+        if (_ammoInventory[weaponItemId].inMagazine < amount) return false;
 
-        Ammo current = ammoInventory[weaponItemId];
+        Ammo current = _ammoInventory[weaponItemId];
         current.inMagazine -= amount;
-        ammoInventory[weaponItemId] = current;
+        _ammoInventory[weaponItemId] = current;
 
         return true;
     }

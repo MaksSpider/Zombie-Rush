@@ -30,7 +30,6 @@ public class DamagePopupController : MonoBehaviour
         float alpha = Mathf.Clamp01(timer / lifeTime);
         text.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
 
-        if (timer <= 0f)
-            Destroy(gameObject);
+        if (timer <= 0f) Destroy(gameObject);
     }
 }

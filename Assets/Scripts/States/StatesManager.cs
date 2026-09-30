@@ -23,4 +23,9 @@ public class StatesManager : StateMachine
     {
         UpdateStateMachine();
     }
+
+    private void FixedUpdate()
+    {
+        UpdateFixedStateMachine();
+    }
 }

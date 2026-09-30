@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class MapObjectController : ObjectController
 {
-    private WorldGenerator worldGenerator;
+    private WorldGenerator _worldGenerator;
     void Awake()
     {
-        worldGenerator = WorldGenerator.Instance;
+        _worldGenerator = WorldGenerator.Instance;
     }
 
     private void OnDestroy()
@@ -13,7 +13,6 @@ public class MapObjectController : ObjectController
         CancelInvoke();
 
         if (!gameObject.scene.isLoaded) return;
-
-        worldGenerator.RemoveObject(gameObject);
+        _worldGenerator.RemoveObject(gameObject);
     }
 }

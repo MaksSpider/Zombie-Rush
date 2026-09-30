@@ -20,7 +20,7 @@ MonoBehaviour:
     <bonuses>k__BackingField:
     - name: bonusInventorySlot
       value: 1
-    <icon>k__BackingField: {fileID: 1580089959, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+    <icon>k__BackingField: {fileID: 1634386120, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <name>k__BackingField: more_slots_1
     <title>k__BackingField: More Slots
     <description>k__BackingField: 'Inventory Slots: +2'
@@ -28,7 +28,7 @@ MonoBehaviour:
     <bonuses>k__BackingField:
     - name: bonusInventorySlot
       value: 2
-    <icon>k__BackingField: {fileID: 241616146, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+    <icon>k__BackingField: {fileID: -114618408, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <name>k__BackingField: more_slots_2
     <title>k__BackingField: More Slots
     <description>k__BackingField: 'Inventory Slots: +3'
@@ -36,4 +36,4 @@ MonoBehaviour:
     <bonuses>k__BackingField:
     - name: bonusInventorySlot
       value: 3
-    <icon>k__BackingField: {fileID: 887105197, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+    <icon>k__BackingField: {fileID: 1874606333, guid: 5108b914a619aab42a7d514f41bee824, type: 3}

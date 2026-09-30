@@ -32,22 +32,22 @@ public class InteractionsManager : MonoBehaviour
 {
     public static InteractionsManager Instance { get; private set; }
 
-    private InputManager inputManager;
-    private PlayerController playerController;
-    private UIController uIController;
+    private InputManager _inputManager;
+    private PlayerController _playerController;
+    private UIController _uIController;
 
-    private List<Interaction> interactions = new List<Interaction>();
+    private List<Interaction> _interactions = new List<Interaction>();
 
-    [SerializeField] private GameObject interactionPrefab;
+    [SerializeField] private GameObject _interactionPrefab;
 
-    private GameObject interactionPopUp;
-    private RectTransform interactionPopUpRect;
-    private int currentInteractionId = -1;
-    private bool interacting = false;
-    private float interactionProgress = 0f;
-    private int nextInteractionId = 0;
-    private float maxWidth = 1f;
-    private RectTransform fillMask;
+    private GameObject _interactionPopUp;
+    private RectTransform _interactionPopUpRect;
+    private int _currentInteractionId = -1;
+    private bool _interacting = false;
+    private float _interactionProgress = 0f;
+    private int _nextInteractionId = 0;
+    private float _maxWidth = 1f;
+    private RectTransform _fillMask;
 
     void Awake()
     {
@@ -59,36 +59,78 @@ public class InteractionsManager : MonoBehaviour
 
         Instance = this;
 
-        inputManager = InputManager.Instance;
-        playerController = PlayerController.Instance;
-        uIController = UIController.Instance;
-
-        inputManager.InputActions.Player.Interact.performed += OnInteractPerformed;
+        _inputManager = InputManager.Instance;
+        _playerController = PlayerController.Instance;
+        _uIController = UIController.Instance;
     }
 
     void OnDestroy()
     {
-        if (inputManager != null)
+        if (_inputManager != null)
         {
-            inputManager.InputActions.Player.Interact.performed -= OnInteractPerformed;
+            _inputManager.InputActions.Player.Interact.performed -= ctx => TryToInteract();
         }
     }
 
-    private void OnInteractPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    public void OnEnterState()
     {
-        TryToInteract();
+        _inputManager.InputActions.Player.Interact.performed += ctx => TryToInteract();
     }
 
-    void Start()
+    public void OnExitState()
     {
-        InvokeRepeating(nameof(UpdateInteractions), 0f, 0.1f);
+        _inputManager.InputActions.Player.Interact.performed -= ctx => TryToInteract();
     }
 
-    void Update()
+    public void Tick()
     {
-        if (interactionPopUp)
+        HandleCurrentInteractionPostion();
+        HandleInteracting();
+    }
+
+    public void FixedTick()
+    {
+        UpdateInteractions();
+    }
+
+    private void HandleInteracting()
+    {
+        if (!_interacting || _currentInteractionId < 0) return;
+
+        if (!_inputManager.InputActions.Player.Interact.IsPressed())
         {
-            Interaction current = interactions.FirstOrDefault(i => i.id == currentInteractionId);
+            _interacting = false;
+            return;
+        }
+
+        _interactionProgress += Time.fixedDeltaTime;
+
+        Interaction current = _interactions.FirstOrDefault(i => i.id == _currentInteractionId);
+        if (current == null)
+        {
+            _interacting = false;
+            _currentInteractionId = -1;
+            return;
+        }
+
+        if (_interactionProgress >= current.duration)
+        {
+            current.onInteraction?.Invoke(current.id);
+
+            if (current.removeOnUse)
+            {
+                RemoveInteraction(current.id);
+            }
+
+            _interacting = false;
+        }
+    }
+
+    private void HandleCurrentInteractionPostion()
+    {
+        if (_interactionPopUp)
+        {
+            Interaction current = _interactions.FirstOrDefault(i => i.id == _currentInteractionId);
 
             if (current == null)
             {
@@ -99,7 +141,7 @@ public class InteractionsManager : MonoBehaviour
             Vector3 worldPos = current.getPosition();
             Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
 
-            RectTransform overlayRect = uIController.overlay.GetComponent<RectTransform>();
+            RectTransform overlayRect = _uIController.overlay.GetComponent<RectTransform>();
             Canvas canvas = overlayRect.GetComponentInParent<Canvas>();
 
             Vector2 localPoint;
@@ -110,57 +152,24 @@ public class InteractionsManager : MonoBehaviour
                 out localPoint
             );
 
-            interactionPopUpRect.anchoredPosition = localPoint;
+            _interactionPopUpRect.anchoredPosition = localPoint;
 
-            float progress = current.duration > 0f ? interactionProgress / current.duration : 1f;
+            float progress = current.duration > 0f ? _interactionProgress / current.duration : 1f;
             SetFill(progress);
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (!interacting || currentInteractionId < 0) return;
-
-        if (!inputManager.InputActions.Player.Interact.IsPressed())
-        {
-            interacting = false;
-            return;
-        }
-
-        interactionProgress += Time.fixedDeltaTime;
-
-        Interaction current = interactions.FirstOrDefault(i => i.id == currentInteractionId);
-        if (current == null)
-        {
-            interacting = false;
-            currentInteractionId = -1;
-            return;
-        }
-
-        if (interactionProgress >= current.duration)
-        {
-            current.onInteraction?.Invoke(current.id);
-
-            if (current.removeOnUse)
-            {
-                RemoveInteraction(current.id);
-            }
-
-            interacting = false;
         }
     }
 
     public void TryToInteract()
     {
-        if (currentInteractionId < 0) return;
-        interacting = true;
-        interactionProgress = 0f;
+        if (_currentInteractionId < 0) return;
+        _interacting = true;
+        _interactionProgress = 0f;
     }
 
     public int RegisterInteraction(string title, float duration, Vector2 position, float range, bool removeOnUse, Action<int> onInteraction)
     {
-        int id = nextInteractionId++;
-        interactions.Add(new Interaction(id, title, duration, () => {
+        int id = _nextInteractionId++;
+        _interactions.Add(new Interaction(id, title, duration, () => {
             return position;
         }, range, removeOnUse, onInteraction));
 
@@ -169,8 +178,8 @@ public class InteractionsManager : MonoBehaviour
 
     public int RegisterInteractionOnObject(string title, float duration, GameObject gameObject, Vector2 offset, float range, bool removeOnUse, Action<int> onInteraction)
     {
-        int id = nextInteractionId++;
-        interactions.Add(new Interaction(id, title, duration, () => {
+        int id = _nextInteractionId++;
+        _interactions.Add(new Interaction(id, title, duration, () => {
             return (Vector2)gameObject.transform.position + offset;
         }, range, removeOnUse, onInteraction));
 
@@ -179,43 +188,43 @@ public class InteractionsManager : MonoBehaviour
 
     public bool RemoveInteraction(int id)
     {
-        Interaction interaction = interactions.FirstOrDefault(i => i.id == id);
+        Interaction interaction = _interactions.FirstOrDefault(i => i.id == id);
         if (interaction == null) return false;
 
-        if (interaction.id == currentInteractionId)
+        if (interaction.id == _currentInteractionId)
         {
-            currentInteractionId = -1;
-            interacting = false;
+            _currentInteractionId = -1;
+            _interacting = false;
             HideInteraction();
         }
 
-        interactions.Remove(interaction);
+        _interactions.Remove(interaction);
 
         return true;
     }
 
     public void UpdateInteractions()
     {
-        if (interactions == null || interactions.Count == 0) return;
-        if (interacting) return;
+        if (_interactions == null || _interactions.Count == 0) return;
+        if (_interacting) return;
 
-        if (playerController == null)
+        if (_playerController == null)
         {
-            playerController = PlayerController.Instance;
+            _playerController = PlayerController.Instance;
         }
 
-        Interaction interaction = GetClosestInteraction(playerController.transform.position);
+        Interaction interaction = GetClosestInteraction(_playerController.transform.position);
         if (interaction == null)
         {
-            currentInteractionId = -1;
+            _currentInteractionId = -1;
             HideInteraction();
             return;
         }
 
-        if (interaction.id == currentInteractionId) return;
+        if (interaction.id == _currentInteractionId) return;
 
-        currentInteractionId = interaction.id;
-        interactionProgress = 0f;
+        _currentInteractionId = interaction.id;
+        _interactionProgress = 0f;
         DisplayInteraction(interaction.id);
     }
 
@@ -224,7 +233,7 @@ public class InteractionsManager : MonoBehaviour
         Interaction closestInteraction = null;
         float closestDistance = float.MaxValue;
 
-        foreach (Interaction interaction in interactions)
+        foreach (Interaction interaction in _interactions)
         {
             Vector2 interactionPosition = interaction.getPosition();
             float distance = Vector2.Distance(position, interactionPosition);
@@ -241,44 +250,44 @@ public class InteractionsManager : MonoBehaviour
 
     public void DisplayInteraction(int id)
     {
-        if (id < 0 || interactions.Count == 0) return;
+        if (id < 0 || _interactions.Count == 0) return;
 
-        Interaction interaction = interactions.FirstOrDefault(i => i.id == id);
+        Interaction interaction = _interactions.FirstOrDefault(i => i.id == id);
         if (interaction == null) return;
 
         HideInteraction();
 
-        if (uIController == null)
+        if (_uIController == null)
         {
-            uIController = UIController.Instance;
+            _uIController = UIController.Instance;
         }
 
-        interactionPopUp = Instantiate(interactionPrefab, uIController.overlay);
-        interactionPopUpRect = interactionPopUp.GetComponent<RectTransform>();
-        interactionPopUp.transform.Find("TitleText").GetComponent<TextMeshProUGUI>().text = interaction.title;
-        fillMask = interactionPopUp.transform.Find("Progressbar").GetComponent<RectTransform>();
+        _interactionPopUp = Instantiate(_interactionPrefab, _uIController.overlay);
+        _interactionPopUpRect = _interactionPopUp.GetComponent<RectTransform>();
+        _interactionPopUp.transform.Find("TitleText").GetComponent<TextMeshProUGUI>().text = interaction.title;
+        _fillMask = _interactionPopUp.transform.Find("Progressbar").GetComponent<RectTransform>();
 
-        maxWidth = fillMask.rect.width;
+        _maxWidth = _fillMask.rect.width;
     }
 
     public void HideInteraction()
     {
-        if (interactionPopUp == null) return;
+        if (_interactionPopUp == null) return;
 
-        Destroy(interactionPopUp);
-        interactionPopUp = null;
-        interactionPopUpRect = null;
+        Destroy(_interactionPopUp);
+        _interactionPopUp = null;
+        _interactionPopUpRect = null;
     }
 
     public void SetFill(float value)
     {
-        if (!interactionPopUp || fillMask == null) return;
+        if (!_interactionPopUp || _fillMask == null) return;
 
         float percentage = Mathf.Clamp01(value);
 
-        Vector2 size = fillMask.sizeDelta;
-        size.x = maxWidth * percentage;
+        Vector2 size = _fillMask.sizeDelta;
+        size.x = _maxWidth * percentage;
 
-        fillMask.sizeDelta = size;
+        _fillMask.sizeDelta = size;
     }
 }

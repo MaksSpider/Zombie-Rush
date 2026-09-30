@@ -5,28 +5,29 @@ public class WorldGenerator : MonoBehaviour
 {
     public static WorldGenerator Instance { get; private set; }
 
-    private PlayerController playerController;
+    private PlayerController _playerController;
+    private StatesManager _statesManager;
 
     [SerializeField] public float RenderDistance = 10f;
     [SerializeField] public float UnloadDistance = 100f;
 
-    [SerializeField] private GameObject debugTile;
-    [SerializeField] private float tileSize = 0.2f;
+    [SerializeField] private GameObject _debugTile;
+    [SerializeField] private float _tileSize = 0.2f;
 
-    [SerializeField] private Transform worldBackground;
-    [SerializeField] private Transform worldObjects;
+    [SerializeField] private Transform _worldBackground;
+    [SerializeField] private Transform _worldObjects;
 
-    [SerializeField] private MapBiomesData biomesData;
-    [SerializeField] private MapObjectsData objectsData;
+    [SerializeField] private MapBiomesData _biomesData;
+    [SerializeField] private MapObjectsData _objectsData;
 
     [Header("Generation")]
-    [SerializeField] private int seed = 0;
+    [SerializeField] public int seed = 0;
 
-    Dictionary<Vector2Int, string> map = new Dictionary<Vector2Int, string>();
-    Dictionary<Vector2Int, GameObject> mapTiles = new Dictionary<Vector2Int, GameObject>();
-    Dictionary<Vector2Int, GameObject> mapObjectInstances = new Dictionary<Vector2Int, GameObject>();
+    private Dictionary<Vector2Int, string> _map = new Dictionary<Vector2Int, string>();
+    private Dictionary<Vector2Int, GameObject> _mapTiles = new Dictionary<Vector2Int, GameObject>();
+    private Dictionary<Vector2Int, GameObject> _mapObjectInstances = new Dictionary<Vector2Int, GameObject>();
 
-    Dictionary<string, Vector2> biomeNoiseOffsets = new Dictionary<string, Vector2>();
+    private Dictionary<string, Vector2> _biomeNoiseOffsets = new Dictionary<string, Vector2>();
 
     void Awake()
     {
@@ -38,28 +39,34 @@ public class WorldGenerator : MonoBehaviour
 
         Instance = this;
 
-        playerController = PlayerController.Instance;
+        _playerController = PlayerController.Instance;
+        _statesManager = StatesManager.Instance;
 
         InitBiomeOffsets();
     }
 
     void Start()
     {
-        InvokeRepeating(nameof(UpdateMap), 0f, 1f);
+        UpdateMap();
     }
+
+    public void Tick1s()
+    {
+        UpdateMap();
+    }
+
     private void InitBiomeOffsets()
     {
         int actualSeed = seed == 0 ? Random.Range(int.MinValue, int.MaxValue) : seed;
         System.Random rng = new System.Random(actualSeed);
 
-        biomeNoiseOffsets.Clear();
+        _biomeNoiseOffsets.Clear();
 
-        if (biomesData == null || biomesData.mapBiomes == null)
-            return;
+        if (_biomesData == null || _biomesData.mapBiomes == null) return;
 
-        foreach (Biom biom in biomesData.mapBiomes)
+        foreach (Biom biom in _biomesData.mapBiomes)
         {
-            biomeNoiseOffsets[biom.id] = new Vector2(
+            _biomeNoiseOffsets[biom.id] = new Vector2(
                 rng.Next(-100000, 100000),
                 rng.Next(-100000, 100000)
             );
@@ -67,10 +74,10 @@ public class WorldGenerator : MonoBehaviour
     }
     private (bool finded, Biom biom) GetBiomeAt(Vector2Int position)
     {
-        if (map.ContainsKey(position)) return (false, new Biom());
+        if (_map.ContainsKey(position)) return (false, new Biom());
 
         Biom result = ComputeBiomeAt(position.x, position.y);
-        map[position] = result.id;
+        _map[position] = result.id;
         return (true, result);
     }
 
@@ -80,11 +87,11 @@ public class WorldGenerator : MonoBehaviour
         float bestValue = float.MinValue;
         bool found = false;
 
-        foreach (Biom biom in biomesData.mapBiomes)
+        foreach (Biom biom in _biomesData.mapBiomes)
         {
             float size = Mathf.Max(biom.size, 0.0001f);
 
-            Vector2 offset = biomeNoiseOffsets.TryGetValue(biom.id, out Vector2 off)
+            Vector2 offset = _biomeNoiseOffsets.TryGetValue(biom.id, out Vector2 off)
                 ? off
                 : Vector2.zero;
 
@@ -108,8 +115,7 @@ public class WorldGenerator : MonoBehaviour
 
     private void CreateTile(Vector2Int position)
     {
-        if (mapTiles.ContainsKey(position))
-            return;
+        if (_mapTiles.ContainsKey(position)) return;
 
         var result = GetBiomeAt(position);
         if (!result.finded) return;
@@ -117,36 +123,33 @@ public class WorldGenerator : MonoBehaviour
         Biom biom = result.biom;
 
         GameObject tile = Instantiate(
-            debugTile,
-            new Vector2(position.x * tileSize, position.y * tileSize),
+            _debugTile,
+            new Vector2(position.x * _tileSize, position.y * _tileSize),
             Quaternion.identity,
-            worldBackground
+            _worldBackground
         );
         tile.name = $"tile_{position.x}_{position.y}_{biom.id}";
 
         SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
-        sr.size = new Vector2(tileSize, tileSize);
+        sr.size = new Vector2(_tileSize, _tileSize);
         if (biom.tileSprite != null)
         {
             sr.sprite = biom.tileSprite;
         }
 
-        mapTiles[position] = tile;
+        _mapTiles[position] = tile;
 
         TrySpawnObjects(position, biom);
     }
 
     private void TrySpawnObjects(Vector2Int position, Biom biom)
     {
-        if (objectsData == null || objectsData.mapObjects == null)
-            return;
+        if (_objectsData == null || _objectsData.mapObjects == null) return;
+        if (_mapObjectInstances.ContainsKey(position)) return;
 
-        if (mapObjectInstances.ContainsKey(position))
-            return;
+        Vector2 tileWorldPos = new Vector2(position.x * _tileSize, position.y * _tileSize);
 
-        Vector2 tileWorldPos = new Vector2(position.x * tileSize, position.y * tileSize);
-
-        foreach (MapObject mapObject in objectsData.mapObjects)
+        foreach (MapObject mapObject in _objectsData.mapObjects)
         {
             if (mapObject.biom != biom.id)
                 continue;
@@ -165,18 +168,18 @@ public class WorldGenerator : MonoBehaviour
                 continue;
 
             Vector2 jitter = new Vector2(
-                Random.Range(-tileSize / 2f, tileSize / 2f),
-                Random.Range(-tileSize / 2f, tileSize / 2f)
+                Random.Range(-_tileSize / 2f, _tileSize / 2f),
+                Random.Range(-_tileSize / 2f, _tileSize / 2f)
             );
 
             GameObject instance = Instantiate(
                 mapObject.gameObject,
                 tileWorldPos + jitter,
                 Quaternion.identity,
-                worldObjects
+                _worldObjects
             );
 
-            mapObjectInstances[position] = instance;
+            _mapObjectInstances[position] = instance;
             break;
         }
     }
@@ -212,20 +215,20 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    private void UpdateMap()
+    public void UpdateMap()
     {
-        Vector2 playerPosition = playerController.transform.position;
+        Vector2 playerPosition = _playerController.transform.position;
 
         List<Vector2Int> tilesToRemove = new List<Vector2Int>();
         List<Vector2Int> objectsToRemove = new List<Vector2Int>();
 
-        foreach ((Vector2Int index, GameObject tile) in mapTiles)
+        foreach ((Vector2Int index, GameObject tile) in _mapTiles)
         {
             float distance = Vector2.Distance(playerPosition, (Vector2)tile.transform.position);
 
-            if (mapObjectInstances.ContainsKey(index))
+            if (_mapObjectInstances.ContainsKey(index))
             {
-                GameObject mapObject = mapObjectInstances[index];
+                GameObject mapObject = _mapObjectInstances[index];
 
                 if (RenderDistance < distance)
                 {
@@ -260,18 +263,18 @@ public class WorldGenerator : MonoBehaviour
 
         foreach (Vector2Int index in tilesToRemove)
         {
-            mapTiles.Remove(index);
+            _mapTiles.Remove(index);
         }
 
         foreach (Vector2Int index in objectsToRemove)
         {
-            mapObjectInstances.Remove(index);
+            _mapObjectInstances.Remove(index);
         }
 
-        int minY = Mathf.FloorToInt((playerPosition.y - RenderDistance) / tileSize);
-        int maxY = Mathf.FloorToInt((playerPosition.y + RenderDistance) / tileSize);
-        int minX = Mathf.FloorToInt((playerPosition.x - RenderDistance) / tileSize);
-        int maxX = Mathf.FloorToInt((playerPosition.x + RenderDistance) / tileSize);
+        int minY = Mathf.FloorToInt((playerPosition.y - RenderDistance) / _tileSize);
+        int maxY = Mathf.FloorToInt((playerPosition.y + RenderDistance) / _tileSize);
+        int minX = Mathf.FloorToInt((playerPosition.x - RenderDistance) / _tileSize);
+        int maxX = Mathf.FloorToInt((playerPosition.x + RenderDistance) / _tileSize);
 
         for (int y = minY; y < maxY; y++)
         {
@@ -279,7 +282,7 @@ public class WorldGenerator : MonoBehaviour
             {
                 Vector2Int position = new Vector2Int(x, y);
 
-                float distance = Vector2.Distance(playerPosition, new Vector2(x * tileSize, y * tileSize));
+                float distance = Vector2.Distance(playerPosition, new Vector2(x * _tileSize, y * _tileSize));
                 if (distance > RenderDistance)
                     continue;
 
@@ -293,11 +296,11 @@ public class WorldGenerator : MonoBehaviour
         if (toRemove == null)
             return false;
 
-        foreach((Vector2Int index, GameObject mapObject) in mapObjectInstances)
+        foreach((Vector2Int index, GameObject mapObject) in _mapObjectInstances)
         {
             if(mapObject.transform.position == toRemove.transform.position)
             {
-                mapObjectInstances.Remove(index);
+                _mapObjectInstances.Remove(index);
                 return true;
             }
         }

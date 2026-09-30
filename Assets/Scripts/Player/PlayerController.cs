@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,40 +21,43 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
-    private InputManager inputManager;
-    private StatusesController statusesController;
+    private InputManager _inputManager;
+    private StatusesController _statusesController;
+    private UpgradesController _upgradesController;
 
-    public event System.Action OnLevelUp;
+    public event Action OnLevelUp;
 
-    [SerializeField] Vector3 SpawnPosition;
-    [SerializeField] float baseSpeed = 5f;
-    [SerializeField] float sprintBoost = 1.5f;
+    [SerializeField] private Vector3 _spawnPosition;
+    [SerializeField] private float _baseSpeed = 5f;
+    [SerializeField] private float _sprintBoost = 1.5f;
 
-    [SerializeField] private float collectExpRadius = 1.5f;
+    [SerializeField] private float _collectExpRadius = 1.5f;
 
-    [SerializeField] private int baseLevelCost = 50;
-    [SerializeField] private float levelExpCostMultipler = 1.25f;
-    [SerializeField] private int startingHealth = 100;
-    [SerializeField] private int startingStamina = 100;
-    [SerializeField] private int healthRegeneration = 2;
-    [SerializeField] private int baseStaminaRegeneration = 2;
+    [SerializeField] private int _baseHealth = 100;
+    [SerializeField] private int _baseStamina = 500;
+    [SerializeField] private int _baseLevelCost = 50;
+    [SerializeField] private float _levelExpCostMultipler = 1.25f;
+    [SerializeField] private int _healthRegeneration = 2;
+    [SerializeField] private int _baseStaminaRegeneration = 2;
 
     [NonSerialized] public Vector3 MovementDirection;
     [NonSerialized] public Vector2 LastMovementDirection = Vector2.down;
 
-    private Animator animator; 
-
-    public int Health;
-    public int MaxHealth;
-    public int Money;
-    public int Kills;
-    public int Stamina;
-    public int MaxStamina;
-    public int Experience;
-    public int ExperienceToNextLevel;
-    public int Level = 1;
-
+    private Animator animator;
     private Rigidbody2D rb;
+
+    public int Health = 100;
+    public int MaxHealth;
+
+    public int Money = 0;
+    public int Kills = 0;
+
+    public int Stamina = 1000;
+    public int MaxStamina;
+
+    public int Experience = 0;
+    public int ExperienceToNextLevel = 0;
+    public int Level = 1;
 
     private bool staminaRegeneration = false;
 
@@ -71,8 +73,9 @@ public class PlayerController : MonoBehaviour
 
         Instance = this;
 
-        inputManager = InputManager.Instance;
-        statusesController = StatusesController.Instance;
+        _inputManager = InputManager.Instance;
+        _statusesController = StatusesController.Instance;
+        _upgradesController = UpgradesController.Instance;
 
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -80,56 +83,56 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        rb.position = SpawnPosition;
+        rb.position = _spawnPosition;
 
-        ExperienceToNextLevel = baseLevelCost;
-        ChangeMaxStamina(startingStamina);
-        ChangeMaxHealth(startingHealth);
+        ExperienceToNextLevel = _baseLevelCost;
 
-        InvokeRepeating(nameof(On5seconds), 0f, 5f);
-        InvokeRepeating(nameof(On1seconds), 0f, 1f);
+        ChangeMaxHealth(_baseHealth);
+        ChangeMaxStamina(_baseStamina);
+
     }
 
-    void Update()
+    public void Tick()
     {
         HandleMovementControlls();
         CollectExperience();
     }
 
-    void FixedUpdate()
+    public void FixedTick()
     {
         HandleMovement();
     }
 
-    private void On1seconds()
+    public void Tick1s()
     {
         CheckTemporaryHealing();
-        ChangeStamina(baseStaminaRegeneration);
+        ChangeStamina(_baseStaminaRegeneration);
     }
 
-    private void On5seconds()
+    public void Tick5s()
     {
-        ChangeHealth(healthRegeneration);
+        ChangeHealth(_healthRegeneration);
     }
 
     public void AddExperience(int value)
     {
         Experience += value;
 
-        if(Experience >= ExperienceToNextLevel)
+        if (Experience >= ExperienceToNextLevel)
         {
             Experience = 0;
             Level++;
 
-            float levelCost = baseLevelCost;
+            float levelCost = _baseLevelCost;
 
-            for (int i = 0; i < Level; i++) 
+            for (int i = 0; i < Level; i++)
             {
-                levelCost *= levelExpCostMultipler;
+                levelCost *= _levelExpCostMultipler;
             }
 
             ExperienceToNextLevel = (int)levelCost;
 
+            _upgradesController.DisplayUpgradesWindow(Level);
             OnLevelUp?.Invoke();
         }
     }
@@ -139,13 +142,14 @@ public class PlayerController : MonoBehaviour
     {
         Health += value;
 
-        if(Health > MaxHealth) 
+        if (Health > MaxHealth)
         {
-            Health = MaxHealth; 
+            Health = MaxHealth;
         }
 
         if (Health <= 0)
         {
+            Health = 0;
             print("dead!");
             // TBA
         }
@@ -169,8 +173,12 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeRegeneration(int value)
     {
-        healthRegeneration += value;
-        if(healthRegeneration < 0) { healthRegeneration = 0; }
+        _healthRegeneration += value;
+
+        if (_healthRegeneration < 0)
+        {
+            _healthRegeneration = 0;
+        }
     }
 
     public void AddTemporaryHealing(float duration, int additionalMaxHp, int additionalRegeneration, Sprite icon = null)
@@ -182,7 +190,11 @@ public class PlayerController : MonoBehaviour
 
         if (icon == null) return;
 
-        statusesController.RegisterStatus(icon, duration, new Color(255, 0 , 0));
+        _statusesController.RegisterStatus(
+            icon,
+            duration,
+            new Color(255, 0, 0)
+        );
     }
 
     public void ChangeMaxStamina(int value)
@@ -200,13 +212,13 @@ public class PlayerController : MonoBehaviour
             Stamina = MaxStamina;
         }
 
-        if(Stamina <= 0)
+        if (Stamina <= 0)
         {
             Stamina = 0;
             staminaRegeneration = true;
         }
 
-        if(Stamina >= MaxStamina * 0.3)
+        if (Stamina >= MaxStamina * 0.3f)
         {
             staminaRegeneration = false;
         }
@@ -219,7 +231,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovementControlls()
     {
-        Vector2 input = inputManager.InputActions.Player.Move.ReadValue<Vector2>();
+        Vector2 input = _inputManager.InputActions.Player.Move.ReadValue<Vector2>();
+
         MovementDirection = new Vector3(input.x, input.y, 0f).normalized;
 
         if (MovementDirection.sqrMagnitude > 0f)
@@ -228,17 +241,20 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.SetFloat("DirectionHorizontal", LastMovementDirection.x);
+
         animator.SetFloat("DirectionVertical", LastMovementDirection.y);
     }
 
     private void HandleMovement()
     {
-        float speed = baseSpeed;
+        float speed = _baseSpeed;
 
-        if (Stamina > 0 && !staminaRegeneration && inputManager.InputActions.Player.Sprint.IsPressed()) 
+        if (Stamina > 0 && !staminaRegeneration && _inputManager.InputActions.Player.Sprint.IsPressed())
         {
-            speed *= sprintBoost;
+            speed *= _sprintBoost;
+
             animator.SetBool("Sprint", true);
+
             ChangeStamina(-1);
         }
         else
@@ -255,7 +271,12 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Movement", false);
         }
 
-        rb.MovePosition(rb.position + (Vector2)MovementDirection * speed * Time.fixedDeltaTime);
+        rb.MovePosition(
+            rb.position +
+            (Vector2)MovementDirection *
+            speed *
+            Time.fixedDeltaTime
+        );
     }
 
     private void CheckTemporaryHealing()
@@ -276,13 +297,18 @@ public class PlayerController : MonoBehaviour
 
     private void CollectExperience()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, collectExpRadius);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            transform.position,
+            _collectExpRadius
+        );
 
         foreach (Collider2D hit in hits)
         {
             if (hit.CompareTag("ExpOrb"))
             {
-                ExpOrbController orb = hit.GetComponent<ExpOrbController>();
+                ExpOrbController orb =
+                    hit.GetComponent<ExpOrbController>();
+
                 if (orb != null)
                 {
                     orb.Collect();

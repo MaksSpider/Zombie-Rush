@@ -11,28 +11,28 @@ public class Slot
 
     public Image slotImage;
     public Image itemImage;
-    private Image spinningWheel;
-    private Image spinningWheelBackground;
+    private Image _spinningWheel;
+    private Image _spinningWheelBackground;
 
     public TextMeshProUGUI amountText;
     public TextMeshProUGUI itemNameText;
 
-    private float animationDuration = 0f;
-    private float animationStartTime = 0f;
-    private Action onAnimationComplete;
+    private float _animationDuration = 0f;
+    private float _animationStartTime = 0f;
+    private Action _onAnimationComplete;
 
     public Slot(GameObject slot, Image slotImage, Image itemImage, Image spinningWheel, Image spinningWheelBackground, TextMeshProUGUI amountText, TextMeshProUGUI itemNameText)
     { 
         this.slot = slot;
         this.slotImage = slotImage;
         this.itemImage = itemImage;
-        this.spinningWheel = spinningWheel;
-        this.spinningWheelBackground = spinningWheelBackground;
+        _spinningWheel = spinningWheel;
+        _spinningWheelBackground = spinningWheelBackground;
         this.amountText = amountText;
         this.itemNameText = itemNameText;
 
-        this.spinningWheel.enabled = false;
-        this.spinningWheelBackground.enabled = false;
+        _spinningWheel.enabled = false;
+        _spinningWheelBackground.enabled = false;
 
         this.itemNameText.text = string.Empty;
     }
@@ -45,34 +45,34 @@ public class Slot
             return;
         }
 
-        animationDuration = duration;
-        animationStartTime = Time.time;
+        _animationDuration = duration;
+        _animationStartTime = Time.time;
 
-        spinningWheel.enabled = true;
-        spinningWheelBackground.enabled = true;
-        spinningWheel.fillAmount = 0f;
-        onAnimationComplete = onComplete;
+        _spinningWheel.enabled = true;
+        _spinningWheelBackground.enabled = true;
+        _spinningWheel.fillAmount = 0f;
+        _onAnimationComplete = onComplete;
     }
 
     public void UpdateAnimation()
     {
-        if(animationDuration == 0f) return;
+        if(_animationDuration == 0f) return;
 
-        if (animationDuration + animationStartTime <= Time.time)
+        if (_animationDuration + _animationStartTime <= Time.time)
         {
-            animationDuration = 0f;
-            animationStartTime = 0f;
-            spinningWheel.enabled = false;
-            spinningWheelBackground.enabled = false;
+            _animationDuration = 0f;
+            _animationStartTime = 0f;
+            _spinningWheel.enabled = false;
+            _spinningWheelBackground.enabled = false;
 
-            onAnimationComplete?.Invoke();
-            onAnimationComplete = null;
+            _onAnimationComplete?.Invoke();
+            _onAnimationComplete = null;
 
             return;
         }
 
-        float elapsed = Time.time - animationStartTime;
-        spinningWheel.fillAmount = elapsed / animationDuration;
+        float elapsed = Time.time - _animationStartTime;
+        _spinningWheel.fillAmount = elapsed / _animationDuration;
         return;
     }
 }
@@ -93,60 +93,34 @@ public class InventoryController : MonoBehaviour
 {
     public static InventoryController Instance { get; private set; }
 
-    private InputManager inputManager;
-    private PlayerController playerController;
-    private PlayerCombatController playerCombatController;
-    private InteractionsManager interactionsManager;
-    private UpgradesController upgradesController;
+    private InputManager _inputManager;
+    private PlayerController _playerController;
+    private PlayerCombatController _playerCombatController;
+    private InteractionsManager _interactionsManager;
+    private UpgradesController _upgradesController;
 
-    [SerializeField] private Sprite selectedSlotSprite;
-    [SerializeField] private Sprite unselectedSlotSprite;
+    [SerializeField] private Sprite _selectedSlotSprite;
+    [SerializeField] private Sprite _unselectedSlotSprite;
 
-    [SerializeField] private int baseSlotsAmount = 3;
+    [SerializeField] private int _baseSlotsAmount = 3;
 
-    [SerializeField] private ItemsData itemsData;
-    [SerializeField] private WeaponsData weaponsData;
-    [SerializeField] private MeleeWeaponsData meleeWeaponsData;
-    [SerializeField] private HealingItemsData healingItemsData;
+    [SerializeField] private ItemsData _itemsData;
+    [SerializeField] private WeaponsData _weaponsData;
+    [SerializeField] private MeleeWeaponsData _meleeWeaponsData;
+    [SerializeField] private HealingItemsData _healingItemsData;
 
-    [SerializeField] private GameObject dropedItemPrefab;
-    [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private Transform inventoryUI;
+    [SerializeField] private GameObject _dropedItemPrefab;
+    [SerializeField] private GameObject _slotPrefab;
+    [SerializeField] private Transform _inventoryUI;
 
-    public event System.Action OnSlotChanged;
-    public event System.Action OnDropItemOnSlot;
+    public event Action OnSlotChanged;
+    public event Action OnDropItemOnSlot;
 
     public bool inventoryBlocked = false;
 
     public Dictionary<int, SlotItem> inventory = new Dictionary<int, SlotItem>();
     public List<Slot> slots = new List<Slot>();
     public int selectedSlot = 0;
-
-
-    void Start()
-    {
-        ChangeSlotAmount(baseSlotsAmount);
-
-        upgradesController.OnUpgradesChange += () => ChangeSlotAmount(baseSlotsAmount + (int)upgradesController.GetBonusValues("bonusInventorySlot"));
-        
-        // items to test
-        AddItemById(0, 1);
-        AddItemById(1, 1);
-        AddItemById(2, 1);
-        AddItemById(3, 5);
-        AddItemById(4, 5);
-        AddItemById(5, 5);
-        AddItemById(6, 4);
-        AddItemById(7, 4);
-    }
-
-    private void OnDestroy()
-    {
-        if (upgradesController != null)
-        {
-            upgradesController.OnUpgradesChange -= () => ChangeSlotAmount(baseSlotsAmount + (int)upgradesController.GetBonusValues("bonusInventorySlot"));
-        }
-    }
 
     void Awake()
     {
@@ -158,32 +132,79 @@ public class InventoryController : MonoBehaviour
 
         Instance = this;
 
-        inputManager = InputManager.Instance;
-        interactionsManager = InteractionsManager.Instance;
-        upgradesController = UpgradesController.Instance;
+        _inputManager = InputManager.Instance;
+        _interactionsManager = InteractionsManager.Instance;
+        _upgradesController = UpgradesController.Instance;
 
-        playerController = gameObject.GetComponent<PlayerController>();
-        playerCombatController = gameObject.GetComponent<PlayerCombatController>();
-
-        inputManager.InputActions.Player.Slot1.performed += ctx => ChangeSlot(0);
-        inputManager.InputActions.Player.Slot2.performed += ctx => ChangeSlot(1);
-        inputManager.InputActions.Player.Slot3.performed += ctx => ChangeSlot(2);
-        inputManager.InputActions.Player.Slot4.performed += ctx => ChangeSlot(3);
-        inputManager.InputActions.Player.Slot5.performed += ctx => ChangeSlot(4);
-        inputManager.InputActions.Player.Slot6.performed += ctx => ChangeSlot(5);
-        inputManager.InputActions.Player.Slot7.performed += ctx => ChangeSlot(6);
-        inputManager.InputActions.Player.Slot8.performed += ctx => ChangeSlot(7);
-        inputManager.InputActions.Player.Slot9.performed += ctx => ChangeSlot(8);
-
-        inputManager.InputActions.Player.ChangeSlot.performed += OnScrollChangeSlot;
-
-        inputManager.InputActions.Player.UseItem.performed += ctx => UseItemInHands();
-        inputManager.InputActions.Player.DropItem.performed += ctx => DropItemOnSlot(selectedSlot);
+        _playerController = gameObject.GetComponent<PlayerController>();
+        _playerCombatController = gameObject.GetComponent<PlayerCombatController>();
     }
 
-    void Update()
+    void Start()
+    {
+        ChangeSlotAmount(_baseSlotsAmount);
+
+        _upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
+
+        // items to test
+        AddItemById(0, 1);
+        AddItemById(1, 1);
+        AddItemById(2, 1);
+        AddItemById(3, 5);
+        AddItemById(4, 5);
+        AddItemById(5, 5);
+        AddItemById(6, 4);
+        AddItemById(7, 4);
+    }
+
+
+    public void OnEnterState()
+    {
+        _inputManager.InputActions.Player.Slot1.performed += ctx => ChangeSlot(0);
+        _inputManager.InputActions.Player.Slot2.performed += ctx => ChangeSlot(1);
+        _inputManager.InputActions.Player.Slot3.performed += ctx => ChangeSlot(2);
+        _inputManager.InputActions.Player.Slot4.performed += ctx => ChangeSlot(3);
+        _inputManager.InputActions.Player.Slot5.performed += ctx => ChangeSlot(4);
+        _inputManager.InputActions.Player.Slot6.performed += ctx => ChangeSlot(5);
+        _inputManager.InputActions.Player.Slot7.performed += ctx => ChangeSlot(6);
+        _inputManager.InputActions.Player.Slot8.performed += ctx => ChangeSlot(7);
+        _inputManager.InputActions.Player.Slot9.performed += ctx => ChangeSlot(8);
+
+        _inputManager.InputActions.Player.ChangeSlot.performed += OnScrollChangeSlot;
+
+        _inputManager.InputActions.Player.UseItem.performed += ctx => UseItemInHands();
+        _inputManager.InputActions.Player.DropItem.performed += ctx => DropItemOnSlot(selectedSlot);
+    }
+
+    public void OnExitState()
+    {
+        _inputManager.InputActions.Player.Slot1.performed -= ctx => ChangeSlot(0);
+        _inputManager.InputActions.Player.Slot2.performed -= ctx => ChangeSlot(1);
+        _inputManager.InputActions.Player.Slot3.performed -= ctx => ChangeSlot(2);
+        _inputManager.InputActions.Player.Slot4.performed -= ctx => ChangeSlot(3);
+        _inputManager.InputActions.Player.Slot5.performed -= ctx => ChangeSlot(4);
+        _inputManager.InputActions.Player.Slot6.performed -= ctx => ChangeSlot(5);
+        _inputManager.InputActions.Player.Slot7.performed -= ctx => ChangeSlot(6);
+        _inputManager.InputActions.Player.Slot8.performed -= ctx => ChangeSlot(7);
+        _inputManager.InputActions.Player.Slot9.performed -= ctx => ChangeSlot(8);
+
+        _inputManager.InputActions.Player.ChangeSlot.performed -= OnScrollChangeSlot;
+
+        _inputManager.InputActions.Player.UseItem.performed -= ctx => UseItemInHands();
+        _inputManager.InputActions.Player.DropItem.performed -= ctx => DropItemOnSlot(selectedSlot);
+    }
+
+    public void Tick()
     {
         UpdateSpinningWheelAniamtions();
+    }
+
+    private void OnDestroy()
+    {
+        if (_upgradesController != null)
+        {
+            _upgradesController.OnUpgradesChange -= () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
+        }
     }
 
     private void OnScrollChangeSlot(InputAction.CallbackContext ctx)
@@ -218,7 +239,7 @@ public class InventoryController : MonoBehaviour
 
         for(int i = 0; i < amount; i++)
         {
-            GameObject slotObject = Instantiate(slotPrefab, inventoryUI);
+            GameObject slotObject = Instantiate(_slotPrefab, _inventoryUI);
             slotObject.name = $"slot_{i}";
 
             Image slotImage = slotObject.transform.Find("SlotImage").GetComponent<Image>();
@@ -229,7 +250,7 @@ public class InventoryController : MonoBehaviour
             TextMeshProUGUI amountText = slotObject.transform.Find("AmountText").GetComponent<TextMeshProUGUI>();
             TextMeshProUGUI itemNameText = slotObject.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
 
-            slotImage.sprite = unselectedSlotSprite;
+            slotImage.sprite = _unselectedSlotSprite;
             itemImage.enabled = false;
 
             slots.Add(new Slot(slotObject, slotImage, itemImage, spinningWheel, spinningWheelBackground, amountText, itemNameText));
@@ -261,10 +282,10 @@ public class InventoryController : MonoBehaviour
         if (slot < 0 || slot >= slots.Count) return;
 
 
-        slots[selectedSlot].slotImage.sprite = unselectedSlotSprite;
+        slots[selectedSlot].slotImage.sprite = _unselectedSlotSprite;
         slots[selectedSlot].itemNameText.text = string.Empty;
 
-        slots[slot].slotImage.sprite = selectedSlotSprite;
+        slots[slot].slotImage.sprite = _selectedSlotSprite;
         if (inventory.ContainsKey(slot))
         {
             slots[slot].itemNameText.text = inventory[slot].item.name;
@@ -319,7 +340,7 @@ public class InventoryController : MonoBehaviour
 
     public bool AddItemById(int id, int amount)
     {
-        foreach (Item item in itemsData.itemsData)
+        foreach (Item item in _itemsData.itemsData)
         {
             if (item.id == id)
             {
@@ -370,14 +391,14 @@ public class InventoryController : MonoBehaviour
                 {
                     inventoryBlocked = true;
                     slots[slot].SetAnimationDuration(item.usageDuration, () => {
-                        playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
+                        _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
                         RemoveItemById(item.id, 1);
                         inventoryBlocked = false;
                     });
                 }
                 else
                 {
-                    playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
+                    _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
                     RemoveItemById(item.id, 1);
                 }
             }
@@ -393,16 +414,16 @@ public class InventoryController : MonoBehaviour
             {
                 inventoryBlocked = true;
                 slots[slot].SetAnimationDuration(item.usageDuration, () => {
-                    playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
+                    _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
 
                     if (healingResult.healingItem.duration > 0)
                     {
-                        playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
+                        _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
                     }
                     else
                     {
-                        playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                        playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
+                        _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
+                        _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
                     }
 
                     RemoveItemById(item.id, 1);
@@ -411,16 +432,16 @@ public class InventoryController : MonoBehaviour
             }
             else
             {
-                playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
+                _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
 
                 if (healingResult.healingItem.duration > 0)
                 {
-                    playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
+                    _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
                 }
                 else
                 {
-                    playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                    playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
+                    _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
+                    _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
                 }
 
                 RemoveItemById(item.id, 1);
@@ -443,7 +464,7 @@ public class InventoryController : MonoBehaviour
             {
                 int ammoToAdd = 4 * normalWeapon.magazineSize;
 
-                playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
+                _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
                 RemoveItemById(item.id, 1);
             }
 
@@ -454,16 +475,16 @@ public class InventoryController : MonoBehaviour
 
         if (healingResult.isHealing)
         {
-            playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
+            _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
 
             if(healingResult.healingItem.duration > 0)
             {
-                playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd);
+                _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd);
             }
             else
             {
-                playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
+                _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
+                _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
             }
 
 
@@ -502,7 +523,7 @@ public class InventoryController : MonoBehaviour
 
     public void DropItem(Item item, int amount, Vector2 spawnPosition, Vector2 direction)
     {
-        GameObject dropedItem = Instantiate(dropedItemPrefab, spawnPosition, Quaternion.identity);
+        GameObject dropedItem = Instantiate(_dropedItemPrefab, spawnPosition, Quaternion.identity);
 
         SpriteRenderer dropedItemSpriteRenderer = dropedItem.GetComponent<SpriteRenderer>();
         dropedItemSpriteRenderer.sprite = item.icon;
@@ -520,20 +541,20 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.5f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.5f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
         {
             if (!inventory.ContainsKey(selectedSlot))
             {
                 AddItemOnSlot(selectedSlot, item, amount);
                 Destroy(dropedItem);
-                interactionsManager.RemoveInteraction(interactionId);
+                _interactionsManager.RemoveInteraction(interactionId);
                 return;
             }
 
             if (AddItem(item, amount))
             {
                 Destroy(dropedItem);
-                interactionsManager.RemoveInteraction(interactionId);
+                _interactionsManager.RemoveInteraction(interactionId);
             }
         });
 
@@ -545,15 +566,15 @@ public class InventoryController : MonoBehaviour
         if (inventoryBlocked) return;
         if (!inventory.ContainsKey(slot)) return;
 
-        Vector2 mouseScreenPos = inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
+        Vector2 mouseScreenPos = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
         Vector3 mouseScreenPos3D = new Vector3(mouseScreenPos.x, mouseScreenPos.y, Mathf.Abs(Camera.main.transform.position.z));
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos3D);
         mouseWorldPos.z = 0f;
 
-        Vector2 direction = ((Vector2)mouseWorldPos - playerController.GetComponent<Rigidbody2D>().position).normalized;
-        Vector2 spawnPosition = playerController.GetComponent<Rigidbody2D>().position + direction * 0.5f;
+        Vector2 direction = ((Vector2)mouseWorldPos - _playerController.GetComponent<Rigidbody2D>().position).normalized;
+        Vector2 spawnPosition = _playerController.GetComponent<Rigidbody2D>().position + direction * 0.5f;
 
-        int amount = inputManager.InputActions.Player.DropAll.IsPressed() ? inventory[slot].amount : 1;
+        int amount = _inputManager.InputActions.Player.DropAll.IsPressed() ? inventory[slot].amount : 1;
 
         DropItem(inventory[slot].item, amount, spawnPosition, direction);
         RemoveItemOnSlot(slot, amount);
@@ -570,12 +591,12 @@ public class InventoryController : MonoBehaviour
 
     public bool IsWeapon(int id)
     {
-        foreach(Weapon weapon in weaponsData.weaponsData)
+        foreach(Weapon weapon in _weaponsData.weaponsData)
         {
             if(weapon.itemId == id) return true;
         }
 
-        foreach (MeleeWeapon meleeWeapon in meleeWeaponsData.meleeWeapons)
+        foreach (MeleeWeapon meleeWeapon in _meleeWeaponsData.meleeWeapons)
         {
             if (meleeWeapon.itemId == id) return true;
         }
@@ -585,12 +606,12 @@ public class InventoryController : MonoBehaviour
 
     public IWeapon GetWeaponByItemId(int id)
     {
-        foreach (Weapon weapon in weaponsData.weaponsData)
+        foreach (Weapon weapon in _weaponsData.weaponsData)
         {
             if (weapon.itemId == id) return weapon;
         }
 
-        foreach (MeleeWeapon weapon in meleeWeaponsData.meleeWeapons)
+        foreach (MeleeWeapon weapon in _meleeWeaponsData.meleeWeapons)
         {
             if (weapon.itemId == id) return weapon;
         }
@@ -600,7 +621,7 @@ public class InventoryController : MonoBehaviour
 
     public (bool isAmmo, int weaponId) IsAmmo(int id)
     {
-        foreach (Weapon weapon in weaponsData.weaponsData)
+        foreach (Weapon weapon in _weaponsData.weaponsData)
         {
             if (weapon.ammoId == id) return (true, weapon.itemId);
         }
@@ -610,7 +631,7 @@ public class InventoryController : MonoBehaviour
 
     public (bool isHealing, HealingItem healingItem) IsHealing(int id)
     {
-        foreach (HealingItem healingItem in healingItemsData.healingItems)
+        foreach (HealingItem healingItem in _healingItemsData.healingItems)
         {
             if (healingItem.itemId == id) return (true, healingItem);
         }

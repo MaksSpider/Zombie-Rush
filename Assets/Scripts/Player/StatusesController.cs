@@ -80,7 +80,7 @@ public class StatusesController : MonoBehaviour
         Instance = this;
     }
 
-    void Update()
+    public void Tick()
     {
         UpdateAniamtions();
     }
