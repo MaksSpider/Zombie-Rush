@@ -19,6 +19,7 @@ public class Slot
 
     private float _animationDuration = 0f;
     private float _animationStartTime = 0f;
+
     private Action _onAnimationComplete;
 
     public Slot(GameObject slot, Image slotImage, Image itemImage, Image spinningWheel, Image spinningWheelBackground, TextMeshProUGUI amountText, TextMeshProUGUI itemNameText)
@@ -115,11 +116,12 @@ public class InventoryController : MonoBehaviour
 
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
+    public event Action OnSlotsAmountChange;
 
     public bool inventoryBlocked = false;
 
-    public Dictionary<int, SlotItem> inventory = new Dictionary<int, SlotItem>();
-    public List<Slot> slots = new List<Slot>();
+    [NonSerialized] public Dictionary<int, SlotItem> inventory = new Dictionary<int, SlotItem>();
+    [NonSerialized] public List<Slot> slots = new List<Slot>();
     public int selectedSlot = 0;
 
     void Awake()
@@ -231,6 +233,7 @@ public class InventoryController : MonoBehaviour
                 {
                     DropItemOnSlot(i);
                 }
+                slots[i].slot.SetActive(false);
                 Destroy(slots[i].slot);
             }
 
@@ -258,6 +261,7 @@ public class InventoryController : MonoBehaviour
         }
 
         ChangeSlot(selectedSlot);
+        OnSlotsAmountChange?.Invoke();
     }
 
     private void UpdateSpinningWheelAniamtions()

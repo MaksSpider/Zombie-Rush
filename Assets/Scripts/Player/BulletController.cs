@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
+    private float _lifeTime = 10f;
+    
     public int damage;
-    private float lifeTime = 10f;
+    public bool targetHited = false;
 
     private void Start()
     {
-        Destroy(gameObject, lifeTime);
+        Destroy(gameObject, _lifeTime);
     }
 }

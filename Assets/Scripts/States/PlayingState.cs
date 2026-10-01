@@ -37,6 +37,7 @@ public class PlayingState : State
         _interactionsManager.OnEnterState();
         _inventoryController.OnEnterState();
         _playerCombatController.OnEnterState();
+        _playerController.OnEnterState();
 
         Cursor.SetCursor(_crosshair, new Vector2(16, 16), CursorMode.Auto);
     }
@@ -48,6 +49,7 @@ public class PlayingState : State
         _interactionsManager.OnExitState();
         _inventoryController.OnExitState();
         _playerCombatController.OnExitState();
+        _playerController.OnExitState();
 
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }

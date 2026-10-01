@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class KillOrbController : MonoBehaviour
 {
-    private CameraController cameraController;
-    private UIController uiController;
+    private CameraController _cameraController;
+    private PlayerController _playerController;
 
     public float speed = 8f;
     public float acceleration = 25f;
@@ -15,11 +15,11 @@ public class KillOrbController : MonoBehaviour
 
     void Awake()
     {
-        cameraController = CameraController.Instance;
-        uiController = UIController.Instance;
+        _cameraController = CameraController.Instance;
+        _playerController = PlayerController.Instance;
 
-        target = uiController.killsIndicator;
-        cam = cameraController.cam;
+        target = _playerController.killsTMP.rectTransform;
+        cam = _cameraController.cam;
     }
 
     void Update()

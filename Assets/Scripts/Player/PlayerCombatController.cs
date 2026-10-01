@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public struct Ammo
@@ -21,6 +22,8 @@ public class PlayerCombatController : MonoBehaviour
     private InventoryController _inventoryController;
     private PlayerController _playerController;
 
+    [SerializeField] private TextMeshProUGUI _ammoTMP;
+
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private float _maxSpreadAngle = 15f;
 
@@ -29,22 +32,6 @@ public class PlayerCombatController : MonoBehaviour
     private Dictionary<int, Ammo> _ammoInventory = new Dictionary<int, Ammo>();
     
     public IWeapon currentWeapon;
-
-    private void Start()
-    {
-        _inventoryController.OnSlotChanged += GetNewWeapon;
-        _inventoryController.OnDropItemOnSlot += GetNewWeapon;
-        GetNewWeapon();
-    }
-
-    private void OnDestroy()
-    {
-        if (_inventoryController != null)
-        {
-            _inventoryController.OnSlotChanged -= GetNewWeapon;
-            _inventoryController.OnDropItemOnSlot -= GetNewWeapon;
-        }
-    }
 
     void Awake()
     {
@@ -61,6 +48,13 @@ public class PlayerCombatController : MonoBehaviour
         _playerController = PlayerController.Instance;
     }
 
+    private void Start()
+    {
+        _inventoryController.OnSlotChanged += GetNewWeapon;
+        _inventoryController.OnDropItemOnSlot += GetNewWeapon;
+        GetNewWeapon();
+    }
+
     public void OnEnterState()
     {
         _inputManager.InputActions.Player.Reload.performed += ctx => ReloadWeapon(currentWeapon);
@@ -69,6 +63,15 @@ public class PlayerCombatController : MonoBehaviour
     public void OnExitState()
     {
         _inputManager.InputActions.Player.Reload.performed -= ctx => ReloadWeapon(currentWeapon);
+    }
+
+    private void OnDestroy()
+    {
+        if (_inventoryController != null)
+        {
+            _inventoryController.OnSlotChanged -= GetNewWeapon;
+            _inventoryController.OnDropItemOnSlot -= GetNewWeapon;
+        }
     }
 
     public void Tick()
@@ -89,12 +92,14 @@ public class PlayerCombatController : MonoBehaviour
         if (!_inventoryController.IsWeapon(item.id))
         {
             currentWeapon = null;
-            return;
+        }
+        else
+        {
+            currentWeapon = _inventoryController.GetWeaponByItemId(item.id);
+            _nextAttackTime = 0f;
         }
 
-        currentWeapon = _inventoryController.GetWeaponByItemId(item.id);
-
-        _nextAttackTime = 0f;
+        UpdateUI();
     }
 
     private void Attack(IWeapon weapon)
@@ -119,6 +124,7 @@ public class PlayerCombatController : MonoBehaviour
             bool result = RemoveAmmoFromMag(currentWeapon.itemId, 1);
             if (!result) return;
             Shoot(normalWeapon, playerRb.position, baseDirection);
+            UpdateUI();
         }
     }
 
@@ -180,6 +186,8 @@ public class PlayerCombatController : MonoBehaviour
                 _inventoryController.inventoryBlocked = false;
             });
 
+            UpdateUI();
+
             return true;
         }
 
@@ -217,5 +225,25 @@ public class PlayerCombatController : MonoBehaviour
         _ammoInventory[weaponItemId] = current;
 
         return true;
+    }
+
+    public void UpdateUI()
+    {
+        var result = GetCurrentAmmo();
+
+        if (!result.found)
+        {
+            _ammoTMP.text = "";
+            return;
+        }
+
+        if (currentWeapon is Weapon weapon)
+        {
+            _ammoTMP.text = result.inMagazine + "/" + weapon.magazineSize + " <" + result.all + ">";
+        }
+        else if (currentWeapon is MeleeWeapon)
+        {
+            _ammoTMP.text = "";
+        }
     }
 }

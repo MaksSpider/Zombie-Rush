@@ -34,7 +34,6 @@ public class InteractionsManager : MonoBehaviour
 
     private InputManager _inputManager;
     private PlayerController _playerController;
-    private UIController _uIController;
 
     private List<Interaction> _interactions = new List<Interaction>();
 
@@ -61,7 +60,6 @@ public class InteractionsManager : MonoBehaviour
 
         _inputManager = InputManager.Instance;
         _playerController = PlayerController.Instance;
-        _uIController = UIController.Instance;
     }
 
     void OnDestroy()
@@ -141,7 +139,7 @@ public class InteractionsManager : MonoBehaviour
             Vector3 worldPos = current.getPosition();
             Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
 
-            RectTransform overlayRect = _uIController.overlay.GetComponent<RectTransform>();
+            RectTransform overlayRect = _playerController.overlay.GetComponent<RectTransform>();
             Canvas canvas = overlayRect.GetComponentInParent<Canvas>();
 
             Vector2 localPoint;
@@ -257,12 +255,7 @@ public class InteractionsManager : MonoBehaviour
 
         HideInteraction();
 
-        if (_uIController == null)
-        {
-            _uIController = UIController.Instance;
-        }
-
-        _interactionPopUp = Instantiate(_interactionPrefab, _uIController.overlay);
+        _interactionPopUp = Instantiate(_interactionPrefab, _playerController.overlay);
         _interactionPopUpRect = _interactionPopUp.GetComponent<RectTransform>();
         _interactionPopUp.transform.Find("TitleText").GetComponent<TextMeshProUGUI>().text = interaction.title;
         _fillMask = _interactionPopUp.transform.Find("Progressbar").GetComponent<RectTransform>();

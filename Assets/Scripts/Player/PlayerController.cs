@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static System.Net.WebRequestMethods;
 
 public class TemporaryHealing
 {
@@ -24,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private InputManager _inputManager;
     private StatusesController _statusesController;
     private UpgradesController _upgradesController;
+    private InventoryController _inventoryController;
 
     public event Action OnLevelUp;
 
@@ -40,8 +45,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int _healthRegeneration = 2;
     [SerializeField] private int _baseStaminaRegeneration = 2;
 
+    [SerializeField] public Transform overlay;
+
+    [SerializeField] public TextMeshProUGUI levelTMP;
+    [SerializeField] public TextMeshProUGUI xpTMP;
+    [SerializeField] public TextMeshProUGUI hpTMP;
+    [SerializeField] public TextMeshProUGUI killsTMP;
+    [SerializeField] public TextMeshProUGUI staminaTMP;
+
+    [SerializeField] public RectTransform levelXpFillMask;
+
     [NonSerialized] public Vector3 MovementDirection;
     [NonSerialized] public Vector2 LastMovementDirection = Vector2.down;
+
+    private Coroutine updateXpBarRoutine;
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -77,6 +94,8 @@ public class PlayerController : MonoBehaviour
         _statusesController = StatusesController.Instance;
         _upgradesController = UpgradesController.Instance;
 
+        _inventoryController = gameObject.GetComponent<InventoryController>();
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
@@ -90,7 +109,19 @@ public class PlayerController : MonoBehaviour
         ChangeMaxHealth(_baseHealth);
         ChangeMaxStamina(_baseStamina);
 
+        SetupUI();
     }
+
+    public void OnEnterState()
+    {
+        _inventoryController.OnSlotsAmountChange += UpdateXpBar;
+    }
+
+    public void OnExitState()
+    {
+        _inventoryController.OnSlotsAmountChange -= UpdateXpBar;
+    }
+
 
     public void Tick()
     {
@@ -114,7 +145,7 @@ public class PlayerController : MonoBehaviour
         ChangeHealth(_healthRegeneration);
     }
 
-    public void AddExperience(int value)
+    public void ChangeExperience(int value)
     {
         Experience += value;
 
@@ -135,6 +166,11 @@ public class PlayerController : MonoBehaviour
             _upgradesController.DisplayUpgradesWindow(Level);
             OnLevelUp?.Invoke();
         }
+
+        levelTMP.text = "LVL " + Level.ToString();
+        xpTMP.text = Experience.ToString() + "/" + ExperienceToNextLevel.ToString() + " EXP";
+
+        UpdateXpBar();
     }
 
     // TODO: implement death mechanic
@@ -153,6 +189,8 @@ public class PlayerController : MonoBehaviour
             print("dead!");
             // TBA
         }
+
+        hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
     }
 
     public void ChangeMaxHealth(int value)
@@ -222,6 +260,14 @@ public class PlayerController : MonoBehaviour
         {
             staminaRegeneration = false;
         }
+
+        staminaTMP.text = (int)((float)Stamina / (float)MaxStamina * 100f) + "%";
+    }
+
+    public void ChangeKills(int value)
+    {
+        Kills += value;
+        killsTMP.text = Kills.ToString();
     }
 
     public void ChangeMoney(int value)
@@ -315,5 +361,35 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SetupUI()
+    {
+        levelTMP.text = "LVL " + Level.ToString();
+        xpTMP.text = Experience.ToString() + "/" + ExperienceToNextLevel.ToString() + " EXP";
+        UpdateXpBar();
+    }
+
+    private void UpdateXpBar()
+    {
+        if (updateXpBarRoutine != null)
+            StopCoroutine(updateXpBarRoutine);
+
+        updateXpBarRoutine = StartCoroutine(UpdateXpBarNextFrame());
+    }
+
+    private IEnumerator UpdateXpBarNextFrame()
+    {
+        yield return null;
+
+        RectMask2D rectMask = levelXpFillMask.GetComponent<RectMask2D>();
+
+        float percentage = Mathf.Clamp01((float)Experience / (float)ExperienceToNextLevel);
+        float width = levelXpFillMask.rect.width;
+        float progress = width * (1f - percentage);
+
+        rectMask.padding = new Vector4(0, 0, progress, 0);
+
+        updateXpBarRoutine = null;
     }
 }

@@ -12,13 +12,20 @@ public class ObjectController : MonoBehaviour
     [SerializeField] private GameObject _expOrbPrefab;
     [SerializeField] private GameObject _damagePopupPrefab;
 
+    private bool _isDying = false;
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!_isDestructable) return;
 
         if (other.CompareTag("Bullet"))
         {
-            int damage = other.gameObject.GetComponent<BulletController>().damage;
+            BulletController bulletController = other.gameObject.GetComponent<BulletController>();
+            if (bulletController.targetHited) return;
+
+            bulletController.targetHited = true;
+
+            int damage = bulletController.damage;
             _health -= damage;
             Destroy(other.gameObject);
             DisplayDamage(damage);
@@ -28,6 +35,9 @@ public class ObjectController : MonoBehaviour
 
     private void DestroyObject()
     {
+        if(_isDying) return;
+        _isDying = true;
+
         for (int i = 0; i < _experience; i++)
         {
             Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;

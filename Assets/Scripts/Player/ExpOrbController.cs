@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class ExpOrbController : MonoBehaviour
 {
-    private PlayerController playerController;
-    private CameraController cameraController;
-    private UIController uiController;
+    private PlayerController _playerController;
+    private CameraController _cameraController;
 
     public float speed = 8f;
     public float acceleration = 25f;
@@ -33,12 +32,11 @@ public class ExpOrbController : MonoBehaviour
 
     void Awake()
     {
-        playerController = PlayerController.Instance;
-        cameraController = CameraController.Instance;
-        uiController = UIController.Instance;
+        _playerController = PlayerController.Instance;
+        _cameraController = CameraController.Instance;
 
-        target = uiController.expIndicator;
-        cam = cameraController.cam;
+        target = _playerController.levelXpFillMask;
+        cam = _cameraController.cam;
     }
 
     void Start()
@@ -73,7 +71,7 @@ public class ExpOrbController : MonoBehaviour
             return;
         }
 
-        float distSqr = (transform.position - playerController.transform.position).sqrMagnitude;
+        float distSqr = (transform.position - _playerController.transform.position).sqrMagnitude;
         enabled = distSqr <= activationRadius * activationRadius;
     }
 
@@ -120,7 +118,7 @@ public class ExpOrbController : MonoBehaviour
 
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.2f)
         {
-            playerController.AddExperience(expValue);
+            _playerController.ChangeExperience(expValue);
             Destroy(gameObject);
         }
     }

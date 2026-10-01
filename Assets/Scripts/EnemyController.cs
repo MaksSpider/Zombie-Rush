@@ -16,8 +16,6 @@ public class EnemyController : ObjectController
     private float _attackCooldown = 1f;
     private float _nextAttackTime;
 
-    private float _lastMoveTime;
-
     void Awake()
     {
         _playerController = PlayerController.Instance;
@@ -44,7 +42,7 @@ public class EnemyController : ObjectController
 
         if (!gameObject.scene.isLoaded) return;
 
-        _playerController.Kills++;
+        _playerController.ChangeKills(1);
         Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
     }
 
