@@ -25,9 +25,10 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
-    private InputManager _inputManager;
-    private StatusesController _statusesController;
-    private UpgradesController _upgradesController;
+    private InputManager _inputManager => InputManager.Instance;
+    private StatusesController _statusesController => StatusesController.Instance;
+    private UpgradesController _upgradesController => UpgradesController.Instance;
+
     private InventoryController _inventoryController;
 
     public event Action OnLevelUp;
@@ -89,10 +90,6 @@ public class PlayerController : MonoBehaviour
         }
 
         Instance = this;
-
-        _inputManager = InputManager.Instance;
-        _statusesController = StatusesController.Instance;
-        _upgradesController = UpgradesController.Instance;
 
         _inventoryController = gameObject.GetComponent<InventoryController>();
 

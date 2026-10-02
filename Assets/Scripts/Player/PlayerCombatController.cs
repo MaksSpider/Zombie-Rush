@@ -90,7 +90,13 @@ public class PlayerCombatController : MonoBehaviour
 
     private void GetNewWeapon()
     {
-        Item item = _inventoryController.GetItemInHands();
+        (bool empty, Item item) = _inventoryController.GetItemInHands();
+        if(empty)
+        {
+            currentWeapon = null;
+            UpdateUI();
+            return;
+        }
 
         if (!_inventoryController.IsWeapon(item.id))
         {
@@ -98,7 +104,10 @@ public class PlayerCombatController : MonoBehaviour
         }
         else
         {
-            currentWeapon = _inventoryController.GetWeaponByItemId(item.id);
+            (bool isWeapon, IWeapon weapon) = _inventoryController.GetWeaponByItemId(item.id);
+            if (!isWeapon) return;
+
+            currentWeapon = weapon;
             _nextAttackTime = 0f;
         }
 

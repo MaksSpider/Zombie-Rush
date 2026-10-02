@@ -256,6 +256,8 @@ public class InventoryController : MonoBehaviour
             slotImage.sprite = _unselectedSlotSprite;
             itemImage.enabled = false;
 
+            slotObject.GetComponent<InventorySlotTooltip>().slotIndex = i;
+
             slots.Add(new Slot(slotObject, slotImage, itemImage, spinningWheel, spinningWheelBackground, amountText, itemNameText));
             UpdateSlot(i);
         }
@@ -385,7 +387,8 @@ public class InventoryController : MonoBehaviour
 
         if (ammoResult.isAmmo)
         {
-            IWeapon weapon = GetWeaponByItemId(ammoResult.weaponId);
+            (bool isWeapon, IWeapon weapon) = GetWeaponByItemId(ammoResult.weaponId);
+            if(!isWeapon) return;
 
             if (weapon is Weapon normalWeapon)
             {
@@ -462,7 +465,8 @@ public class InventoryController : MonoBehaviour
 
         if (ammoResult.isAmmo)
         {
-            IWeapon weapon = GetWeaponByItemId(ammoResult.weaponId);
+            (bool isWeapon, IWeapon weapon) = GetWeaponByItemId(ammoResult.weaponId);
+            if(!isWeapon) return; 
 
             if (weapon is Weapon normalWeapon)
             {
@@ -586,11 +590,16 @@ public class InventoryController : MonoBehaviour
         OnDropItemOnSlot?.Invoke();
     }
 
-    public Item GetItemInHands()
+    public (bool empty, Item item) GetItemOnSlot(int slot)
     {
-        if (!inventory.ContainsKey(selectedSlot)) return new Item();
+        if (!inventory.ContainsKey(slot)) return (true, new Item());
 
-        return inventory[selectedSlot].item;
+        return (false, inventory[slot].item);
+    }
+
+    public (bool empty, Item item) GetItemInHands()
+    {
+        return GetItemOnSlot(selectedSlot);
     }
 
     public bool IsWeapon(int id)
@@ -608,19 +617,19 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
-    public IWeapon GetWeaponByItemId(int id)
+    public (bool isWeapon, IWeapon iWeapon) GetWeaponByItemId(int id)
     {
         foreach (Weapon weapon in _weaponsData.weaponsData)
         {
-            if (weapon.itemId == id) return weapon;
+            if (weapon.itemId == id) return (true, weapon);
         }
 
         foreach (MeleeWeapon weapon in _meleeWeaponsData.meleeWeapons)
         {
-            if (weapon.itemId == id) return weapon;
+            if (weapon.itemId == id) return (true, weapon);
         }
 
-        return null;
+        return (false, new Weapon());
     }
 
     public (bool isAmmo, int weaponId) IsAmmo(int id)

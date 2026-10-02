@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    public static InputManager Instance { get; private set; }
+    public static InputManager Instance;
 
-    public InputSystemActions InputActions { get; private set; }
+    [NonSerialized] public InputSystemActions InputActions;
 
     private void Awake()
     {

@@ -3,14 +3,7 @@ using UnityEngine;
 
 public class UpgradeState : State
 {
-    private CameraController _cameraController;
-    private InputManager _inputManager;
-
-    private void Awake()
-    {
-        _cameraController = CameraController.Instance;
-        _inputManager = InputManager.Instance;
-    }
+    private CameraController _cameraController => CameraController.Instance;
 
     public override void OnEnterState()
     {

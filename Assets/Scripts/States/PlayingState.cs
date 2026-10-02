@@ -3,37 +3,21 @@ using UnityEngine;
 
 public class PlayingState : State
 {
-    private PlayerCombatController _playerCombatController;
-    private PauseMenuController _pauseMenuController;
-    private InventoryController _inventoryController;
-    private InteractionsManager _interactionsManager;
-    private StatusesController _statusesController;
-    private CameraController _cameraController;
-    private PlayerController _playerController;
-    private EnemiesManager _enemiesManager;
-    private WorldGenerator _worldGenerator;
-    private InputManager _inputManager;
+    private PlayerCombatController _playerCombatController => PlayerCombatController.Instance;
+    private PauseMenuController _pauseMenuController => PauseMenuController.Instance;
+    private InventoryController _inventoryController => InventoryController.Instance;
+    private InteractionsManager _interactionsManager => InteractionsManager.Instance;
+    private StatusesController _statusesController => StatusesController.Instance;
+    private TooltipController _tooltipController => TooltipController.Instance;
+    private CameraController _cameraController => CameraController.Instance;
+    private PlayerController _playerController => PlayerController.Instance;
+    private EnemiesManager _enemiesManager => EnemiesManager.Instance;
+    private WorldGenerator _worldGenerator => WorldGenerator.Instance;
 
     [SerializeField] private Texture2D _crosshair;
 
-    private void Awake()
-    {
-        _playerCombatController = PlayerCombatController.Instance;
-        _pauseMenuController = PauseMenuController.Instance;
-        _inventoryController = InventoryController.Instance;
-        _interactionsManager = InteractionsManager.Instance;
-        _statusesController = StatusesController.Instance;
-        _playerController = PlayerController.Instance;
-        _cameraController = CameraController.Instance;
-        _enemiesManager = EnemiesManager.Instance;
-        _worldGenerator = WorldGenerator.Instance;
-        _inputManager = InputManager.Instance;
-    }
-
     public override void OnEnterState()
     {
-        _inputManager.InputActions.Menu.Escape.performed += ctx => _pauseMenuController.Open();
-
         _interactionsManager.OnEnterState();
         _inventoryController.OnEnterState();
         _playerCombatController.OnEnterState();
@@ -44,8 +28,6 @@ public class PlayingState : State
 
     public override void OnExitState()
     {
-        _inputManager.InputActions.Menu.Escape.performed -= ctx => _pauseMenuController.Open();
-
         _interactionsManager.OnExitState();
         _inventoryController.OnExitState();
         _playerCombatController.OnExitState();

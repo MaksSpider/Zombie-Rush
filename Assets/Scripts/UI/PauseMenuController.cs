@@ -4,7 +4,8 @@ public class PauseMenuController : MonoBehaviour
 {
     public static PauseMenuController Instance { get; private set; }
 
-    private StatesManager _statesManager;
+    private StatesManager _statesManager => StatesManager.Instance;
+    private InputManager _inputManager => InputManager.Instance;
 
     private bool _open = false;
 
@@ -20,7 +21,12 @@ public class PauseMenuController : MonoBehaviour
 
         Instance = this;
 
-        _statesManager = StatesManager.Instance;
+        _inputManager.InputActions.Menu.Escape.performed += ctx => Switch();
+    }
+
+    private void OnDestroy()
+    {
+        _inputManager.InputActions.Menu.Escape.performed -= ctx => Switch();
     }
 
     public void Switch()
