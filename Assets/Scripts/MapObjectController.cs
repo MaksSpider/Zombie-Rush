@@ -13,6 +13,6 @@ public class MapObjectController : ObjectController
         CancelInvoke();
 
         if (!gameObject.scene.isLoaded) return;
-        _worldGenerator.RemoveObject(gameObject);
+        _worldGenerator.RemoveDestroyedMapObject(gameObject);
     }
 }

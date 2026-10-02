@@ -9,6 +9,7 @@ public class ObjectController : MonoBehaviour
     [SerializeField] private float _expSpawnRadius = 1.5f;
 
     [SerializeField] private Vector2 _damageDisplayOffset = new Vector2(0, 0.25f);
+    [SerializeField] private Transform _expOrbsTransform;
     [SerializeField] private GameObject _expOrbPrefab;
     [SerializeField] private GameObject _damagePopupPrefab;
 
@@ -20,6 +21,8 @@ public class ObjectController : MonoBehaviour
 
         if (other.CompareTag("Bullet"))
         {
+            if (_isDying) return;
+
             BulletController bulletController = other.gameObject.GetComponent<BulletController>();
             if (bulletController.targetHited) return;
 
@@ -35,7 +38,6 @@ public class ObjectController : MonoBehaviour
 
     private void DestroyObject()
     {
-        if(_isDying) return;
         _isDying = true;
 
         for (int i = 0; i < _experience; i++)
@@ -56,7 +58,7 @@ public class ObjectController : MonoBehaviour
     {
         Vector3 spawnPosition = transform.position + new Vector3(_damageDisplayOffset.x, _damageDisplayOffset.y, 0f);
 
-        GameObject popup = Instantiate(_damagePopupPrefab, spawnPosition, Quaternion.identity);
+        GameObject popup = Instantiate(_damagePopupPrefab, spawnPosition, _expOrbsTransform != null ? _expOrbsTransform.rotation : Quaternion.identity);
         popup.GetComponent<DamagePopupController>().Setup(damage);
     }
 }

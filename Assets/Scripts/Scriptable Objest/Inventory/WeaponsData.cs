@@ -49,5 +49,11 @@ public class Weapon: IWeapon
     public float bulletSpawnOffset { get; set; }
     [field: SerializeField]
     public float bulletLifeTime { get; set; }
+
+    [Header("UI Settings")]
+    [field: SerializeField]
+    public Sprite weaponUiSprite { get; set; }
+    [field: SerializeField]
+    public Sprite bulletUiSprite { get; set; }
 }
 

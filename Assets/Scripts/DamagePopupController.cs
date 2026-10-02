@@ -3,33 +3,33 @@ using UnityEngine;
 
 public class DamagePopupController : MonoBehaviour
 {
-    [SerializeField] private float floatSpeed = 1f;
-    [SerializeField] private float lifeTime = 1f;
+    [SerializeField] private float _floatSpeed = 1f;
+    [SerializeField] private float _lifeTime = 1f;
 
-    private TextMeshPro text;
-    private float timer;
-    private Color startColor;
+    private TextMeshPro _text;
+    private float _timer;
+    private Color _startColor;
 
     void Awake()
     {
-        text = GetComponent<TextMeshPro>();
-        startColor = text.color;
+        _text = GetComponent<TextMeshPro>();
+        _startColor = _text.color;
     }
 
     public void Setup(int damage)
     {
-        text.text = "-" + damage.ToString();
-        timer = lifeTime;
+        _text.text = "-" + damage.ToString();
+        _timer = _lifeTime;
     }
 
     void Update()
     {
-        transform.position += Vector3.up * floatSpeed * Time.deltaTime;
+        transform.position += Vector3.up * _floatSpeed * Time.deltaTime;
 
-        timer -= Time.deltaTime;
-        float alpha = Mathf.Clamp01(timer / lifeTime);
-        text.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+        _timer -= Time.deltaTime;
+        float alpha = Mathf.Clamp01(_timer / _lifeTime);
+        _text.color = new Color(_startColor.r, _startColor.g, _startColor.b, alpha);
 
-        if (timer <= 0f) Destroy(gameObject);
+        if (_timer <= 0f) Destroy(gameObject);
     }
 }

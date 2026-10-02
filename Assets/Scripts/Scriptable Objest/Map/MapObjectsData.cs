@@ -14,7 +14,7 @@ public struct MapObject
     [field: SerializeField]
     public string biom { get; set; }
     [field: SerializeField]
-    public string frequency { get; set; }
+    public float frequency { get; set; }
 
     [field: SerializeField]
     public GameObject gameObject { get; set; }

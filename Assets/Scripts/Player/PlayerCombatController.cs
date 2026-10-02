@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public struct Ammo
 {
@@ -23,6 +24,8 @@ public class PlayerCombatController : MonoBehaviour
     private PlayerController _playerController;
 
     [SerializeField] private TextMeshProUGUI _ammoTMP;
+    [SerializeField] private Image _bulletIcon;
+    [SerializeField] private Image _weaponIcon;
 
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private float _maxSpreadAngle = 15f;
@@ -234,16 +237,25 @@ public class PlayerCombatController : MonoBehaviour
         if (!result.found)
         {
             _ammoTMP.text = "";
+            _bulletIcon.enabled = false;
+            _weaponIcon.enabled = false;
             return;
         }
+
+        _weaponIcon.enabled = true;
 
         if (currentWeapon is Weapon weapon)
         {
             _ammoTMP.text = result.inMagazine + "/" + weapon.magazineSize + " <" + result.all + ">";
+            _bulletIcon.enabled = true;
+            _bulletIcon.sprite = weapon.bulletUiSprite;
+            _weaponIcon.sprite = weapon.weaponUiSprite;
         }
-        else if (currentWeapon is MeleeWeapon)
+        else if (currentWeapon is MeleeWeapon meleeWeapon)
         {
             _ammoTMP.text = "";
+            _bulletIcon.enabled = false;
+            _weaponIcon.sprite = meleeWeapon.weaponUiSprite;
         }
     }
 }

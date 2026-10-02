@@ -26,6 +26,8 @@ MonoBehaviour:
     <bulletSize>k__BackingField: 1
     <bulletSpawnOffset>k__BackingField: 0.15
     <bulletLifeTime>k__BackingField: 10
+    <weaponUiSprite>k__BackingField: {fileID: 7068474958986945146, guid: 8c46afbf7847c6d459e7438ef7ef8149, type: 3}
+    <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: b3ad84ed67ca4b940989aa23e61b8d95, type: 3}
   - <itemId>k__BackingField: 1
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 0.15
@@ -39,6 +41,8 @@ MonoBehaviour:
     <bulletSize>k__BackingField: 1
     <bulletSpawnOffset>k__BackingField: 0.15
     <bulletLifeTime>k__BackingField: 15
+    <weaponUiSprite>k__BackingField: {fileID: -6918401477004292292, guid: 1ce42743ac19b0849b8b4ab391025a7c, type: 3}
+    <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: 612a537dee063014e8c2349a5eb2edd6, type: 3}
   - <itemId>k__BackingField: 2
     <damage>k__BackingField: 20
     <attackRate>k__BackingField: 0.8
@@ -52,3 +56,5 @@ MonoBehaviour:
     <bulletSize>k__BackingField: 1
     <bulletSpawnOffset>k__BackingField: 0.15
     <bulletLifeTime>k__BackingField: 8
+    <weaponUiSprite>k__BackingField: {fileID: 6364490538398942060, guid: d98a51963cd7fd04888508f103928806, type: 3}
+    <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: 135390b6f56a5dd4c991aef906773470, type: 3}

@@ -10,16 +10,10 @@ public class KillOrbController : MonoBehaviour
     public float speed = 8f;
     public float acceleration = 25f;
 
-    private RectTransform target;
-    private Camera cam;
-
     void Awake()
     {
         _cameraController = CameraController.Instance;
         _playerController = PlayerController.Instance;
-
-        target = _playerController.killsTMP.rectTransform;
-        cam = _cameraController.cam;
     }
 
     void Update()
@@ -29,9 +23,9 @@ public class KillOrbController : MonoBehaviour
 
     void FlyToTarget()
     {
-        if (target == null) return;
+        if (_playerController.killsTMP.rectTransform == null) return;
 
-        Vector3 targetWorldPos = RectTransformToWorldPos(target, cam);
+        Vector3 targetWorldPos = RectTransformToWorldPos(_playerController.killsTMP.rectTransform, _cameraController.cam);
 
         speed += acceleration * Time.deltaTime;
 

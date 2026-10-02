@@ -25,5 +25,9 @@ public class MeleeWeapon: IWeapon
     public float attackRadius { get; set; }
     [field: SerializeField]
     public bool multiTargeting { get; set; }
+
+    [Header("UI Settings")]
+    [field: SerializeField]
+    public Sprite weaponUiSprite { get; set; }
 }
 
