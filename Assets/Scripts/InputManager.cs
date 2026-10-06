@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        InputActions = new InputSystemActions();
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -17,10 +19,15 @@ public class InputManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        InputActions = new InputSystemActions();
     }
 
-    private void OnEnable() => InputActions.Enable();
-    private void OnDisable() => InputActions.Disable();
+    private void OnEnable()
+    {
+        InputActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        InputActions.Disable();
+    }
 }

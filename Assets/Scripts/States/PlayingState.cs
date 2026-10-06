@@ -8,13 +8,13 @@ public class PlayingState : State
     private InventoryController _inventoryController => InventoryController.Instance;
     private InteractionsManager _interactionsManager => InteractionsManager.Instance;
     private StatusesController _statusesController => StatusesController.Instance;
-    private TooltipController _tooltipController => TooltipController.Instance;
     private CameraController _cameraController => CameraController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
     private WorldGenerator _worldGenerator => WorldGenerator.Instance;
-
-    [SerializeField] private Texture2D _crosshair;
+    private AttacksManager _attacksManager => AttacksManager.Instance;
+    private InputManager _inputManager => InputManager.Instance;
+    private CursorManager _cursorManager => CursorManager.Instance;
 
     public override void OnEnterState()
     {
@@ -23,7 +23,10 @@ public class PlayingState : State
         _playerCombatController.OnEnterState();
         _playerController.OnEnterState();
 
-        Cursor.SetCursor(_crosshair, new Vector2(16, 16), CursorMode.Auto);
+        _cursorManager.ChangeCurrentDefault("crosshair");
+        _cursorManager.SetDefault();
+
+        _inputManager.InputActions.Menu.Escape.performed += _pauseMenuController.Open;
     }
 
     public override void OnExitState()
@@ -33,7 +36,9 @@ public class PlayingState : State
         _playerCombatController.OnExitState();
         _playerController.OnExitState();
 
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        _cursorManager.SetNormal();
+
+        _inputManager.InputActions.Menu.Escape.performed -= _pauseMenuController.Open;
     }
 
     public override void Tick()
@@ -48,8 +53,12 @@ public class PlayingState : State
 
     public override void FixedTick()
     {
+        float fixedDeltaTime = Time.fixedDeltaTime;
+
         _interactionsManager.FixedTick();
-        _playerController.FixedTick();
+        _playerController.FixedTick(fixedDeltaTime);
+        _attacksManager.FixedTick(fixedDeltaTime);
+        _enemiesManager.FixedTick(fixedDeltaTime);
     }
 
     public override void Tick1s()

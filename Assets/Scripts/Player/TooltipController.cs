@@ -1,18 +1,24 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TooltipController : MonoBehaviour
 {
     public static TooltipController Instance;
 
     private InputManager _inputManager => InputManager.Instance;
+    private CursorManager _cursorManager => CursorManager.Instance;
 
     [SerializeField] private GameObject _tooltipWindow;
     [SerializeField] private Texture2D _infoCursor;
     [SerializeField] private Vector2 _hotspot;
     [SerializeField] private Vector2 _offset = new Vector2(24, -24);
 
-    private bool _isTooltipVisible = false;
+    private RectTransform _tooltipRect;
+    private TextMeshProUGUI _titleText;
+    private TextMeshProUGUI _descriptionText;
+
+    public bool _isTooltipVisible;
 
     private void Awake()
     {
@@ -21,9 +27,13 @@ public class TooltipController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Instance = this;
 
+        Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        _tooltipRect = _tooltipWindow.GetComponent<RectTransform>();
+        _titleText = _tooltipWindow.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+        _descriptionText = _tooltipWindow.transform.Find("Description").GetComponent<TextMeshProUGUI>();
 
         _tooltipWindow.SetActive(false);
     }
@@ -32,39 +42,47 @@ public class TooltipController : MonoBehaviour
     {
         if (!_isTooltipVisible) return;
 
-        RectTransform rectTransform = _tooltipWindow.GetComponent<RectTransform>();
-
         Vector2 mousePosition = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
-        Vector2 mouseOffset = new Vector2(rectTransform.rect.width / 2, -(rectTransform.rect.height / 2));
 
-        Vector2 position = mousePosition + mouseOffset + _offset;
+        float width = _tooltipRect.rect.width;
+        float height = _tooltipRect.rect.height;
 
-        Vector2 bordersOffset = new Vector2(0, 0);
+        Vector2 position = mousePosition + new Vector2(width / 2f, -height / 2f) + _offset;
+
         Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+        Vector2 bordersOffset = Vector2.zero;
 
-        float minX = position.x - (rectTransform.rect.width / 2);
-        float minY = position.y - (rectTransform.rect.height / 2);
-        float maxX = position.x + (rectTransform.rect.width / 2);
-        float maxY = position.y + (rectTransform.rect.height / 2);
+        float minX = position.x - width / 2f;
+        float minY = position.y - height / 2f;
+        float maxX = position.x + width / 2f;
+        float maxY = position.y + height / 2f;
 
         if (minX < 0) bordersOffset.x -= minX;
+
         if (minY < 0) bordersOffset.y -= minY;
+
         if (maxX > screenSize.x) bordersOffset.x -= maxX - screenSize.x;
+
         if (maxY > screenSize.y) bordersOffset.y -= maxY - screenSize.y;
 
-
-        rectTransform.position = position + bordersOffset;
+        _tooltipRect.position = position + bordersOffset;
     }
 
     public void Show(string title, string description = "")
     {
-        Cursor.SetCursor(_infoCursor, _hotspot, CursorMode.Auto);
+        _cursorManager.Change("help");
 
-        _tooltipWindow.transform.Find("Title").GetComponent<TextMeshProUGUI>().text = title;
-        _tooltipWindow.transform.Find("Description").GetComponent<TextMeshProUGUI>().text = description;
+        _tooltipWindow.SetActive(true);
+
+        _titleText.text = title;
+        _descriptionText.text = description;
+
+        _titleText.ForceMeshUpdate();
+        _descriptionText.ForceMeshUpdate();
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_tooltipRect);
 
         _isTooltipVisible = true;
-        _tooltipWindow.SetActive(true);
     }
 
     public void Close()
@@ -72,6 +90,6 @@ public class TooltipController : MonoBehaviour
         _isTooltipVisible = false;
         _tooltipWindow.SetActive(false);
 
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        _cursorManager.SetDefault();
     }
 }

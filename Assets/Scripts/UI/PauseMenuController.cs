@@ -5,9 +5,6 @@ public class PauseMenuController : MonoBehaviour
     public static PauseMenuController Instance { get; private set; }
 
     private StatesManager _statesManager => StatesManager.Instance;
-    private InputManager _inputManager => InputManager.Instance;
-
-    private bool _open = false;
 
     [SerializeField] private GameObject _pauseMenu;
 
@@ -20,36 +17,16 @@ public class PauseMenuController : MonoBehaviour
         }
 
         Instance = this;
-
-        _inputManager.InputActions.Menu.Escape.performed += ctx => Switch();
     }
 
-    private void OnDestroy()
+    public void Open(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        _inputManager.InputActions.Menu.Escape.performed -= ctx => Switch();
-    }
-
-    public void Switch()
-    {
-        if(_open)
-        {
-            Close();
-            return;
-        }
-
-        Open();
-    }
-
-    public void Open()
-    {
-        _open = true;
         _pauseMenu.SetActive(true);
         _statesManager.SwitchState<PauseState>();
     }
 
-    public void Close()
+    public void Close(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        _open = false;
         _pauseMenu.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
     }

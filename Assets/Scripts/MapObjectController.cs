@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MapObjectController : ObjectController
+public class MapObjectController : DamageHandler
 {
     private WorldGenerator _worldGenerator;
     void Awake()
@@ -8,11 +8,8 @@ public class MapObjectController : ObjectController
         _worldGenerator = WorldGenerator.Instance;
     }
 
-    private void OnDestroy()
+    public override void OnObjectDestroy()
     {
-        CancelInvoke();
-
-        if (!gameObject.scene.isLoaded) return;
         _worldGenerator.RemoveDestroyedMapObject(gameObject);
     }
 }

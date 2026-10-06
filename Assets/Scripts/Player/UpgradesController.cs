@@ -35,22 +35,23 @@ public class UpgradesController : MonoBehaviour
     [SerializeField] private List<Bonus> _chanceIncreaseByLevels;
     [SerializeField] private GameObject _upgradesPickerPopUp;
 
-    [SerializeField] private List<Button> _upgradeButtons;
-    [SerializeField] private List<Button> _displayedUpgradeButtons;
+    [SerializeField] private GameObject _upgradeCardPrefab;
 
     [SerializeField] private GameObject _upgradePrefab;
     [SerializeField] private Transform _upgradesTransform;
 
     [SerializeField] private List<Sprite> _cardsByRarity = new List<Sprite>();
 
-    private int _slotToSwitch = -1;
-
     [SerializeField] public UpgradesData _upgradesData;
+    [SerializeField] public Transform playerUpgradeCards;
+    [SerializeField] public Transform upgradeCards;
 
-    private List<Upgrade> _upgradesToPick = new List<Upgrade>();
     private Dictionary<int, UpgradeSlot> _playerUpgrades = new Dictionary<int, UpgradeSlot>();
     
     [SerializeField] public int maxUpgradesAmount = 3;
+    [SerializeField] public int maxUpgradesToPickAmount = 3;
+    
+    [NonSerialized] public List<Upgrade> upgradesToPick = new List<Upgrade>();
 
     void Awake()
     {
@@ -63,10 +64,6 @@ public class UpgradesController : MonoBehaviour
         Instance = this;
 
         _statesManager = StatesManager.Instance;
-
-        _upgradeButtons[0].onClick.AddListener(() => SelectUpgrade(0));
-        _upgradeButtons[1].onClick.AddListener(() => SelectUpgrade(1));
-        _upgradeButtons[2].onClick.AddListener(() => SelectUpgrade(2));
     }
 
     void Start()
@@ -78,7 +75,7 @@ public class UpgradesController : MonoBehaviour
     void Debug()
     {
         // debug
-        AddUpgrade(_upgradesData.upgradesData[0]);
+        //AddUpgrade(_upgradesData.upgradesData[0]);
         AddUpgrade(_upgradesData.upgradesData[1]);
         AddUpgrade(_upgradesData.upgradesData[2]);
 
@@ -89,47 +86,87 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItemById(6, 5);
         _inventoryController.AddItemById(7, 5);
         _inventoryController.AddItemById(8, 1);
-    }
 
-    // TODO: if player dont have any aviable slot then select one to switch
-    private void SelectUpgrade(int upgrade)
-    {
-        if (_upgradesToPick.Count <= 0) return;
-        if (_playerUpgrades.Count > maxUpgradesAmount)
-        {
-            if (_slotToSwitch < 1) return;
-
-            AddUpgradeOnSlot(_slotToSwitch, _upgradesToPick[upgrade]);
-
-            return;
-        }
-
-        AddUpgrade(_upgradesToPick[upgrade]);
-        _upgradesPickerPopUp.SetActive(false);
+        DisplayUpgradesWindow(1);
     }
 
     public void DisplayUpgradesWindow(int level)
     {
-        _upgradesToPick.Clear();
+        upgradesToPick.Clear();
 
-        for(int i = 0; i < _upgradeButtons.Count; i++)
+        for (int i = playerUpgradeCards.childCount - 1; i >= 0; i--)
         {
-            Upgrade upgrade = RandomUpgrade(level).upgrade;
-            print(upgrade.name);
+            Transform child = playerUpgradeCards.GetChild(i);
+            if (child.name == "Background") continue;
 
-            _upgradesToPick.Add(upgrade);
-            _upgradeButtons[i].image.sprite = _cardsByRarity[GetTypeIndex(_upgradesToPick[i].type)];
-            _upgradeButtons[i].transform.Find("Icon").GetComponent<Image>().sprite = _upgradesToPick[i].icon;
-            _upgradeButtons[i].transform.Find("Title").GetComponent<TextMeshProUGUI>().text = _upgradesToPick[i].title;
-            _upgradeButtons[i].transform.Find("Description").GetComponent<TextMeshProUGUI>().text = _upgradesToPick[i].description;
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < maxUpgradesToPickAmount; i++)
+        {
+            print(i);
+            (bool finded, Upgrade upgrade) = RandomUpgrade(level);
+
+            if(!finded) continue;
+
+            upgradesToPick.Add(upgrade);
+
+            GameObject upgradeCard = Instantiate(_upgradeCardPrefab, upgradeCards);
+            upgradeCard.name = $"upgrade_{i}";
+
+            GameObject cardButton = upgradeCard.transform.Find("CardButton").gameObject;
+            cardButton.GetComponent<Image>().sprite = _cardsByRarity[GetTypeIndex(upgrade.type)];
+            cardButton.AddComponent<UpgradeCardHandler>();
+
+            UpgradeCard cardCtr = cardButton.GetComponent<UpgradeCard>();
+            cardCtr.upgradeIndex = i;
+            cardCtr.icon.sprite = upgrade.icon;
+            cardCtr.title.text = upgrade.title;
+            cardCtr.description.text = upgrade.description;
+
+        }
+
+        for (int i = playerUpgradeCards.childCount - 1; i >= 0; i--)
+        {
+            Transform child = upgradeCards.GetChild(i);
+            if (child.name == "Background") continue;
+
+            Destroy(child.gameObject);
+        }
+
+        foreach((int slot, UpgradeSlot upgradeSlot) in _playerUpgrades)
+        {
+            Upgrade upgrade = upgradeSlot.upgrade;
+
+            GameObject upgradeCard = Instantiate(_upgradeCardPrefab, playerUpgradeCards);
+            upgradeCard.name = $"upgrade_{slot}";
+
+            GameObject cardButton = upgradeCard.transform.Find("CardButton").gameObject;
+            cardButton.GetComponent<Image>().sprite = _cardsByRarity[GetTypeIndex(upgrade.type)];
+
+            UpgradeCard cardCtr = cardButton.GetComponent<UpgradeCard>();
+
+            cardCtr.upgradeIndex = slot;
+
+            cardCtr.icon.sprite = upgrade.icon;
+            cardCtr.title.text = upgrade.title;
+            cardCtr.description.text = upgrade.description;
+
+            upgradeCard.transform.SetSiblingIndex(slot);
         }
 
         _upgradesPickerPopUp.SetActive(true);
         _statesManager.SwitchState<UpgradeState>();
     }
 
+    public void CloseUpgradesPopUp()
+    {
+        upgradesToPick.Clear();
 
-    // TODO: validate if player have this upgrade then remove from list
+        _upgradesPickerPopUp.SetActive(false);
+        _statesManager.SwitchState<PlayingState>();
+    }
+
     public (bool finded, Upgrade upgrade) RandomUpgrade(int level)
     {
         List<Upgrade> upgradeList = new List<Upgrade>();
@@ -139,7 +176,7 @@ public class UpgradesController : MonoBehaviour
 
         foreach (Upgrade upgrade in _upgradesData.upgradesData)
         {
-            if (_upgradesToPick.Count > 0 && _upgradesToPick.Contains(upgrade)) continue;
+            if (upgradesToPick.Count > 0 && upgradesToPick.Contains(upgrade)) continue;
 
             if (_playerUpgrades.Count > 0)
             {
@@ -300,10 +337,14 @@ public class UpgradesController : MonoBehaviour
 
     public bool RemoveUpgradeOnSlot(int slot)
     {
-        if (!_playerUpgrades.ContainsKey(slot)) return false;
+        if (!_playerUpgrades.TryGetValue(slot, out UpgradeSlot upgradeSlot))
+            return false;
+
+        Destroy(upgradeSlot.upgradeSlot);
 
         _playerUpgrades.Remove(slot);
         OnUpgradesChange?.Invoke();
+
         return true;
     }
 

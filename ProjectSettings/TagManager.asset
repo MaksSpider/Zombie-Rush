@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Bullet
-  - enemy
   - ExpOrb
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -49,3 +49,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  m_MigratedRenderPipelines: []

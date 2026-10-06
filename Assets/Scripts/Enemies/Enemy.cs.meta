@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 156e60131e467a347b100626c5b3d2e2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _expOrbsTransform: {instanceID: 0}
+  - _expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
+  - _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  - _killOrbPrefab: {instanceID: 0}
+  - rb: {instanceID: 0}
+  - target: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

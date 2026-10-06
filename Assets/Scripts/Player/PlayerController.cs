@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.Net.WebRequestMethods;
 
 public class TemporaryHealing
 {
@@ -21,13 +20,15 @@ public class TemporaryHealing
     }
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : DamageHandler
 {
     public static PlayerController Instance { get; private set; }
 
-    private InputManager _inputManager => InputManager.Instance;
-    private StatusesController _statusesController => StatusesController.Instance;
+    private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
     private UpgradesController _upgradesController => UpgradesController.Instance;
+    private StatusesController _statusesController => StatusesController.Instance;
+    private StatesManager _stationsManager => StatesManager.Instance;
+    private InputManager _inputManager => InputManager.Instance;
 
     private InventoryController _inventoryController;
 
@@ -64,7 +65,6 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
 
-    public int Health = 100;
     public int MaxHealth;
 
     public int Money = 0;
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
     public int Stamina = 1000;
     public int MaxStamina;
-
+    public int Score = 0;
     public int Experience = 0;
     public int ExperienceToNextLevel = 0;
     public int Level = 1;
@@ -123,16 +123,16 @@ public class PlayerController : MonoBehaviour
     public void Tick()
     {
         HandleMovementControlls();
-        CollectExperience();
     }
 
-    public void FixedTick()
+    public void FixedTick(float deltaTime)
     {
-        HandleMovement();
+        HandleMovement(deltaTime);
     }
 
     public void Tick1s()
     {
+        CollectExperience();
         CheckTemporaryHealing();
         ChangeStamina(_baseStaminaRegeneration);
     }
@@ -142,9 +142,26 @@ public class PlayerController : MonoBehaviour
         ChangeHealth(_healthRegeneration);
     }
 
+    public override void OnDamageDealt(int damage)
+    {
+        base.OnDamageDealt(damage);
+
+        hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
+    }
+
+    // TODO: implement death mechanic
+    public override void OnObjectDestroy()
+    {
+        // animation
+
+        _stationsManager.SwitchState<GameOverState>();
+        _gameOverMenuController.Open(Score);
+    }
+
     public void ChangeExperience(int value)
     {
         Experience += value;
+        Score += value;
 
         if (Experience >= ExperienceToNextLevel)
         {
@@ -170,7 +187,6 @@ public class PlayerController : MonoBehaviour
         UpdateXpBar();
     }
 
-    // TODO: implement death mechanic
     public void ChangeHealth(int value)
     {
         Health += value;
@@ -178,13 +194,6 @@ public class PlayerController : MonoBehaviour
         if (Health > MaxHealth)
         {
             Health = MaxHealth;
-        }
-
-        if (Health <= 0)
-        {
-            Health = 0;
-            print("dead!");
-            // TBA
         }
 
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
@@ -264,12 +273,14 @@ public class PlayerController : MonoBehaviour
     public void ChangeKills(int value)
     {
         Kills += value;
+        Score += value;
         killsTMP.text = Kills.ToString();
     }
 
     public void ChangeMoney(int value)
     {
         Money += value;
+        Score += value;
     }
 
     private void HandleMovementControlls()
@@ -288,7 +299,7 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("DirectionVertical", LastMovementDirection.y);
     }
 
-    private void HandleMovement()
+    private void HandleMovement(float deltaTime)
     {
         float speed = _baseSpeed;
 
@@ -318,7 +329,7 @@ public class PlayerController : MonoBehaviour
             rb.position +
             (Vector2)MovementDirection *
             speed *
-            Time.fixedDeltaTime
+            deltaTime
         );
     }
 

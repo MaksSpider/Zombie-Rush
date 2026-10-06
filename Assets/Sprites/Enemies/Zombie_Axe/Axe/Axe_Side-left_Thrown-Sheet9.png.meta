@@ -62,7 +62,9 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationMethod: 0
   spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -124,17 +126,17 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 15
+        width: 14
         height: 14
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9b3d817fd49717e90800000000000000
+      spriteID: ca90e90b3a660c149904d24eb3143306
       internalID: -7029704167583591495
       vertices: []
       indices: 
@@ -146,17 +148,17 @@ TextureImporter:
         serializedVersion: 2
         x: 14
         y: 0
-        width: 28
+        width: 14
         height: 14
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e7ee6949218c320e0800000000000000
+      spriteID: bfbf82014c50af14d96e37469776ed2e
       internalID: -2295771402900935042
       vertices: []
       indices: 
@@ -166,20 +168,152 @@ TextureImporter:
       name: Axe_Side-left_Thrown-Sheet9_2
       rect:
         serializedVersion: 2
-        x: 42
+        x: 28
         y: 0
-        width: 84
+        width: 14
         height: 14
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 2335d7c9130948360800000000000000
+      spriteID: d2a4afedbbff0304ca354ce2450b70c8
       internalID: 7171015049433928498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_3
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a38310c69453c14186bebb50d47880b
+      internalID: -310546359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_4
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2375d757a34dc874cacaa05593c032c8
+      internalID: 1766236821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_5
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1955e8085989c3246a805940f7295647
+      internalID: 1846813641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_6
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e00742c694cd3e4b96da5850a9eef13
+      internalID: -122504275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_7
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ea04eda57a7373418c92ea45d58d4c2
+      internalID: 806888276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axe_Side-left_Thrown-Sheet9_8
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a596c555d64beae449d32e7061daf0b6
+      internalID: -1995662035
       vertices: []
       indices: 
       edges: []
@@ -188,7 +322,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b0dbe8cf879488446bc7f31f095cc734
     internalID: 0
     vertices: []
     indices: 
@@ -196,11 +330,19 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":14.0,"y":14.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Axe_Side-left_Thrown-Sheet9_0: -7029704167583591495
       Axe_Side-left_Thrown-Sheet9_1: -2295771402900935042
       Axe_Side-left_Thrown-Sheet9_2: 7171015049433928498
+      Axe_Side-left_Thrown-Sheet9_3: -310546359
+      Axe_Side-left_Thrown-Sheet9_4: 1766236821
+      Axe_Side-left_Thrown-Sheet9_5: 1846813641
+      Axe_Side-left_Thrown-Sheet9_6: -122504275
+      Axe_Side-left_Thrown-Sheet9_7: 806888276
+      Axe_Side-left_Thrown-Sheet9_8: -1995662035
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

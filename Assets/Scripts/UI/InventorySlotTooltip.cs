@@ -31,7 +31,6 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
         }
 
         _tooltipController.Show(item.name, description);
-        print("test");
     }
 
     public void OnPointerExit(PointerEventData eventData)

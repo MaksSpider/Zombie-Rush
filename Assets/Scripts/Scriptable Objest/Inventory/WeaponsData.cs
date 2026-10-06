@@ -40,11 +40,9 @@ public class Weapon: IWeapon
 
     [Header("Bullet Settings")]
     [field: SerializeField]
-    public Sprite bulletSprite { get; set; }
+    public GameObject bulletGameObject { get; set; }
     [field: SerializeField]
     public float bulletSpeed { get; set; }
-    [field: SerializeField]
-    public float bulletSize { get; set; }
     [field: SerializeField]
     public float bulletSpawnOffset { get; set; }
     [field: SerializeField]

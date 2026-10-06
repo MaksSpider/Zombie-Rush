@@ -19,9 +19,10 @@ public class PlayerCombatController : MonoBehaviour
 {
     public static PlayerCombatController Instance { get; private set; }
 
-    private InputManager _inputManager;
-    private InventoryController _inventoryController;
-    private PlayerController _playerController;
+    private InventoryController _inventoryController => InventoryController.Instance;
+    private PlayerController _playerController => PlayerController.Instance;
+    private AttacksManager _attacksManager => AttacksManager.Instance;
+    private InputManager _inputManager => InputManager.Instance;
 
     [SerializeField] private TextMeshProUGUI _ammoTMP;
     [SerializeField] private Image _bulletIcon;
@@ -45,10 +46,6 @@ public class PlayerCombatController : MonoBehaviour
         }
 
         Instance = this;
-
-        _inputManager = InputManager.Instance;
-        _inventoryController = InventoryController.Instance;
-        _playerController = PlayerController.Instance;
     }
 
     private void Start()
@@ -79,6 +76,11 @@ public class PlayerCombatController : MonoBehaviour
 
     public void Tick()
     {
+        if(currentWeapon != null && currentWeapon is MeleeWeapon)
+        {
+            UpdateMeleeAttackUI();
+        }
+
         if (_inputManager.InputActions.Player.AttackShoot.IsPressed())
         {
             if (currentWeapon == null) return;
@@ -129,53 +131,16 @@ public class PlayerCombatController : MonoBehaviour
 
         if (weapon is MeleeWeapon meleeWeapon)
         {
-            MeleeAttack(meleeWeapon, baseDirection);
+            _attacksManager.CreateMeleeAttack(playerRb.position, baseDirection, meleeWeapon);
         }
         else if (weapon is Weapon normalWeapon)
         {
             bool result = RemoveAmmoFromMag(currentWeapon.itemId, 1);
             if (!result) return;
-            Shoot(normalWeapon, playerRb.position, baseDirection);
+
+            LayerMask include = LayerMask.GetMask("Player", "Enemy");
+            _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, include);
             UpdateUI();
-        }
-    }
-
-    // TODO: implement melee attack logic
-    private void MeleeAttack(MeleeWeapon weapon, Vector2 direction)
-    {
-
-    }
-
-    private void Shoot(Weapon weapon, Vector2 spawnPosition, Vector2 baseDirection)
-    {
-        Collider2D playerCollider = GetComponent<Collider2D>();
-
-        for (int i = 0; i < weapon.bulletsPerShot; i++)
-        {
-            float spread = _maxSpreadAngle * (1f - Mathf.Clamp01(weapon.accuracy));
-            float randomAngleOffset = Random.Range(-spread * 0.5f, spread * 0.5f);
-
-            Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
-
-            spawnPosition += direction * weapon.bulletSpawnOffset;
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-
-            GameObject bulletGameObject = Instantiate(_bulletPrefab, spawnPosition, rotation);
-
-            Rigidbody2D bulletRb = bulletGameObject.GetComponent<Rigidbody2D>();
-            bulletRb.linearVelocity = direction * weapon.bulletSpeed;
-
-            SpriteRenderer bulletSpriteRenderer = bulletGameObject.GetComponent<SpriteRenderer>();
-            bulletSpriteRenderer.sprite = weapon.bulletSprite;
-
-            Collider2D bulletCollider = bulletGameObject.GetComponent<Collider2D>();
-            if (bulletCollider != null && playerCollider != null)
-                Physics2D.IgnoreCollision(bulletCollider, playerCollider);
-
-            BulletController bulletCtr = bulletGameObject.GetComponent<BulletController>();
-            bulletCtr.damage = weapon.damage;
         }
     }
 
@@ -239,7 +204,12 @@ public class PlayerCombatController : MonoBehaviour
         return true;
     }
 
-    public void UpdateUI()
+    private void UpdateMeleeAttackUI()
+    {
+
+    }
+
+    private void UpdateUI()
     {
         var result = GetCurrentAmmo();
 

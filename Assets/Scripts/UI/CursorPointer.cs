@@ -3,16 +3,15 @@ using UnityEngine.EventSystems;
 
 public class CursorPointer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private Texture2D _pointerCursor;
-    [SerializeField] private Vector2 _hotspot;
+    private CursorManager _cursorManager => CursorManager.Instance;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Cursor.SetCursor(_pointerCursor, _hotspot, CursorMode.Auto);
+        _cursorManager.Change("pointer");
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        _cursorManager.SetDefault();
     }
 }
