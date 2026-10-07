@@ -17,6 +17,14 @@ public enum EnemyAttributeType
 }
 
 [Serializable]
+public struct ItemDrop
+{
+    public int itemId;
+    public float chance;
+    public Vector2Int amount;
+}
+
+[Serializable]
 public struct EnemyData
 {
     public string name;
@@ -30,6 +38,8 @@ public struct EnemyData
     public int exp;
 
     public int weaponItemId;
+
+    public List<ItemDrop> loot;
 
     public List<EnemyAttributeType> attributes;
 }

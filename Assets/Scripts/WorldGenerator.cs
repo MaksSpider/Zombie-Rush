@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class WorldGenerator : MonoBehaviour
 {
     public static WorldGenerator Instance { get; private set; }
 
-    private PlayerController _playerController;
+    private PlayerController _playerController => PlayerController.Instance;
+    private GameSession _gameSession => GameSession.Instance;
 
     [SerializeField] public float RenderDistance = 10f;
     [SerializeField] public float UnloadDistance = 100f;
@@ -21,9 +20,6 @@ public class WorldGenerator : MonoBehaviour
 
     [SerializeField] private MapBiomesData _biomesData;
     [SerializeField] private MapObjectsData _objectsData;
-
-    [Header("Generation")]
-    [SerializeField] public int seed = 0;
 
     private Dictionary<Vector2Int, string> _mapBiomes = new Dictionary<Vector2Int, string>();
     private Dictionary<Vector2Int, GameObject> _mapTiles = new Dictionary<Vector2Int, GameObject>();
@@ -43,10 +39,6 @@ public class WorldGenerator : MonoBehaviour
 
         Instance = this;
 
-        _playerController = PlayerController.Instance;
-
-        _rng = new System.Random(seed);
-
         Init();
     }
 
@@ -62,7 +54,7 @@ public class WorldGenerator : MonoBehaviour
 
     private void Init()
     {
-        _rng = new System.Random(seed);
+        _rng = new System.Random(_gameSession.seed);
 
         _biomeNoiseOffsets.Clear();
 
@@ -77,16 +69,16 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    private float RandomFloat(float min, float max)
+    private float RandomFloat(System.Random rng, float min, float max)
     {
-        return (float)(_rng.NextDouble() * (max - min) + min);
+        return (float)(rng.NextDouble() * (max - min) + min);
     }
 
     private (bool exit, Biom biom) GetBiom(string id)
     {
-        foreach(Biom biom in _biomesData.mapBiomes)
+        foreach (Biom biom in _biomesData.mapBiomes)
         {
-            if(biom.id == id) return (true, biom);
+            if (biom.id == id) return (true, biom);
         }
 
         Debug.LogError("Biom doesn't exist: " + id);
@@ -95,7 +87,8 @@ public class WorldGenerator : MonoBehaviour
 
     private Biom GetBiomAt(Vector2Int position)
     {
-        if (_mapBiomes.ContainsKey(position)) return GetBiom(_mapBiomes[position]).biom;
+        if (_mapBiomes.ContainsKey(position))
+            return GetBiom(_mapBiomes[position]).biom;
 
         Biom result = ComputeBiomAt(position.x, position.y);
         _mapBiomes[position] = result.id;
@@ -144,10 +137,12 @@ public class WorldGenerator : MonoBehaviour
             Quaternion.identity,
             _worldBackground
         );
+
         tile.name = $"tile_{position.x}_{position.y}_{biom.id}";
 
         SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
         sr.size = new Vector2(_tileSize, _tileSize);
+
         if (biom.tileSprite != null)
         {
             sr.sprite = biom.tileSprite;
@@ -163,7 +158,10 @@ public class WorldGenerator : MonoBehaviour
         if (_objectsData == null || _objectsData.mapObjects == null) return;
         if (_mapObjectInstances.ContainsKey(position)) return;
 
-        Vector2 tileWorldPos = new Vector2(position.x * _tileSize, position.y * _tileSize);
+        Vector2 tileWorldPos = new Vector2(
+            position.x * _tileSize,
+            position.y * _tileSize
+        );
 
         foreach (MapObject mapObject in _objectsData.mapObjects)
         {
@@ -173,18 +171,25 @@ public class WorldGenerator : MonoBehaviour
             if (mapObject.gameObject == null)
             {
                 Debug.LogWarning($"MapObject for biom '{biom.id}' doesnt have assigned gameobject - skipped.");
+
                 continue;
             }
 
             if (mapObject.frequency <= 0f)
                 continue;
 
-            if (!ShouldSpawn(position.x, position.y, mapObject.biom, mapObject.frequency))
+            if (!ShouldSpawn(
+                position.x,
+                position.y,
+                mapObject.biom,
+                mapObject.frequency))
                 continue;
 
+            System.Random tileRng = GetTileRng(position, mapObject.biom);
+
             Vector2 jitter = new Vector2(
-                RandomFloat(-_tileSize / 2f, _tileSize / 2f),
-                RandomFloat(-_tileSize / 2f, _tileSize / 2f)
+                RandomFloat(tileRng, -_tileSize / 2f, _tileSize / 2f),
+                RandomFloat(tileRng, -_tileSize / 2f, _tileSize / 2f)
             );
 
             GameObject instance = Instantiate(
@@ -203,9 +208,43 @@ public class WorldGenerator : MonoBehaviour
     {
         unchecked
         {
-            int hash = x * 73856093 ^ y * 19349663 ^ salt.GetHashCode() ^ seed;
+            int hash = x * 73856093 ^
+                       y * 19349663 ^
+                       GetStableStringHash(salt) ^
+                       _gameSession.seed;
+
             System.Random localRng = new System.Random(hash);
+
             return localRng.NextDouble() < chance;
+        }
+    }
+
+    private System.Random GetTileRng(Vector2Int position, string salt)
+    {
+        unchecked
+        {
+            int hash = _gameSession.seed;
+
+            hash = hash * 73856093 ^ position.x;
+            hash = hash * 19349663 ^ position.y;
+            hash ^= GetStableStringHash(salt);
+
+            return new System.Random(hash);
+        }
+    }
+
+    private int GetStableStringHash(string value)
+    {
+        unchecked
+        {
+            int hash = 23;
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                hash = hash * 31 + value[i];
+            }
+
+            return hash;
         }
     }
 
@@ -218,7 +257,10 @@ public class WorldGenerator : MonoBehaviour
 
         foreach ((Vector2Int index, GameObject tile) in _mapTiles)
         {
-            float distance = Vector2.Distance(playerPosition, (Vector2)tile.transform.position);
+            float distance = Vector2.Distance(
+                playerPosition,
+                (Vector2)tile.transform.position
+            );
 
             if (RenderDistance < distance)
             {
@@ -229,6 +271,7 @@ public class WorldGenerator : MonoBehaviour
                     Destroy(tile);
                     tilesToRemove.Add(index);
                 }
+
                 continue;
             }
 
@@ -242,7 +285,10 @@ public class WorldGenerator : MonoBehaviour
 
         foreach ((Vector2 position, GameObject mapObject) in _mapObjectInstances)
         {
-            float distance = Vector2.Distance(playerPosition, (Vector2)mapObject.transform.position);
+            float distance = Vector2.Distance(
+                playerPosition,
+                (Vector2)mapObject.transform.position
+            );
 
             if (RenderDistance < distance)
             {
@@ -265,10 +311,21 @@ public class WorldGenerator : MonoBehaviour
             _mapObjectInstances.Remove(index);
         }
 
-        int minY = Mathf.FloorToInt((playerPosition.y - RenderDistance) / _tileSize);
-        int maxY = Mathf.FloorToInt((playerPosition.y + RenderDistance) / _tileSize);
-        int minX = Mathf.FloorToInt((playerPosition.x - RenderDistance) / _tileSize);
-        int maxX = Mathf.FloorToInt((playerPosition.x + RenderDistance) / _tileSize);
+        int minY = Mathf.FloorToInt(
+            (playerPosition.y - RenderDistance) / _tileSize
+        );
+
+        int maxY = Mathf.FloorToInt(
+            (playerPosition.y + RenderDistance) / _tileSize
+        );
+
+        int minX = Mathf.FloorToInt(
+            (playerPosition.x - RenderDistance) / _tileSize
+        );
+
+        int maxX = Mathf.FloorToInt(
+            (playerPosition.x + RenderDistance) / _tileSize
+        );
 
         for (int y = minY; y < maxY; y++)
         {
@@ -276,10 +333,17 @@ public class WorldGenerator : MonoBehaviour
             {
                 Vector2Int position = new Vector2Int(x, y);
 
-                float distance = Vector2.Distance(playerPosition, new Vector2(x * _tileSize, y * _tileSize));
-                if (distance > RenderDistance) continue;
+                float distance = Vector2.Distance(
+                    playerPosition,
+                    new Vector2(x * _tileSize, y * _tileSize)
+                );
 
-                if (_mapTiles.ContainsKey(position)) continue;
+                if (distance > RenderDistance)
+                    continue;
+
+                if (_mapTiles.ContainsKey(position))
+                    continue;
+
                 CreateTile(position);
             }
         }
@@ -289,9 +353,9 @@ public class WorldGenerator : MonoBehaviour
     {
         if (toRemove == null) return false;
 
-        foreach((Vector2 index, GameObject mapObject) in _mapObjectInstances)
+        foreach ((Vector2 index, GameObject mapObject) in _mapObjectInstances)
         {
-            if(mapObject.transform.position == toRemove.transform.position)
+            if (mapObject.transform.position == toRemove.transform.position)
             {
                 _mapObjectInstances.Remove(index);
                 return true;

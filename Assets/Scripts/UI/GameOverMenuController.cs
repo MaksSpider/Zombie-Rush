@@ -8,8 +8,10 @@ public class GameOverMenuController : MonoBehaviour
     public static GameOverMenuController Instance { get; private set; }
 
     private StatesManager _statesManager => StatesManager.Instance;
+    private GameSession _gameSession => GameSession.Instance;
 
     [SerializeField] private GameObject _gameOverMenu;
+    [SerializeField] private TextMeshProUGUI _nicknameTitle;
     [SerializeField] private TextMeshProUGUI _scoreTitle;
 
     [SerializeField] private Button _restartButton;
@@ -39,6 +41,9 @@ public class GameOverMenuController : MonoBehaviour
         _gameOverMenu.SetActive(true);
         _statesManager.SwitchState<PauseState>();
 
+        _gameSession.score = score;
+
+        _nicknameTitle.text = _gameSession.nickname;
         _scoreTitle.text = "Score: " + score.ToString();
     }
 

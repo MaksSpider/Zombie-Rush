@@ -16,29 +16,89 @@ MonoBehaviour:
   - name: Zombie
     prefab: {fileID: 6668317591216721449, guid: 8b841e718c312cd46a8bb33c304b45a9, type: 3}
     spawnDay: 1
-    spawnChance: 1
+    spawnChance: 0.9
     health: 10
-    speed: 1.3
+    speed: 1.6
     exp: 2
     weaponItemId: 10
+    loot:
+    - itemId: -1
+      chance: 4
+      amount: {x: 0, y: 0}
+    - itemId: 3
+      chance: 0.3
+      amount: {x: 1, y: 2}
+    - itemId: 4
+      chance: 0.1
+      amount: {x: 1, y: 1}
+    - itemId: 5
+      chance: 0.15
+      amount: {x: 1, y: 1}
+    - itemId: 7
+      chance: 0.05
+      amount: {x: 1, y: 1}
     attributes: 0000000002000000i
   - name: Axe Zombie
     prefab: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
     spawnDay: 2
     spawnChance: 0.7
     health: 5
-    speed: 1
+    speed: 1.2
     exp: 3
     weaponItemId: 9
+    loot:
+    - itemId: -1
+      chance: 3
+      amount: {x: 0, y: 0}
+    - itemId: 3
+      chance: 0.3
+      amount: {x: 1, y: 2}
+    - itemId: 4
+      chance: 0.1
+      amount: {x: 1, y: 1}
+    - itemId: 5
+      chance: 0.15
+      amount: {x: 1, y: 1}
+    - itemId: 6
+      chance: 0.05
+      amount: {x: 1, y: 1}
+    - itemId: 7
+      chance: 0.01
+      amount: {x: 1, y: 1}
     attributes: 0100000003000000i
   - name: Fast Zombie
     prefab: {fileID: 6668317591216721449, guid: b288d05d006a4294084fe95fba11755b, type: 3}
     spawnDay: 3
     spawnChance: 0.5
     health: 10
-    speed: 2.3
+    speed: 3
     exp: 4
     weaponItemId: 9
+    loot:
+    - itemId: -1
+      chance: 2
+      amount: {x: 0, y: 0}
+    - itemId: 3
+      chance: 0.3
+      amount: {x: 1, y: 2}
+    - itemId: 4
+      chance: 0.1
+      amount: {x: 1, y: 1}
+    - itemId: 5
+      chance: 0.15
+      amount: {x: 1, y: 1}
+    - itemId: 6
+      chance: 0.05
+      amount: {x: 1, y: 2}
+    - itemId: 7
+      chance: 0.01
+      amount: {x: 1, y: 1}
+    - itemId: 1
+      chance: 0.005
+      amount: {x: 1, y: 1}
+    - itemId: 2
+      chance: 0.005
+      amount: {x: 1, y: 1}
     attributes: 0000000002000000i
   - name: Heavy Zombie
     prefab: {fileID: 6668317591216721449, guid: 82e24961933b56f4b9316f2e8d0b4490, type: 3}
@@ -48,4 +108,29 @@ MonoBehaviour:
     speed: 0.6
     exp: 5
     weaponItemId: 10
+    loot:
+    - itemId: -1
+      chance: 1
+      amount: {x: 0, y: 0}
+    - itemId: 3
+      chance: 0.3
+      amount: {x: 0, y: 0}
+    - itemId: 4
+      chance: 0.1
+      amount: {x: 0, y: 0}
+    - itemId: 5
+      chance: 0.15
+      amount: {x: 0, y: 0}
+    - itemId: 6
+      chance: 0.05
+      amount: {x: 0, y: 0}
+    - itemId: 7
+      chance: 0.01
+      amount: {x: 0, y: 0}
+    - itemId: 1
+      chance: 0.005
+      amount: {x: 1, y: 1}
+    - itemId: 2
+      chance: 0.005
+      amount: {x: 1, y: 1}
     attributes: 0000000002000000i

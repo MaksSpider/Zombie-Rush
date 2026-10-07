@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _debugEnemy: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
-  executionOrder: -2
+  executionOrder: -3
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

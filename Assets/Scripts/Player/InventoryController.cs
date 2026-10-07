@@ -321,7 +321,7 @@ public class InventoryController : MonoBehaviour
         return true;
     }
 
-    public bool AddItem(Item item, int amount)
+    public bool AddItem(Item item, int amount, bool force = false)
     {
         foreach((int slot, SlotItem slotItem) in inventory)
         {
@@ -334,7 +334,7 @@ public class InventoryController : MonoBehaviour
         }
 
         var result = GetFirstEmptySlot();
-        if (!result.found)
+        if (!result.found && force)
         {
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
             Vector2 playerPosition = _playerController.GetComponent<Rigidbody2D>().position;
@@ -552,7 +552,7 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.5f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 3f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
         {
             if (!inventory.ContainsKey(selectedSlot))
             {
@@ -591,6 +591,16 @@ public class InventoryController : MonoBehaviour
         RemoveItemOnSlot(slot, amount);
 
         OnDropItemOnSlot?.Invoke();
+    }
+
+    public (bool exist, Item item) GetItemById(int id)
+    {
+        foreach (Item item in _itemsData.itemsData)
+        {
+            if (item.id == id) return (true, item);
+        }
+
+        return (false, new Item());
     }
 
     public (bool empty, Item item) GetItemOnSlot(int slot)

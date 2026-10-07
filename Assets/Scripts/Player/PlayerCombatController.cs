@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public struct Ammo
@@ -86,8 +87,9 @@ public class PlayerCombatController : MonoBehaviour
         {
             if (currentWeapon == null) return;
             if (_inventoryController.inventoryBlocked) return;
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
-            Attack(currentWeapon);
+                Attack(currentWeapon);
         }
     }
 

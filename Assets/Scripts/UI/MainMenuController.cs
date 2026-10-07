@@ -1,25 +1,63 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
-    [SerializeField] private Button _startButton;
+    private GameSession _gameSession => GameSession.Instance;
+
+    // mainmenu
+    [SerializeField] private Button _openGameSetupButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
+    // game setup menu
+
+    [SerializeField] private GameObject SetupMenu;
+    [SerializeField] private TMP_InputField _nicknameInputField;
+    [SerializeField] private TMP_InputField _seedInputField;
+    [SerializeField] private Button _startButton;
+    [SerializeField] private Button _closeButton;
+
     void Start()
     {
-        _startButton.GetComponent<Button>().onClick.AddListener(StartGame);
-        _settingsButton.GetComponent<Button>().onClick.AddListener(OpenSettings);
-        _quitButton.GetComponent<Button>().onClick.AddListener(Quit);
+        _openGameSetupButton.onClick.AddListener(OpenSetupMenu);
+        _settingsButton.onClick.AddListener(OpenSettings);
+        _quitButton.onClick.AddListener(Quit);
+
+        _startButton.onClick.AddListener(StartGame);
+        _closeButton.onClick.AddListener(CloseSetupMenu);
+
+        SetupMenu.SetActive(false);
+    }
+
+    private void OpenSetupMenu()
+    {
+        int seed = Random.Range(int.MinValue, int.MaxValue);
+        _seedInputField.text = seed.ToString();
+
+        SetupMenu.SetActive(true);
+    }
+
+    private void CloseSetupMenu()
+    {
+        SetupMenu.SetActive(false);
+
+        _nicknameInputField.text = string.Empty;
+        _seedInputField.text = string.Empty;
     }
 
     private void StartGame()
     {
+        if (string.IsNullOrWhiteSpace(_nicknameInputField.text)) return;
+        if (string.IsNullOrWhiteSpace(_seedInputField.text)) return;
+
+        _gameSession.Setup(_nicknameInputField.text, int.Parse(_seedInputField.text));
+
+        SetupMenu.SetActive(false);
         SceneManager.LoadScene("Game");
     }
-
 
     // TODO: implement settings
     private void OpenSettings()

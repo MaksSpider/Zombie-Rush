@@ -134,7 +134,7 @@ public class EnemiesManager : MonoBehaviour
     public void Tick5s()
     {
         if (!_isWave) return;
-        if (_currentTime >= _dayTimeDuration * 0.9f) return;
+        if (_currentTime >= _dayTimeDuration * 0.8) return;
         SpawnEnemiesFromPool();
     }
 
@@ -278,6 +278,12 @@ public class EnemiesManager : MonoBehaviour
         enemy.Health = (int)(enemyToSpawn.health * difficultyModifier);
         enemy.speed = (int)(enemyToSpawn.speed * difficultyModifier);
         enemy.experience = (int)(enemyToSpawn.exp * difficultyModifier);
+
+        if(enemyToSpawn.loot.Count > 0)
+        {
+            DropOnDestroyController dropCtr = enemy.gameObject.AddComponent<DropOnDestroyController>();
+            dropCtr.loot = enemyToSpawn.loot;
+        }
 
         Enemies.Add(enemy);
     }

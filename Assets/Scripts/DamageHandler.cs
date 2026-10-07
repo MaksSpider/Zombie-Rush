@@ -64,6 +64,13 @@ public class DamageHandler : MonoBehaviour
             orbController.Burst(targetPosition);
         }
 
+        DropOnDestroyController dropCtr = gameObject.GetComponent<DropOnDestroyController>();
+
+        if(dropCtr != null)
+        {
+            dropCtr.DropLoot();
+        }
+
         Destroy(gameObject);
     }
 

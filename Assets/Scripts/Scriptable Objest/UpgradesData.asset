@@ -37,38 +37,6 @@ MonoBehaviour:
     - name: bonusInventorySlot
       value: 3
     <icon>k__BackingField: {fileID: 1874606333, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
-  - <name>k__BackingField: melee_damage_0
-    <title>k__BackingField: Melee damage 1
-    <description>k__BackingField: 'Melee Damage: +40%'
-    <type>k__BackingField: common
-    <bonuses>k__BackingField:
-    - name: meleeDamage
-      value: 0.4
-    <icon>k__BackingField: {fileID: -1016911541, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
-  - <name>k__BackingField: melee_damage_1
-    <title>k__BackingField: Melee damage 2
-    <description>k__BackingField: 'Melee Damage: +80%'
-    <type>k__BackingField: rare
-    <bonuses>k__BackingField:
-    - name: meleeDamage
-      value: 0.8
-    <icon>k__BackingField: {fileID: -1016911541, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
-  - <name>k__BackingField: melee_damage_2
-    <title>k__BackingField: Melee damage 3
-    <description>k__BackingField: 'Melee Damage: +160%'
-    <type>k__BackingField: epic
-    <bonuses>k__BackingField:
-    - name: meleeDamage
-      value: 1.6
-    <icon>k__BackingField: {fileID: -1016911541, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
-  - <name>k__BackingField: melee_damage_3
-    <title>k__BackingField: Melee damage 4
-    <description>k__BackingField: 'Melee Damage: +250%'
-    <type>k__BackingField: legendary
-    <bonuses>k__BackingField:
-    - name: meleeDamage
-      value: 2.5
-    <icon>k__BackingField: {fileID: -1016911541, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <name>k__BackingField: bullets_damage_0
     <title>k__BackingField: Bullets damage 1
     <description>k__BackingField: 'Bullets Damage: +20%'
