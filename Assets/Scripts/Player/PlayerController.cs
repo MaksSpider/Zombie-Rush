@@ -123,6 +123,7 @@ public class PlayerController : DamageHandler
     public void Tick()
     {
         HandleMovementControlls();
+        CollectExperience();
     }
 
     public void FixedTick(float deltaTime)
@@ -132,7 +133,6 @@ public class PlayerController : DamageHandler
 
     public void Tick1s()
     {
-        CollectExperience();
         CheckTemporaryHealing();
         ChangeStamina(_baseStaminaRegeneration);
     }

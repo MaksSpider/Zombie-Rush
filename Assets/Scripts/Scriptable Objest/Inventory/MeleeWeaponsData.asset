@@ -16,6 +16,14 @@ MonoBehaviour:
   - <itemId>k__BackingField: 8
     <damage>k__BackingField: 15
     <attackRate>k__BackingField: 1
-    <attackRange>k__BackingField: 1.5
+    <attackRange>k__BackingField: 1.2
     <attackRadius>k__BackingField: 80
     <multiTargeting>k__BackingField: 1
+    <weaponUiSprite>k__BackingField: {fileID: 0}
+  - <itemId>k__BackingField: 10
+    <damage>k__BackingField: 2
+    <attackRate>k__BackingField: 1
+    <attackRange>k__BackingField: 0.8
+    <attackRadius>k__BackingField: 80
+    <multiTargeting>k__BackingField: 1
+    <weaponUiSprite>k__BackingField: {fileID: 0}

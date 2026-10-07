@@ -247,6 +247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
   _pauseMenu: {fileID: 1387740729}
+  _mainMenuButton: {fileID: 782668614}
+  _settingsButton: {fileID: 566917310}
+  _quitButton: {fileID: 166337848}
 --- !u!114 &10756811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,6 +264,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameOverMenu
   _gameOverMenu: {fileID: 927926089}
   _scoreTitle: {fileID: 1982408191}
+  _restartButton: {fileID: 427086349}
+  _settingsButton: {fileID: 443138706}
+  _quitButton: {fileID: 1150099220}
 --- !u!1 &11089217
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,20 +971,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5bf87f1e0f4384b977b5bfb6bb78c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HordManager
-  _isWave: 1
+  _isWave: 0
   _minDistanceFromPlayer: 15
   _maxDistanceFromPlayer: 25
-  _debugEnemy: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
-  axeBullet: {fileID: 8289093666636355571, guid: 454a6377dc2975a41a03abbe3c5157e9, type: 3}
-  _simpleZombie: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
+  _enemiesData: {fileID: 11400000, guid: faf0678c05676784197c68561ff1dada, type: 2}
   _clock: {fileID: 17520437}
   _clockHand: {fileID: 1550593250}
   _nightPie: {fileID: 1700390018}
   _dayPie: {fileID: 368221082}
   _daysCounter: {fileID: 770418178}
-  _dayTimeDuration: 300
-  _nightTimeDuration: 0.7
+  _dayTimeDuration: 120
+  _nightTimeDuration: 0.3
   _dayNumber: 1
+  _spawningEnemiesAmount: 8
+  _startingEnemiesAmount: 25
+  _additionalNewEnemiesPerDay: 5
+  _enemiesPool: []
   Enemies: []
 --- !u!1 &258891977
 GameObject:
@@ -6616,17 +6624,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   _isDestructable: 1
-  _experience: 0
   _expSpawnRadius: 1.5
   _damageDisplayOffset: {x: 0, y: 0.3}
   _expOrbsTransform: {fileID: 0}
   _expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
   _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  experience: 0
   Health: 100
   _spawnPosition: {x: 0, y: 0, z: 0}
   _baseSpeed: 3
   _sprintBoost: 1.5
-  _collectExpRadius: 1.2
+  _collectExpRadius: 0.7
   _baseHealth: 100
   _baseStamina: 250
   _baseLevelCost: 50

@@ -74,29 +74,20 @@ public class UpgradesController : MonoBehaviour
     // debug
     void Debug()
     {
+        AddUpgrade("additional_xp_2");
+
         // debug
         //AddUpgrade(_upgradesData.upgradesData[0]);
-        AddUpgrade(_upgradesData.upgradesData[1]);
-        AddUpgrade(_upgradesData.upgradesData[2]);
-
-        InventoryController _inventoryController = GetComponent<InventoryController>();
-        _inventoryController.AddItemById(3, 5);
-        _inventoryController.AddItemById(4, 5);
-        _inventoryController.AddItemById(5, 5);
-        _inventoryController.AddItemById(6, 5);
-        _inventoryController.AddItemById(7, 5);
-        _inventoryController.AddItemById(8, 1);
-
-        DisplayUpgradesWindow(1);
+        //AddUpgrade(_upgradesData.upgradesData[7]);
     }
 
     public void DisplayUpgradesWindow(int level)
     {
         upgradesToPick.Clear();
 
-        for (int i = playerUpgradeCards.childCount - 1; i >= 0; i--)
+        for (int i = upgradeCards.childCount - 1; i >= 0; i--)
         {
-            Transform child = playerUpgradeCards.GetChild(i);
+            Transform child = upgradeCards.GetChild(i);
             if (child.name == "Background") continue;
 
             Destroy(child.gameObject);
@@ -104,9 +95,7 @@ public class UpgradesController : MonoBehaviour
 
         for (int i = 0; i < maxUpgradesToPickAmount; i++)
         {
-            print(i);
             (bool finded, Upgrade upgrade) = RandomUpgrade(level);
-
             if(!finded) continue;
 
             upgradesToPick.Add(upgrade);
@@ -128,7 +117,7 @@ public class UpgradesController : MonoBehaviour
 
         for (int i = playerUpgradeCards.childCount - 1; i >= 0; i--)
         {
-            Transform child = upgradeCards.GetChild(i);
+            Transform child = playerUpgradeCards.GetChild(i);
             if (child.name == "Background") continue;
 
             Destroy(child.gameObject);
@@ -293,6 +282,19 @@ public class UpgradesController : MonoBehaviour
         }
 
         return AddUpgrade(upgrade);
+    }
+
+    public bool AddUpgrade(string upgradeName)
+    {
+        foreach(Upgrade upgrade in _upgradesData.upgradesData)
+        {
+            if(upgrade.name == upgradeName)
+            {
+                return AddUpgrade(upgrade);
+            }
+        }
+
+        return false;
     }
 
     public bool AddUpgrade(Upgrade upgrade)

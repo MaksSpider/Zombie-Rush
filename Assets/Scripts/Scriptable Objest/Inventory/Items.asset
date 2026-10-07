@@ -85,3 +85,19 @@ MonoBehaviour:
     <type>k__BackingField: common
     <isUsable>k__BackingField: 0
     <usageDuration>k__BackingField: 0
+  - <id>k__BackingField: 9
+    <name>k__BackingField: Throwing Axe
+    <description>k__BackingField: Throwing Axe desc
+    <icon>k__BackingField: {fileID: -6946007662723423348, guid: a90c1280f63d31f48be816842e17031c, type: 3}
+    <maxStack>k__BackingField: 1
+    <type>k__BackingField: common
+    <isUsable>k__BackingField: 0
+    <usageDuration>k__BackingField: 0
+  - <id>k__BackingField: 10
+    <name>k__BackingField: Zombie Hands
+    <description>k__BackingField: Zombie Hands desc
+    <icon>k__BackingField: {fileID: -3331023729081140327, guid: 71ac75878a6d90d4ca796510ff9147cc, type: 3}
+    <maxStack>k__BackingField: 1
+    <type>k__BackingField: common
+    <isUsable>k__BackingField: 0
+    <usageDuration>k__BackingField: 0

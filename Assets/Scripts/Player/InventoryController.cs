@@ -148,15 +148,10 @@ public class InventoryController : MonoBehaviour
 
         _upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
 
-        // items to test
+        // starting items
         AddItemById(0, 1);
-        AddItemById(1, 1);
-        AddItemById(2, 1);
         AddItemById(3, 5);
-        AddItemById(4, 5);
-        AddItemById(5, 5);
-        AddItemById(6, 4);
-        AddItemById(7, 4);
+        AddItemById(7, 2);
     }
 
 
@@ -339,7 +334,15 @@ public class InventoryController : MonoBehaviour
         }
 
         var result = GetFirstEmptySlot();
-        if(!result.found) return false;
+        if (!result.found)
+        {
+            Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
+            Vector2 playerPosition = _playerController.GetComponent<Rigidbody2D>().position;
+            Vector2 spawnPosition = playerPosition + direction * 0.5f;
+
+            DropItem(item, amount, spawnPosition, direction);
+            return false;
+        }
 
         return AddItemOnSlot(result.slot, item, amount);
     }

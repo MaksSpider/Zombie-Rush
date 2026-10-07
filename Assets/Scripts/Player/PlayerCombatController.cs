@@ -20,6 +20,7 @@ public class PlayerCombatController : MonoBehaviour
     public static PlayerCombatController Instance { get; private set; }
 
     private InventoryController _inventoryController => InventoryController.Instance;
+    private UpgradesController _upgradesController => UpgradesController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private AttacksManager _attacksManager => AttacksManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
@@ -131,6 +132,9 @@ public class PlayerCombatController : MonoBehaviour
 
         if (weapon is MeleeWeapon meleeWeapon)
         {
+            float damageMultiplier = 1f + _upgradesController.GetBonusValues("meleeDamage");
+            print(damageMultiplier);
+
             _attacksManager.CreateMeleeAttack(playerRb.position, baseDirection, meleeWeapon);
         }
         else if (weapon is Weapon normalWeapon)
@@ -139,7 +143,10 @@ public class PlayerCombatController : MonoBehaviour
             if (!result) return;
 
             LayerMask include = LayerMask.GetMask("Player", "Enemy");
-            _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, include);
+
+            float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletsDamage");
+
+            _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, new Vector2(0, 0.15f), damageMultiplier, include);
             UpdateUI();
         }
     }
@@ -161,9 +168,8 @@ public class PlayerCombatController : MonoBehaviour
                 _ammoInventory[normalWeapon.itemId] = current;
 
                 _inventoryController.inventoryBlocked = false;
+                UpdateUI();
             });
-
-            UpdateUI();
 
             return true;
         }

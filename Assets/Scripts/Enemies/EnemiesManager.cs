@@ -56,16 +56,13 @@ public class EnemiesManager : MonoBehaviour
     public static EnemiesManager Instance { get; private set; }
 
     private PlayerController _playerController => PlayerController.Instance;
+    private InventoryController _inventoryController => InventoryController.Instance;
 
     [SerializeField] private bool _isWave = false;
     [SerializeField] private float _minDistanceFromPlayer = 15f;
     [SerializeField] private float _maxDistanceFromPlayer = 35f;
 
-    [SerializeField] private GameObject _debugEnemy;
-    [SerializeField] private GameObject axeBullet;
-
-
-    [SerializeField] private GameObject _simpleZombie;
+    [SerializeField] private EnemiesData _enemiesData;
 
     [SerializeField] private GameObject _clock;
     [SerializeField] private GameObject _clockHand;
@@ -73,11 +70,15 @@ public class EnemiesManager : MonoBehaviour
     [SerializeField] private GameObject _dayPie;
     [SerializeField] private TextMeshProUGUI _daysCounter;
     [SerializeField] private float _dayTimeDuration = 300f;
-    [SerializeField] private float _nightTimeDuration = 0.7f;
+    [SerializeField] private float _nightTimeDuration = 0.3f;
     [SerializeField] private int _dayNumber = 1;
 
-    private EnemyBuilder _builder;
+    [SerializeField] private int _spawningEnemiesAmount = 5;
+    [SerializeField] private int _startingEnemiesAmount = 10;
+    [SerializeField] private int _additionalNewEnemiesPerDay = 2;
+
     private float _currentTime = 0;
+    public List<EnemyData> _enemiesPool = new();
 
     public List<Enemy> Enemies = new();
 
@@ -91,13 +92,16 @@ public class EnemiesManager : MonoBehaviour
 
         Instance = this;
 
-        _builder = new EnemyBuilder();
-
         SetupUI();
 
         _clock.GetComponent<Button>().onClick.AddListener(() => {
             SkipToNight();
         });
+    }
+
+    void Start()
+    {
+        AddToEnemyPool(_startingEnemiesAmount);
     }
 
     public void FixedTick(float fixedDeltaTime)
@@ -121,26 +125,117 @@ public class EnemiesManager : MonoBehaviour
         _currentTime += 1f;
         UpdateUI();
 
-        if(_currentTime >= _dayTimeDuration) EndWave();
-        if(_currentTime > _dayTimeDuration - _nightTimeDuration) StartWave();
+        float nightStartTime = _dayTimeDuration * (1f - _nightTimeDuration);
+
+        if (!_isWave && _currentTime >= nightStartTime) StartWave();
+        if (_isWave && _currentTime >= _dayTimeDuration) EndWave();
     }
 
     public void Tick5s()
     {
         if (!_isWave) return;
+        if (_currentTime >= _dayTimeDuration * 0.9f) return;
         SpawnEnemiesFromPool();
+    }
+
+    private void AddAttributeByType(EnemyBuilder builder, EnemyAttributeType type)
+    {
+        switch (type)
+        {
+            case EnemyAttributeType.SimpleMovement:
+                builder.WithAttribute<SimpleMovement>();
+                break;
+
+            case EnemyAttributeType.CircleMovement:
+                builder.WithAttribute<CircleMovement>();
+                break;
+
+            case EnemyAttributeType.MeleeAttack:
+                builder.WithAttribute<MeleeAttack>();
+                break;
+
+            case EnemyAttributeType.RangedAttack:
+                builder.WithAttribute<RangedAttack>();
+                break;
+        }
     }
 
     private void SpawnEnemiesFromPool()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < _spawningEnemiesAmount; i++)
         {
+            (bool finded, EnemyData enemyToSpawn) = GetRandomEnemyFromPool();
+            if (!finded) continue;
+
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
             float distance = UnityEngine.Random.Range(_minDistanceFromPlayer, _maxDistanceFromPlayer);
-
             Vector2 spawnPosition = (Vector2)_playerController.transform.position + direction * distance;
 
-            SpawnEnemy(spawnPosition);
+            print("Spawned enemy: " + enemyToSpawn.name);
+
+            SpawnEnemy(enemyToSpawn, spawnPosition);
+            _enemiesPool.Remove(enemyToSpawn);
+        }
+    }
+
+    private (bool found, EnemyData enemyData) GetRandomEnemyFromPool()
+    {
+        if (_enemiesPool.Count == 0) return (false, new EnemyData());
+
+        float totalChance = 0f;
+
+        foreach (EnemyData enemy in _enemiesPool)
+        {
+            totalChance += Mathf.Max(0f, enemy.spawnChance);
+        }
+
+        if (totalChance <= 0f) return (false, new EnemyData());
+
+        float randomValue = UnityEngine.Random.Range(0f, totalChance);
+
+        foreach (EnemyData enemy in _enemiesPool)
+        {
+            randomValue -= Mathf.Max(0f, enemy.spawnChance);
+
+            if (randomValue <= 0f) return (true, enemy);
+        }
+
+        return (true, _enemiesPool[^1]);
+    }
+
+    public void AddToEnemyPool(string enemyName)
+    {
+        foreach (EnemyData enemy in _enemiesData.enemies)
+        {
+            if (enemy.name == enemyName)
+            {
+                _enemiesPool.Add(enemy);
+                return;
+            }
+        }
+    }
+
+    public void AddToEnemyPool(EnemyData enemyData)
+    {
+        _enemiesPool.Add(enemyData);
+    }
+
+    public void AddToEnemyPool(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            List<EnemyData> enemies = new();
+
+            foreach (EnemyData enemy in _enemiesData.enemies)
+            {
+                if (enemy.spawnDay <= _dayNumber)
+                {
+                    enemies.Add(enemy);
+                }
+            }
+
+            EnemyData newRandomEnemy = enemies[UnityEngine.Random.Range(0, enemies.Count)];
+            _enemiesPool.Add(newRandomEnemy);
         }
     }
 
@@ -159,26 +254,37 @@ public class EnemiesManager : MonoBehaviour
         _daysCounter.text = "Day " + _dayNumber.ToString();
     }
 
-    public void SpawnEnemy(Vector2 spawnPosition)
+    public void SpawnEnemy(EnemyData enemyToSpawn, Vector2 spawnPosition)
     {
-        _builder.SetBase(_simpleZombie);
-        Enemy Zombie = _builder
-            .WithAttribute<RangedAttack>(attack =>
-            {
-                attack.weapon.bulletGameObject = axeBullet;
-                attack.weapon.damage = 5;
-                attack.weapon.attackRate = 2.5f;
-            })
-            .WithAttribute<CircleMovement>()
-            .Build(spawnPosition, transform);
+        float difficultyModifier = 1f + Mathf.Round(_dayNumber / 5) * 0.05f;
 
-        Enemies.Add(Zombie);
+        EnemyBuilder builder = new EnemyBuilder().SetBase(enemyToSpawn.prefab);
+
+        foreach(EnemyAttributeType attribute in enemyToSpawn.attributes)
+        {
+            AddAttributeByType(builder, attribute);
+        }
+
+        Enemy enemy = builder.Build(spawnPosition, transform);
+        enemy.enemyName = enemyToSpawn.name;
+
+        (bool isWeapon, IWeapon iWeapon) = _inventoryController.GetWeaponByItemId(enemyToSpawn.weaponItemId);
+        if (isWeapon)
+        {
+            iWeapon.damage *= (int)difficultyModifier;
+            enemy.weapon = iWeapon;
+        }
+
+        enemy.Health = (int)(enemyToSpawn.health * difficultyModifier);
+        enemy.speed = (int)(enemyToSpawn.speed * difficultyModifier);
+        enemy.experience = (int)(enemyToSpawn.exp * difficultyModifier);
+
+        Enemies.Add(enemy);
     }
 
     public void SkipToNight()
     {
         float nightStartTime = _dayTimeDuration - (_nightTimeDuration * _dayTimeDuration);
-
         if (_currentTime > nightStartTime) return;
 
         _currentTime = nightStartTime;
@@ -186,12 +292,9 @@ public class EnemiesManager : MonoBehaviour
         UpdateUI();
     }
 
-    public void StartWave(List<string> pool = null)
+    public void StartWave()
     {
-        //foreach (string s in pool)
-        //{
-        //    //EnemiesPool.Add(s);
-        //}
+        AddToEnemyPool(_additionalNewEnemiesPerDay);
 
         _isWave = true;
         SpawnEnemiesFromPool();
@@ -203,6 +306,10 @@ public class EnemiesManager : MonoBehaviour
         _currentTime = 0f;
         _playerController.Score += 5 * _dayNumber;
         _dayNumber++;
+        _dayTimeDuration *= 1.05f;
+        _nightTimeDuration *= 1.1f;
+        _nightTimeDuration = Mathf.Min(_nightTimeDuration, 1f);
+        _spawningEnemiesAmount += 2;
         SetupUI();
     }
 }

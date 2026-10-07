@@ -37,7 +37,7 @@ public class AttacksManager : MonoBehaviour
         }
     }
 
-    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, Weapon weapon, float maxSpreadAngle, LayerMask targets = default)
+    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, Weapon weapon, float maxSpreadAngle, Vector2 offset, float damageModifer = 1f, LayerMask targets = default)
     {
         for (int i = 0; i < weapon.bulletsPerShot; i++)
         {
@@ -46,7 +46,7 @@ public class AttacksManager : MonoBehaviour
 
             Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
 
-            spawnPosition += direction * weapon.bulletSpawnOffset;
+            spawnPosition += direction * weapon.bulletSpawnOffset + offset;
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
@@ -56,10 +56,13 @@ public class AttacksManager : MonoBehaviour
 
             BulletController bulletCtr = bulletGameObject.GetComponent<BulletController>();
 
-            bulletCtr.damage = weapon.damage;
+            print(damageModifer);
+            print((int)((float)weapon.damage * damageModifer));
+
+            bulletCtr.damage = (int)((float)weapon.damage * damageModifer);
             bulletCtr.direction = direction.normalized;
             bulletCtr.speed = weapon.bulletSpeed;
-            bulletCtr.maxLifeTime = weapon.bulletLifeTime == 0f ? _bulletsLifeTime : weapon.bulletLifeTime;
+            bulletCtr.maxLifeTime = weapon.attackRange == 0f ? _bulletsLifeTime : weapon.attackRange;
 
             if (targets.value != 0)
             {

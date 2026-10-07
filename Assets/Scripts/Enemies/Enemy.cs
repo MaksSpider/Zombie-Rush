@@ -11,6 +11,8 @@ public abstract class EnemyAttribute : MonoBehaviour
 
 public class Enemy : DamageHandler
 {
+    private EnemiesManager _emiesManager => EnemiesManager.Instance; 
+    
     public PlayerController playerController => PlayerController.Instance;
     public AttacksManager attacksManager => AttacksManager.Instance;
 
@@ -20,6 +22,10 @@ public class Enemy : DamageHandler
 
     [NonSerialized] public Rigidbody2D rb;
     [NonSerialized] public Transform target;
+
+    public string enemyName;
+    public float speed;
+    public IWeapon weapon;
 
     void Awake()
     {
@@ -39,6 +45,8 @@ public class Enemy : DamageHandler
     {
         playerController.ChangeKills(1);
         Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
+
+        _emiesManager.AddToEnemyPool(enemyName);
 
         base.OnObjectDestroy();
     }

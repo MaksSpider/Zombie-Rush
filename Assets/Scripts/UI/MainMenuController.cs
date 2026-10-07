@@ -8,7 +8,6 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _startButton.GetComponent<Button>().onClick.AddListener(StartGame);
@@ -22,7 +21,7 @@ public class MainMenuController : MonoBehaviour
     }
 
 
-    // to do implement settings
+    // TODO: implement settings
     private void OpenSettings()
     {
 

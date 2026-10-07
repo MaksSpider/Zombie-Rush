@@ -71,5 +71,6 @@ public class PlayingState : State
     public override void Tick5s()
     {
         _playerController.Tick5s();
+        _enemiesManager.Tick5s();
     }
 }

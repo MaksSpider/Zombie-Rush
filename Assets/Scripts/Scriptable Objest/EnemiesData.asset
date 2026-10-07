@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c94413d7034e746981d315df35b312, type: 3}
+  m_Name: EnemiesData
+  m_EditorClassIdentifier: Assembly-CSharp::EnemiesData
+  enemies:
+  - name: Zombie
+    prefab: {fileID: 6668317591216721449, guid: 8b841e718c312cd46a8bb33c304b45a9, type: 3}
+    spawnDay: 1
+    spawnChance: 1
+    health: 10
+    speed: 1.3
+    exp: 2
+    weaponItemId: 10
+    attributes: 0000000002000000i
+  - name: Axe Zombie
+    prefab: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
+    spawnDay: 2
+    spawnChance: 0.7
+    health: 5
+    speed: 1
+    exp: 3
+    weaponItemId: 9
+    attributes: 0100000003000000i
+  - name: Fast Zombie
+    prefab: {fileID: 6668317591216721449, guid: b288d05d006a4294084fe95fba11755b, type: 3}
+    spawnDay: 3
+    spawnChance: 0.5
+    health: 10
+    speed: 2.3
+    exp: 4
+    weaponItemId: 9
+    attributes: 0000000002000000i
+  - name: Heavy Zombie
+    prefab: {fileID: 6668317591216721449, guid: 82e24961933b56f4b9316f2e8d0b4490, type: 3}
+    spawnDay: 4
+    spawnChance: 0.2
+    health: 80
+    speed: 0.6
+    exp: 5
+    weaponItemId: 10
+    attributes: 0000000002000000i

@@ -13,6 +13,7 @@ public interface IWeapon
     int itemId { get; set; }
     int damage { get; set; }
     float attackRate { get; set; }
+    float attackRange { get; set; }
 }
 
 [Serializable]
@@ -26,6 +27,8 @@ public class Weapon: IWeapon
     public int damage { get; set; }
     [field: SerializeField]
     public float attackRate { get; set; }
+    [field: SerializeField]
+    public float attackRange { get; set; }
     [field: SerializeField]
     public int bulletsPerShot { get; set; }
     [field: SerializeField]

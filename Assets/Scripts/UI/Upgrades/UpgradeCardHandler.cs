@@ -37,6 +37,11 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         _cursorManager.SetDefault();
     }
 
+    private void LateUpdate()
+    {
+        HandleMovement();
+    }
+
     private void Select()
     {
         _isHolding = true;
@@ -63,37 +68,56 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
             null
         );
 
-        if (isInside)
+        
+        if(!isInside)
         {
-            int siblingIndex = GetClosestSiblingIndex(mousePosition);
-
-            transform.SetParent(_upgradesController.playerUpgradeCards.transform, false);
-            transform.SetSiblingIndex(siblingIndex);
-
-            _isHolding = false;
-            _cursorManager.SetDefault();
+            rectTransform.position = _originalPos;
+            transform.SetParent(_originalParent, true);
+            transform.SetSiblingIndex(_originalSiblingIndex);
             _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
-
-            UpgradeCard upgradeCard = gameObject.GetComponent<UpgradeCard>();
-            _upgradesController.AddUpgrade(_upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
-
-            _upgradesController.CloseUpgradesPopUp();
             return;
         }
 
-        rectTransform.position = _originalPos;
-        transform.SetParent(_originalParent, true);
-        transform.SetSiblingIndex(_originalSiblingIndex);
+        Transform upgradeToSwitch = null;
+
+        for (int i = 0; i < _upgradesController.playerUpgradeCards.transform.childCount; i++)
+        {
+            Transform child = _upgradesController.playerUpgradeCards.transform.GetChild(i);
+
+            bool insideUpgrade = RectTransformUtility.RectangleContainsScreenPoint(
+                child.GetComponent<RectTransform>(),
+                mousePosition,
+                null
+            );
+
+            if (insideUpgrade)
+            {
+                upgradeToSwitch = child;
+                break;
+            }
+        }
+
+        UpgradeCard upgradeCard = gameObject.GetComponent<UpgradeCard>();
+
+        if (upgradeToSwitch == null || _upgradesController.GetFirstFreeSlot().exist)
+        {
+            _upgradesController.AddUpgrade(_upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
+        }
+        else
+        {
+            UpgradeCard upgradeCardToSwitch = upgradeToSwitch.Find("CardButton").GetComponent<UpgradeCard>();
+            _upgradesController.AddUpgradeOnSlot(upgradeCardToSwitch.upgradeIndex, _upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
+        }
+
+        int siblingIndex = GetClosestSiblingIndex(mousePosition);
+
+        transform.SetParent(_upgradesController.playerUpgradeCards.transform, false);
+        transform.SetSiblingIndex(siblingIndex);
 
         _isHolding = false;
-
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        _cursorManager.SetDefault();
         _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
-    }
-
-    private void LateUpdate()
-    {
-        HandleMovement();
+        _upgradesController.CloseUpgradesPopUp();
     }
 
     private int GetClosestSiblingIndex(Vector2 mousePosition)
