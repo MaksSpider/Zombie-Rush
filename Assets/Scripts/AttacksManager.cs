@@ -59,7 +59,7 @@ public class AttacksManager : MonoBehaviour
             print(damageModifer);
             print((int)((float)weapon.damage * damageModifer));
 
-            bulletCtr.damage = (int)((float)weapon.damage * damageModifer);
+            bulletCtr.damage = Mathf.RoundToInt((float)weapon.damage * damageModifer);
             bulletCtr.direction = direction.normalized;
             bulletCtr.speed = weapon.bulletSpeed;
             bulletCtr.maxLifeTime = weapon.attackRange == 0f ? _bulletsLifeTime : weapon.attackRange;

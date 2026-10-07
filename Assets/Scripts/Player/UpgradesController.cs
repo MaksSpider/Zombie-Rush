@@ -74,7 +74,7 @@ public class UpgradesController : MonoBehaviour
     // debug
     void Debug()
     {
-        AddUpgrade("additional_xp_2");
+        //AddUpgrade("additional_xp_2");
 
         // debug
         //AddUpgrade(_upgradesData.upgradesData[0]);
