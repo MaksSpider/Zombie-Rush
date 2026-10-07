@@ -25,6 +25,7 @@ public class PlayerCombatController : MonoBehaviour
     private PlayerController _playerController => PlayerController.Instance;
     private AttacksManager _attacksManager => AttacksManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
+    private AudioManager _audioManager => AudioManager.Instance;
 
     [SerializeField] private TextMeshProUGUI _ammoTMP;
     [SerializeField] private Image _bulletIcon;
@@ -89,7 +90,7 @@ public class PlayerCombatController : MonoBehaviour
             if (_inventoryController.inventoryBlocked) return;
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
-                Attack(currentWeapon);
+            Attack(currentWeapon);
         }
     }
 
@@ -135,20 +136,25 @@ public class PlayerCombatController : MonoBehaviour
         if (weapon is MeleeWeapon meleeWeapon)
         {
             float damageMultiplier = 1f + _upgradesController.GetBonusValues("meleeDamage");
-            print(damageMultiplier);
 
             _attacksManager.CreateMeleeAttack(playerRb.position, baseDirection, meleeWeapon);
         }
         else if (weapon is Weapon normalWeapon)
         {
             bool result = RemoveAmmoFromMag(currentWeapon.itemId, 1);
-            if (!result) return;
+            if (!result)
+            {
+                ReloadWeapon(weapon);
+                return;
+            }
 
             LayerMask include = LayerMask.GetMask("Player", "Enemy");
 
             float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletsDamage");
 
             _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, new Vector2(0, 0.15f), damageMultiplier, include);
+
+            _audioManager.PlaySFX(normalWeapon.attackSound);
             UpdateUI();
         }
     }
@@ -161,6 +167,10 @@ public class PlayerCombatController : MonoBehaviour
             if (!_ammoInventory.ContainsKey(normalWeapon.itemId)) return false;
 
             int amountToReload = Mathf.Min(normalWeapon.magazineSize - _ammoInventory[normalWeapon.itemId].inMagazine, _ammoInventory[normalWeapon.itemId].all);
+
+            if(amountToReload <= 0) return false;
+
+            _audioManager.PlaySFX("reload");
 
             _inventoryController.inventoryBlocked = true;
             _inventoryController.slots[_inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {

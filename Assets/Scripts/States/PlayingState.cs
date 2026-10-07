@@ -13,8 +13,8 @@ public class PlayingState : State
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
     private WorldGenerator _worldGenerator => WorldGenerator.Instance;
     private AttacksManager _attacksManager => AttacksManager.Instance;
-    private InputManager _inputManager => InputManager.Instance;
     private CursorManager _cursorManager => CursorManager.Instance;
+    private InputManager _inputManager => InputManager.Instance;
 
     public override void OnEnterState()
     {

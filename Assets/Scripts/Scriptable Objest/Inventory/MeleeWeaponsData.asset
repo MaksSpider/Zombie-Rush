@@ -19,11 +19,13 @@ MonoBehaviour:
     <attackRange>k__BackingField: 1.2
     <attackRadius>k__BackingField: 80
     <multiTargeting>k__BackingField: 1
+    <attackSound>k__BackingField: {fileID: 0}
     <weaponUiSprite>k__BackingField: {fileID: 0}
   - <itemId>k__BackingField: 10
     <damage>k__BackingField: 2
     <attackRate>k__BackingField: 1
-    <attackRange>k__BackingField: 0.8
+    <attackRange>k__BackingField: 0.4
     <attackRadius>k__BackingField: 80
     <multiTargeting>k__BackingField: 1
+    <attackSound>k__BackingField: {fileID: 8300000, guid: 52c71509088144443811ae0a777edcf3, type: 3}
     <weaponUiSprite>k__BackingField: {fileID: 0}

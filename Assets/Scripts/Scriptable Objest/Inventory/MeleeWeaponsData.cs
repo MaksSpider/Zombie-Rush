@@ -26,6 +26,9 @@ public class MeleeWeapon: IWeapon
     [field: SerializeField]
     public bool multiTargeting { get; set; }
 
+    [field: SerializeField]
+    public AudioClip attackSound { get; set; }
+
     [Header("UI Settings")]
     [field: SerializeField]
     public Sprite weaponUiSprite { get; set; }

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a63f77bcc602948bdbee1ce771e884, type: 3}
+  m_Name: MusicData
+  m_EditorClassIdentifier: Assembly-CSharp::MusicData
+  music:
+  - name: mainmenu
+    volume: 1
+    audio: {fileID: 8300000, guid: 8e5e2c8d8ae57854f85b7e62358ff0e3, type: 3}
+  - name: song_1
+    volume: 0.5
+    audio: {fileID: 8300000, guid: 0bf5b4780cc69a04396a3c4282446833, type: 3}
+  - name: song_2
+    volume: 0.5
+    audio: {fileID: 8300000, guid: bca3ca7a801ab2b46aed4e6d7683ea87, type: 3}
+  - name: song_3
+    volume: 0.5
+    audio: {fileID: 0}
+  - name: song_4
+    volume: 0.5
+    audio: {fileID: 8300000, guid: 2478178ded3015c4492e0753d91b2880, type: 3}
+  - name: song_5
+    volume: 0.5
+    audio: {fileID: 8300000, guid: 09b28f12bc558fe48aea60a9983afb0f, type: 3}
+  sfx:
+  - name: xpCollect_1
+    volume: 0.4
+    audio: {fileID: 8300000, guid: b0461b9d9ecfd9e4cadeff1945eb4218, type: 3}
+  - name: xpCollect_2
+    volume: 0.4
+    audio: {fileID: 8300000, guid: 428dc1326fe6445479993d7e12e0ab1b, type: 3}
+  - name: xpCollect_3
+    volume: 0.4
+    audio: {fileID: 8300000, guid: b87dcbf3a096cda42806d56e99fafc5d, type: 3}
+  - name: xpCollect_4
+    volume: 0.4
+    audio: {fileID: 8300000, guid: 2b12d07d4a4d253449c390ab1e6571f8, type: 3}
+  - name: reload
+    volume: 3
+    audio: {fileID: 8300000, guid: f66be97a343dcf641b085a9edef1e81f, type: 3}
+  - name: shot
+    volume: 3
+    audio: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
+  - name: lose
+    volume: 1
+    audio: {fileID: 8300000, guid: 313d77e5ed2a8c64d8ac8e8693736ba6, type: 3}
+  - name: levelUp
+    volume: 1
+    audio: {fileID: 8300000, guid: da1e26db09c79ae4486d26940601d0d8, type: 3}

@@ -9,7 +9,6 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
     private CursorManager _cursorManager => CursorManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
 
-    private Vector2 _originalPos = Vector2.zero;
     private bool _isHolding = false;
 
     private Transform _originalParent;
@@ -44,6 +43,7 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     private void Select()
     {
+        if (_upgradesController.isSelectingUpgradeCard) return;
         _isHolding = true;
 
         _originalParent = transform.parent;
@@ -54,10 +54,13 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         _cursorManager.Change("grab");
 
         _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(true);
+        _upgradesController.isSelectingUpgradeCard = true;
     }
 
     private void UnSelect()
     {
+        _upgradesController.isSelectingUpgradeCard = false;
+
         RectTransform rectTransform = GetComponent<RectTransform>();
 
         Vector2 mousePosition = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
@@ -71,7 +74,7 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         
         if(!isInside)
         {
-            rectTransform.position = _originalPos;
+            _isHolding = false;
             transform.SetParent(_originalParent, true);
             transform.SetSiblingIndex(_originalSiblingIndex);
             _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);

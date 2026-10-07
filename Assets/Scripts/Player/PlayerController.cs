@@ -27,7 +27,9 @@ public class PlayerController : DamageHandler
     private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
     private UpgradesController _upgradesController => UpgradesController.Instance;
     private StatusesController _statusesController => StatusesController.Instance;
+    private CameraController _cameraController => CameraController.Instance;
     private StatesManager _stationsManager => StatesManager.Instance;
+    private AudioManager _audioManager => AudioManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
 
     private InventoryController _inventoryController;
@@ -146,6 +148,8 @@ public class PlayerController : DamageHandler
     {
         base.OnDamageDealt(damage);
 
+        _cameraController.Shake(2f);
+
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
     }
 
@@ -154,6 +158,7 @@ public class PlayerController : DamageHandler
     {
         // animation
 
+        _audioManager.PlaySFX("lose");
         _stationsManager.SwitchState<GameOverState>();
         _gameOverMenuController.Open(Score);
     }
@@ -177,6 +182,8 @@ public class PlayerController : DamageHandler
 
             ExperienceToNextLevel = (int)levelCost;
 
+            _audioManager.PlaySFX("levelUp");
+
             _upgradesController.DisplayUpgradesWindow(Level);
             OnLevelUp?.Invoke();
         }
@@ -194,6 +201,11 @@ public class PlayerController : DamageHandler
         if (Health > MaxHealth)
         {
             Health = MaxHealth;
+        }
+
+        if(Health <= 0)
+        {
+            OnObjectDestroy();
         }
 
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";

@@ -41,6 +41,9 @@ public class Weapon: IWeapon
     [field: SerializeField]
     public float reloadTime { get; set; }
 
+    [field: SerializeField]
+    public AudioClip attackSound { get; set; }
+
     [Header("Bullet Settings")]
     [field: SerializeField]
     public GameObject bulletGameObject { get; set; }

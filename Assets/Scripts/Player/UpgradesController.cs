@@ -53,6 +53,8 @@ public class UpgradesController : MonoBehaviour
     
     [NonSerialized] public List<Upgrade> upgradesToPick = new List<Upgrade>();
 
+    public bool isSelectingUpgradeCard = false;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -74,6 +76,8 @@ public class UpgradesController : MonoBehaviour
     // debug
     void Debug()
     {
+        //DisplayUpgradesWindow(1);
+
         //AddUpgrade("additional_xp_2");
 
         // debug
@@ -151,6 +155,7 @@ public class UpgradesController : MonoBehaviour
     public void CloseUpgradesPopUp()
     {
         upgradesToPick.Clear();
+        isSelectingUpgradeCard = false;
 
         _upgradesPickerPopUp.SetActive(false);
         _statesManager.SwitchState<PlayingState>();

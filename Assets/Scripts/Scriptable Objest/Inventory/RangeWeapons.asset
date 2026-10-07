@@ -22,6 +22,7 @@ MonoBehaviour:
     <ammoId>k__BackingField: 3
     <magazineSize>k__BackingField: 8
     <reloadTime>k__BackingField: 0.2
+    <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
     <bulletGameObject>k__BackingField: {fileID: 0}
     <bulletSpeed>k__BackingField: 15
     <bulletSpawnOffset>k__BackingField: 0.15
@@ -37,6 +38,7 @@ MonoBehaviour:
     <ammoId>k__BackingField: 4
     <magazineSize>k__BackingField: 32
     <reloadTime>k__BackingField: 0.1
+    <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
     <bulletGameObject>k__BackingField: {fileID: 0}
     <bulletSpeed>k__BackingField: 20
     <bulletSpawnOffset>k__BackingField: 0.15
@@ -52,6 +54,7 @@ MonoBehaviour:
     <ammoId>k__BackingField: 5
     <magazineSize>k__BackingField: 6
     <reloadTime>k__BackingField: 0.5
+    <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
     <bulletGameObject>k__BackingField: {fileID: 0}
     <bulletSpeed>k__BackingField: 12
     <bulletSpawnOffset>k__BackingField: 0.15
@@ -67,6 +70,7 @@ MonoBehaviour:
     <ammoId>k__BackingField: 11
     <magazineSize>k__BackingField: 3
     <reloadTime>k__BackingField: 0.3
+    <attackSound>k__BackingField: {fileID: 8300000, guid: ad9b7fae5e28b254cac6d7f7ee51d292, type: 3}
     <bulletGameObject>k__BackingField: {fileID: 8289093666636355571, guid: 454a6377dc2975a41a03abbe3c5157e9, type: 3}
     <bulletSpeed>k__BackingField: 3
     <bulletSpawnOffset>k__BackingField: 0.3

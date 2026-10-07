@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 {
     private GameSession _gameSession => GameSession.Instance;
+    private AudioManager _audioManager => AudioManager.Instance;
 
     // mainmenu
     [SerializeField] private Button _openGameSetupButton;
@@ -30,6 +31,8 @@ public class MainMenuController : MonoBehaviour
         _closeButton.onClick.AddListener(CloseSetupMenu);
 
         SetupMenu.SetActive(false);
+
+        _audioManager.PlayMusic("mainmenu");
     }
 
     private void OpenSetupMenu()

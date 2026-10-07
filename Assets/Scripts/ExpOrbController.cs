@@ -1,6 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ExpOrbController : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class ExpOrbController : MonoBehaviour
     public float speed = 8f;
     public float acceleration = 25f;
     public int expValue = 10;
+
+    [SerializeField] private List<AudioClip> _collectSounds;
 
     [Header("Bobbing")]
     public float bobAmplitude = 0.15f;
@@ -132,6 +134,14 @@ public class ExpOrbController : MonoBehaviour
 
     public void Collect()
     {
+        if(isCollecting) return;
+
+        if (_collectSounds.Count > 0)
+        {
+            AudioClip randomClip = _collectSounds[Random.Range(0, _collectSounds.Count)];
+            gameObject.GetComponent<AudioSource>().PlayOneShot(randomClip);
+        }
+
         isCollecting = true;
         enabled = true;
     }
