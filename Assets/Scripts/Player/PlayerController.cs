@@ -31,6 +31,7 @@ public class PlayerController : DamageHandler
     private StatesManager _stationsManager => StatesManager.Instance;
     private AudioManager _audioManager => AudioManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
+    private GameSession _gameSession => GameSession.Instance;
 
     private InventoryController _inventoryController;
 
@@ -160,7 +161,12 @@ public class PlayerController : DamageHandler
 
         _audioManager.PlaySFX("lose");
         _stationsManager.SwitchState<GameOverState>();
-        _gameOverMenuController.Open(Score);
+
+        _gameSession.playerProfile.kills = Kills;
+        _gameSession.playerProfile.score = Score;
+        _gameSession.Save();
+
+        _gameOverMenuController.Open();
     }
 
     public void ChangeExperience(int value)

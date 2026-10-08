@@ -54,7 +54,7 @@ public class WorldGenerator : MonoBehaviour
 
     private void Init()
     {
-        _rng = new System.Random(_gameSession.seed);
+        _rng = new System.Random(_gameSession.playerProfile.seed);
 
         _biomeNoiseOffsets.Clear();
 
@@ -211,7 +211,7 @@ public class WorldGenerator : MonoBehaviour
             int hash = x * 73856093 ^
                        y * 19349663 ^
                        GetStableStringHash(salt) ^
-                       _gameSession.seed;
+                       _gameSession.playerProfile.seed;
 
             System.Random localRng = new System.Random(hash);
 
@@ -223,7 +223,7 @@ public class WorldGenerator : MonoBehaviour
     {
         unchecked
         {
-            int hash = _gameSession.seed;
+            int hash = _gameSession.playerProfile.seed;
 
             hash = hash * 73856093 ^ position.x;
             hash = hash * 19349663 ^ position.y;

@@ -9,10 +9,13 @@ public class PauseMenuController : MonoBehaviour
     private StatesManager _statesManager => StatesManager.Instance;
 
     [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _settingsMenu;
 
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
+
+    private bool isSettingsOpen = false;
 
     void Awake()
     {
@@ -30,6 +33,9 @@ public class PauseMenuController : MonoBehaviour
         _mainMenuButton.GetComponent<Button>().onClick.AddListener(MainMenu);
         _settingsButton.GetComponent<Button>().onClick.AddListener(OpenSettings);
         _quitButton.GetComponent<Button>().onClick.AddListener(Quit);
+
+        _settingsMenu.SetActive(false);
+        _pauseMenu.SetActive(false);
     }
 
     public void Open(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
@@ -50,10 +56,10 @@ public class PauseMenuController : MonoBehaviour
     }
 
 
-    // TODO: implement settings
     private void OpenSettings()
     {
-
+        isSettingsOpen = !isSettingsOpen;
+        _settingsMenu.SetActive(isSettingsOpen);
     }
 
     private void Quit()

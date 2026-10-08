@@ -55,10 +55,10 @@ MonoBehaviour:
   _expOrbsTransform: {fileID: 0}
   _expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
   _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  _deathSound: {fileID: 8300000, guid: 946f6a6c066a87942857ed7774fdcf2f, type: 3}
   experience: 0
   Health: 10
   _killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
-  _deathSound: {fileID: 8300000, guid: b430c2fade3962248974e22e737eecc9, type: 3}
   enemyName: 
   speed: 0
 --- !u!212 &2933896828729506550
@@ -155,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.037340388}
-  m_Radius: 0.04765962
+  m_Offset: {x: 0, y: -0.041645434}
+  m_Radius: 0.039049532
 --- !u!70 &4932027289373721371
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -191,8 +191,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.00018009543}
-  m_Size: {x: 0.10046357, y: 0.15811342}
+  m_Offset: {x: 0, y: 0.003407441}
+  m_Size: {x: 0.10046357, y: 0.16959353}
   m_Direction: 0
 --- !u!50 &84162201373920586
 Rigidbody2D:
@@ -242,7 +242,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.24313855
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

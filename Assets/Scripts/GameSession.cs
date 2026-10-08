@@ -1,12 +1,20 @@
+using System;
 using UnityEngine;
+using ZombieRush.Framework;
+
+public class PlayerProfile
+{
+    public string nickname;
+    public int score;
+    public int seed;
+    public int kills;
+}
 
 public class GameSession : MonoBehaviour
 {
     public static GameSession Instance { get; private set; }
 
-    public string nickname { get; private set; }
-    public int seed { get; private set; }
-    public int score { get; set; }
+    [NonSerialized] public PlayerProfile playerProfile = new();
 
     private void Awake()
     {
@@ -22,8 +30,14 @@ public class GameSession : MonoBehaviour
 
     public void Setup(string nickname, int seed)
     {
-        this.nickname = nickname;
-        this.seed = seed;
-        score = 0;
+        playerProfile.nickname = nickname;
+        playerProfile.seed = seed;
+        playerProfile.score = 0;
+        playerProfile.kills = 0;
+    }
+
+    public void Save()
+    {
+        JsonFile.Save(playerProfile.nickname + "_" + DateTime.Now.ToString("dd.MM.yyyy_HH-mm-ss"), "scoreboard", playerProfile);
     }
 }

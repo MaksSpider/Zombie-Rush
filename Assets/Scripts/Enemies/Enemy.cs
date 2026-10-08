@@ -17,7 +17,6 @@ public class Enemy : DamageHandler
     public AttacksManager attacksManager => AttacksManager.Instance;
 
     [SerializeField] private GameObject _killOrbPrefab;
-    [SerializeField] private AudioClip _deathSound;
 
     private List<EnemyAttribute> _attributes = new();
 
@@ -48,8 +47,6 @@ public class Enemy : DamageHandler
         Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
 
         _emiesManager.AddToEnemyPool(enemyName);
-
-        gameObject.GetComponent<AudioSource>().PlayOneShot(_deathSound);
 
         base.OnObjectDestroy();
     }

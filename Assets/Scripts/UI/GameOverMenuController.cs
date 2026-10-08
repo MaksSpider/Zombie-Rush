@@ -11,12 +11,16 @@ public class GameOverMenuController : MonoBehaviour
     private GameSession _gameSession => GameSession.Instance;
 
     [SerializeField] private GameObject _gameOverMenu;
+    [SerializeField] private GameObject _settingsMenu;
+
     [SerializeField] private TextMeshProUGUI _nicknameTitle;
     [SerializeField] private TextMeshProUGUI _scoreTitle;
 
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
+
+    private bool isSettingsOpen = false;
 
     void Awake()
     {
@@ -34,17 +38,18 @@ public class GameOverMenuController : MonoBehaviour
         _restartButton.GetComponent<Button>().onClick.AddListener(RestartGame);
         _settingsButton.GetComponent<Button>().onClick.AddListener(OpenSettings);
         _quitButton.GetComponent<Button>().onClick.AddListener(Quit);
+
+        _settingsMenu.SetActive(false);
+        _gameOverMenu.SetActive(false);
     }
 
-    public void Open(int score)
+    public void Open()
     {
         _gameOverMenu.SetActive(true);
         _statesManager.SwitchState<PauseState>();
 
-        _gameSession.score = score;
-
-        _nicknameTitle.text = _gameSession.nickname;
-        _scoreTitle.text = "Score: " + score.ToString();
+        _nicknameTitle.text = _gameSession.playerProfile.nickname;
+        _scoreTitle.text = "Score: " + _gameSession.playerProfile.score.ToString();
     }
 
     public void Close()
@@ -58,11 +63,10 @@ public class GameOverMenuController : MonoBehaviour
         SceneManager.LoadScene("Game");
     }
 
-
-    // TODO: implement settings
     private void OpenSettings()
     {
-
+        isSettingsOpen = !isSettingsOpen;
+        _settingsMenu.SetActive(isSettingsOpen);
     }
 
     private void Quit()

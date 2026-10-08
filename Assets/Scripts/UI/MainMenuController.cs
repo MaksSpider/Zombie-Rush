@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ZombieRush.Framework;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -14,12 +17,22 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button _quitButton;
 
     // game setup menu
-
-    [SerializeField] private GameObject SetupMenu;
+    [SerializeField] private GameObject _setupMenu;
     [SerializeField] private TMP_InputField _nicknameInputField;
     [SerializeField] private TMP_InputField _seedInputField;
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _closeButton;
+
+    // scoreboard
+    [SerializeField] private GameObject _scoreboardMenu;
+    [SerializeField] private Transform _scoreboardGrid;
+
+    // settings menu
+    [SerializeField] private GameObject _settingsMenu;
+
+    private List<PlayerProfile> scoreboard = new();
+
+    private bool _isSettingsOpen = false;
 
     void Start()
     {
@@ -30,22 +43,26 @@ public class MainMenuController : MonoBehaviour
         _startButton.onClick.AddListener(StartGame);
         _closeButton.onClick.AddListener(CloseSetupMenu);
 
-        SetupMenu.SetActive(false);
+        _setupMenu.SetActive(false);
+        _settingsMenu.SetActive(false);
 
         _audioManager.PlayMusic("mainmenu");
+
+        scoreboard = JsonFile.LoadAll<PlayerProfile>("scoreboard").OrderByDescending(x => x.score).ToList();
+        DisplayScorebaord();
     }
 
     private void OpenSetupMenu()
     {
-        int seed = Random.Range(int.MinValue, int.MaxValue);
+        int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         _seedInputField.text = seed.ToString();
 
-        SetupMenu.SetActive(true);
+        _setupMenu.SetActive(true);
     }
 
     private void CloseSetupMenu()
     {
-        SetupMenu.SetActive(false);
+        _setupMenu.SetActive(false);
 
         _nicknameInputField.text = string.Empty;
         _seedInputField.text = string.Empty;
@@ -58,18 +75,45 @@ public class MainMenuController : MonoBehaviour
 
         _gameSession.Setup(_nicknameInputField.text, int.Parse(_seedInputField.text));
 
-        SetupMenu.SetActive(false);
+        _setupMenu.SetActive(false);
         SceneManager.LoadScene("Game");
     }
 
-    // TODO: implement settings
     private void OpenSettings()
     {
-
+        _isSettingsOpen = !_isSettingsOpen;
+        _settingsMenu.SetActive(_isSettingsOpen);
     }
 
     private void Quit()
     {
         Application.Quit();
+    }
+
+    private void DisplayScorebaord()
+    {
+        if(scoreboard == null) return;
+        _scoreboardMenu.SetActive(true);
+
+        int currentPlace = 1;
+
+        foreach (PlayerProfile profile in scoreboard)
+        {
+            GameObject scoreObject = new GameObject(profile.nickname);
+            TextMeshProUGUI text = scoreObject.AddComponent<TextMeshProUGUI>();
+
+            text.text = currentPlace + ". " + profile.nickname + ": " + profile.score;
+
+            text.fontSize = currentPlace switch
+            {
+                1 => 32,
+                2 or 3 => 26,
+                _ => 22
+            };
+
+            scoreObject.transform.SetParent(_scoreboardGrid, false);
+
+            currentPlace++;
+        }
     }
 }

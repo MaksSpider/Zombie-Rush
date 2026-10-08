@@ -46,13 +46,13 @@ public class AttacksManager : MonoBehaviour
 
             Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
 
-            spawnPosition += direction * weapon.bulletSpawnOffset + offset;
+            Vector2 bulletPosition = spawnPosition + offset + direction * weapon.bulletSpawnOffset;
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
             GameObject bulletPrefab = weapon.bulletGameObject == null ? _bulletPrefab : weapon.bulletGameObject;
-            GameObject bulletGameObject = Instantiate(bulletPrefab, spawnPosition, rotation, transform);
+            GameObject bulletGameObject = Instantiate(bulletPrefab, bulletPosition, rotation, transform);
 
             BulletController bulletCtr = bulletGameObject.GetComponent<BulletController>();
 

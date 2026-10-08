@@ -55,10 +55,10 @@ MonoBehaviour:
   _expOrbsTransform: {fileID: 0}
   _expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
   _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  _deathSound: {fileID: 8300000, guid: 946f6a6c066a87942857ed7774fdcf2f, type: 3}
   experience: 0
   Health: 10
   _killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
-  _deathSound: {fileID: 8300000, guid: b430c2fade3962248974e22e737eecc9, type: 3}
   enemyName: 
   speed: 0
 --- !u!212 &2933896828729506550

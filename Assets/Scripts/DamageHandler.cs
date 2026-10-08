@@ -14,6 +14,8 @@ public class DamageHandler : MonoBehaviour
     [SerializeField] private GameObject _expOrbPrefab;
     [SerializeField] private GameObject _damagePopupPrefab;
 
+    [SerializeField] private AudioClip _deathSound;
+
     [SerializeField] public int experience = 0;
 
     private bool _isDying = false;
@@ -50,6 +52,17 @@ public class DamageHandler : MonoBehaviour
     public virtual void OnObjectDestroy()
     {
         _isDying = true;
+
+        if (_deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(_deathSound, transform.position);
+        }
+
+        ParticleSystem particleSystem = GetComponent<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            particleSystem.Play();
+        }
 
         int xpToSpawn = Mathf.RoundToInt((float)experience * (1 + _upgradesController.GetBonusValues("additionalXp")));
 
