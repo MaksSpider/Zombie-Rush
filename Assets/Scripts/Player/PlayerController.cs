@@ -154,11 +154,8 @@ public class PlayerController : DamageHandler
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
     }
 
-    // TODO: implement death mechanic
     public override void OnObjectDestroy()
     {
-        // animation
-
         _audioManager.PlaySFX("lose");
         _stationsManager.SwitchState<GameOverState>();
 
