@@ -56,7 +56,9 @@ public class GameOverMenuController : MonoBehaviour
 
     public void Close()
     {
+        isSettingsOpen = false;
         _gameOverMenu.SetActive(false);
+        _settingsMenu.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
     }
 

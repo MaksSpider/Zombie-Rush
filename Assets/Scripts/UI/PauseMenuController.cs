@@ -56,7 +56,9 @@ public class PauseMenuController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.3f);
 
+        isSettingsOpen = false;
         _pauseMenu.SetActive(false);
+        _settingsMenu.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
     }
 
