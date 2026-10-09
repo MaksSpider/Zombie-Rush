@@ -41,7 +41,7 @@ MonoBehaviour:
     attributes: 0000000002000000i
   - name: Axe Zombie
     prefab: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
-    spawnDay: 1
+    spawnDay: 2
     spawnChance: 0.7
     health: 5
     speed: 1.2
@@ -70,7 +70,7 @@ MonoBehaviour:
     attributes: 0100000003000000i
   - name: Fast Zombie
     prefab: {fileID: 6668317591216721449, guid: b288d05d006a4294084fe95fba11755b, type: 3}
-    spawnDay: 1
+    spawnDay: 3
     spawnChance: 0.5
     health: 10
     speed: 3
@@ -105,7 +105,7 @@ MonoBehaviour:
     attributes: 0000000002000000i
   - name: Heavy Zombie
     prefab: {fileID: 6668317591216721449, guid: 82e24961933b56f4b9316f2e8d0b4490, type: 3}
-    spawnDay: 1
+    spawnDay: 4
     spawnChance: 0.2
     health: 80
     speed: 1

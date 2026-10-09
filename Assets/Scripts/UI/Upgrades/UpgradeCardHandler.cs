@@ -71,13 +71,14 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
             null
         );
 
-        
-        if(!isInside)
+
+        if (!isInside)
         {
             _isHolding = false;
             transform.SetParent(_originalParent, true);
             transform.SetSiblingIndex(_originalSiblingIndex);
             _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
+            _cursorManager.SetDefault();
             return;
         }
 
@@ -86,6 +87,8 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
         for (int i = 0; i < _upgradesController.playerUpgradeCards.transform.childCount; i++)
         {
             Transform child = _upgradesController.playerUpgradeCards.transform.GetChild(i);
+
+            if(child.name == "Background") continue;
 
             bool insideUpgrade = RectTransformUtility.RectangleContainsScreenPoint(
                 child.GetComponent<RectTransform>(),
@@ -102,22 +105,34 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         UpgradeCard upgradeCard = gameObject.GetComponent<UpgradeCard>();
 
-        if (upgradeToSwitch == null || _upgradesController.GetFirstFreeSlot().exist)
+        if (_upgradesController.GetFirstFreeSlot().exist)
         {
             _upgradesController.AddUpgrade(_upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
+        }
+        else if(upgradeToSwitch == null)
+        {
+            _isHolding = false;
+            transform.SetParent(_originalParent, true);
+            transform.SetSiblingIndex(_originalSiblingIndex);
+            _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
+            _cursorManager.SetDefault();
+            return;
         }
         else
         {
             UpgradeCard upgradeCardToSwitch = upgradeToSwitch.Find("CardButton").GetComponent<UpgradeCard>();
             _upgradesController.AddUpgradeOnSlot(upgradeCardToSwitch.upgradeIndex, _upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
+
+            Destroy(upgradeToSwitch.gameObject);
         }
 
         int siblingIndex = GetClosestSiblingIndex(mousePosition);
 
+        _isHolding = false;
+
         transform.SetParent(_upgradesController.playerUpgradeCards.transform, false);
         transform.SetSiblingIndex(siblingIndex);
 
-        _isHolding = false;
         _cursorManager.SetDefault();
         _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
         _upgradesController.CloseUpgradesPopUp();

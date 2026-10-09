@@ -24,11 +24,13 @@ public class SettingsMenuController : MonoBehaviour
         _fullscreenToggle.onValueChanged.AddListener(isOn =>
         {
             if (isOn) ChangeScreenType(0f);
+            else ChangeScreenType(1f);
         });
 
         _windowedToggle.onValueChanged.AddListener(isOn =>
         {
             if (isOn) ChangeScreenType(1f);
+            else ChangeScreenType(0f);
         });
     }
 

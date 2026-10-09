@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -70,19 +71,33 @@ public class UpgradesController : MonoBehaviour
 
     void Start()
     {
-        Invoke(nameof(Debug), 1f);
+        _upgradesPickerPopUp.SetActive(false);
+        //Invoke(nameof(Debug), 1f);
     }
 
-    // debug
+    // for debuging
     void Debug()
     {
-        //DisplayUpgradesWindow(1);
 
         //AddUpgrade("additional_xp_2");
 
         // debug
         //AddUpgrade(_upgradesData.upgradesData[0]);
+        //AddUpgrade(_upgradesData.upgradesData[1]);
         //AddUpgrade(_upgradesData.upgradesData[7]);
+
+        DisplayUpgradesWindow(4);
+    }
+
+    private IEnumerator AfterCloseAnimation()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        upgradesToPick.Clear();
+        isSelectingUpgradeCard = false;
+
+        _upgradesPickerPopUp.SetActive(false);
+        _statesManager.SwitchState<PlayingState>();
     }
 
     public void DisplayUpgradesWindow(int level)
@@ -99,7 +114,7 @@ public class UpgradesController : MonoBehaviour
 
         for (int i = 0; i < maxUpgradesToPickAmount; i++)
         {
-            (bool finded, Upgrade upgrade) = RandomUpgrade(level);
+            (bool finded, Upgrade upgrade) = RandomUpgrade(level, upgradesToPick);
             if(!finded) continue;
 
             upgradesToPick.Add(upgrade);
@@ -116,7 +131,6 @@ public class UpgradesController : MonoBehaviour
             cardCtr.icon.sprite = upgrade.icon;
             cardCtr.title.text = upgrade.title;
             cardCtr.description.text = upgrade.description;
-
         }
 
         for (int i = playerUpgradeCards.childCount - 1; i >= 0; i--)
@@ -150,18 +164,17 @@ public class UpgradesController : MonoBehaviour
 
         _upgradesPickerPopUp.SetActive(true);
         _statesManager.SwitchState<UpgradeState>();
+        _upgradesPickerPopUp.transform.Find("Menu").GetComponent<UIEnterAnimations>().EnterAnimation();
     }
 
     public void CloseUpgradesPopUp()
     {
-        upgradesToPick.Clear();
-        isSelectingUpgradeCard = false;
-
-        _upgradesPickerPopUp.SetActive(false);
-        _statesManager.SwitchState<PlayingState>();
+        _upgradesPickerPopUp.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation();
+        StartCoroutine(AfterCloseAnimation());
     }
 
-    public (bool finded, Upgrade upgrade) RandomUpgrade(int level)
+
+    public (bool finded, Upgrade upgrade) RandomUpgrade(int level, List<Upgrade> upgradesToExclude =  null, bool excludeOwned = false)
     {
         List<Upgrade> upgradeList = new List<Upgrade>();
         List<float> chances = new List<float>();
@@ -170,9 +183,9 @@ public class UpgradesController : MonoBehaviour
 
         foreach (Upgrade upgrade in _upgradesData.upgradesData)
         {
-            if (upgradesToPick.Count > 0 && upgradesToPick.Contains(upgrade)) continue;
+            if (upgradesToExclude != null && upgradesToExclude.Count > 0 && upgradesToExclude.Contains(upgrade)) continue;
 
-            if (_playerUpgrades.Count > 0)
+            if (excludeOwned && _playerUpgrades.Count > 0)
             {
                 bool alreadyHave = false;
                 foreach (UpgradeSlot upgradeSlot in _playerUpgrades.Values)
@@ -192,7 +205,7 @@ public class UpgradesController : MonoBehaviour
             {
                 if (chance.name == upgrade.type)
                 {
-                    multiplier = chance.value;
+                    multiplier *= chance.value * level;
                     break;
                 }
             }
@@ -203,7 +216,7 @@ public class UpgradesController : MonoBehaviour
                 {
                     upgradeList.Add(upgrade);
 
-                    float chanceValue = chance.value * (multiplier * level);
+                    float chanceValue = chance.value * multiplier;
                     chances.Add(chanceValue);
                     totalChance += chanceValue;
 

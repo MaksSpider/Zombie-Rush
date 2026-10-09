@@ -60,6 +60,7 @@ public class GameOverMenuController : MonoBehaviour
         _statesManager.SwitchState<PlayingState>();
     }
 
+
     private void RestartGame()
     {
         SceneManager.LoadScene("Game");
