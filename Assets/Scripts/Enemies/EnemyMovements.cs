@@ -5,6 +5,7 @@ public class SimpleMovement: EnemyAttribute
     public override void UpdateAttribute(float deltaTime)
     {
         Vector2 dir = (self.target.position - transform.position).normalized;
+        self.movementDirection = dir;
         self.rb.MovePosition(self.rb.position + dir * self.speed * deltaTime);
     }
 }
@@ -26,9 +27,8 @@ public class CircleMovement : EnemyAttribute
         Vector2 targetPosition = (Vector2)self.target.position + circleOffset;
 
         Vector2 dir = (targetPosition - self.rb.position).normalized;
+        self.movementDirection = dir;
 
-        self.rb.MovePosition(
-            self.rb.position + dir * self.speed * deltaTime
-        );
+        self.rb.MovePosition(self.rb.position + dir * self.speed * deltaTime);
     }
 }

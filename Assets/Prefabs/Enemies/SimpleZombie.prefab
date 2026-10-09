@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4932027289373721371}
   - component: {fileID: 84162201373920586}
   - component: {fileID: -7115573912437162348}
+  - component: {fileID: 2162019022932909266}
   m_Layer: 6
   m_Name: SimpleZombie
   m_TagString: Enemy
@@ -31,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 6668317591216721449}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0125, y: -0.0419, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -59,8 +60,7 @@ MonoBehaviour:
   experience: 0
   Health: 10
   _killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
-  enemyName: 
-  speed: 0
+  movementDirection: {x: 0, y: 0}
 --- !u!212 &2933896828729506550
 SpriteRenderer:
   serializedVersion: 3
@@ -110,7 +110,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3794453406630769296, guid: 6e99fb425da806a46909a87b9f5f46e8, type: 3}
+  m_Sprite: {fileID: -1622237015, guid: 325c9d651aaa16343aa7e283c1c14f36, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.041645434}
-  m_Radius: 0.039049532
+  m_Offset: {x: 0, y: -0.05}
+  m_Radius: 0.033162814
 --- !u!70 &4932027289373721371
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -191,8 +191,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.003407441}
-  m_Size: {x: 0.10046357, y: 0.16959353}
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.10046357, y: 0.1595093}
   m_Direction: 0
 --- !u!50 &84162201373920586
 Rigidbody2D:
@@ -318,3 +318,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &2162019022932909266
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6668317591216721449}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f2afd1ed6ad0e3d469c69a6a26a15e4d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

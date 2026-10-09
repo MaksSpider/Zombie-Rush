@@ -2468,15 +2468,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.43120003
       objectReference: {fileID: 0}
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.23120001
       objectReference: {fileID: 0}
     - target: {fileID: 4151562487793647162, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_Pivot.x
@@ -2561,6 +2561,10 @@ PrefabInstance:
     - target: {fileID: 6649197343486450617, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_Name
       value: Settings
+      objectReference: {fileID: 0}
+    - target: {fileID: 6649197343486450617, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6715,7 +6719,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.000048922248, y: 0.014503863}
+  m_Offset: {x: 0.000048922248, y: -0.065}
   m_Size: {x: 0.07303153, y: 0.029667314}
   m_Direction: 1
 --- !u!50 &1595515486
@@ -6802,7 +6806,7 @@ SpriteRenderer:
   m_Size: {x: 0.11, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!114 &1595515488
@@ -7018,7 +7022,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.08}
+  m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.11, y: 0.16}
   m_Direction: 0
 --- !u!1 &1612623113

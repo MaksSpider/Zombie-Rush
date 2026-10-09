@@ -3,20 +3,35 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    private float lifeTime = 0f;
+    private float lifeTime;
+
+    private Rigidbody2D _rb;
 
     [NonSerialized] public int damage;
-    [NonSerialized] public bool targetHited = false;
+    [NonSerialized] public bool targetHited;
     [NonSerialized] public Vector2 direction;
-    [NonSerialized] public float maxLifeTime = 0f;
+    [NonSerialized] public float maxLifeTime;
     [NonSerialized] public float speed;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody2D>();
+        _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+    }
 
     public void FixedTick(float deltaTime)
     {
         lifeTime += deltaTime;
 
-        if(lifeTime > maxLifeTime) Destroy(gameObject);
+        if (lifeTime >= maxLifeTime)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-        transform.position += (Vector3)(direction * speed * deltaTime);
+        Vector2 nextPosition =
+            _rb.position + direction.normalized * speed * deltaTime;
+
+        _rb.MovePosition(nextPosition);
     }
 }

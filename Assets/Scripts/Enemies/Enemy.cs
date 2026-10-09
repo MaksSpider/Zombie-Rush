@@ -11,52 +11,86 @@ public abstract class EnemyAttribute : MonoBehaviour
 
 public class Enemy : DamageHandler
 {
-    private EnemiesManager _emiesManager => EnemiesManager.Instance; 
-    
+    private EnemiesManager _enemiesManager => EnemiesManager.Instance;
+
     public PlayerController playerController => PlayerController.Instance;
     public AttacksManager attacksManager => AttacksManager.Instance;
 
     [SerializeField] private GameObject _killOrbPrefab;
 
-    private List<EnemyAttribute> _attributes = new();
+    private readonly List<EnemyAttribute> _attributes = new();
+
+    private bool _isDead = false;
 
     [NonSerialized] public Rigidbody2D rb;
     [NonSerialized] public Transform target;
+    [NonSerialized] public Animator animator;
 
-    public string enemyName;
-    public float speed;
-    public IWeapon weapon;
+    public Vector2 movementDirection;
 
-    void Awake()
+    [NonSerialized] public string enemyName;
+    [NonSerialized] public float speed;
+    [NonSerialized] public IWeapon weapon;
+
+    private void Awake()
     {
+        animator = GetComponent<Animator>();
+
         rb = GetComponent<Rigidbody2D>();
         target = playerController.transform;
     }
 
     public void FixedTick(float deltaTime)
     {
+        if (_isDead) return;
         foreach (EnemyAttribute a in _attributes)
         {
             a.UpdateAttribute(deltaTime);
         }
+
+        if (animator == null || rb == null)
+            return;
+
+        if (movementDirection.sqrMagnitude > 0.001f)
+        {
+            animator.SetFloat("DirectionHorizontal", movementDirection.x);
+            animator.SetFloat("DirectionVertical", movementDirection.y);
+        }
+    }
+
+    private IEnumerator DestroyAfterAnimation()
+    {
+        yield return new WaitForSeconds(1.2f);
+
+        playerController.ChangeKills(1);
+
+        Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
+
+        _enemiesManager.AddToEnemyPool(enemyName);
+
+        base.OnObjectDestroy();
     }
 
     public override void OnObjectDestroy()
     {
-        playerController.ChangeKills(1);
-        Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
+        _isDead = true;
 
-        _emiesManager.AddToEnemyPool(enemyName);
+        rb.simulated = false;
 
-        base.OnObjectDestroy();
+        foreach (Collider2D col in GetComponents<Collider2D>())
+        {
+            col.enabled = false;
+        }
+
+        animator.SetTrigger("Death");
+
+        StartCoroutine(DestroyAfterAnimation());
     }
 
     public T AddAttribute<T>() where T : EnemyAttribute
     {
         T attribute = gameObject.AddComponent<T>();
-
         attribute.self = this;
-
         _attributes.Add(attribute);
 
         return attribute;

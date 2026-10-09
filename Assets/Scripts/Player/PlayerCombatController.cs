@@ -148,11 +148,11 @@ public class PlayerCombatController : MonoBehaviour
                 return;
             }
 
-            LayerMask include = LayerMask.GetMask("Player", "Enemy");
+            LayerMask include = LayerMask.GetMask("Enemy");
 
             float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletsDamage");
 
-            _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, new Vector2(0, 0.15f), damageMultiplier, include);
+            _attacksManager.CreateBullet(playerRb.position, baseDirection, normalWeapon, _maxSpreadAngle, new Vector2(0, 0), damageMultiplier, include);
 
             _audioManager.PlaySFX(normalWeapon.attackSound);
             UpdateUI();

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class MeleeAttack: EnemyAttribute
@@ -18,6 +17,8 @@ public class MeleeAttack: EnemyAttribute
 
             self.gameObject.GetComponent<AudioSource>().PlayOneShot(meleeWeapon.attackSound);
             self.playerController.OnDamageDealt(meleeWeapon.damage);
+
+            self.animator.SetTrigger("Attack");
         }
     }
 }
@@ -39,7 +40,9 @@ public class RangedAttack : EnemyAttribute
 
             LayerMask include = LayerMask.GetMask("Player");
 
-            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, 30f, new Vector2(0, 0.15f), 1f, include);
+            self.animator.SetTrigger("Attack");
+
+            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, 30f, new Vector2(0, 0), 1f, include);
             self.gameObject.GetComponent<AudioSource>().PlayOneShot(normalWeapon.attackSound);
         }
     }
