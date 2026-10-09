@@ -30,6 +30,7 @@ public class Enemy : DamageHandler
 
     [NonSerialized] public string enemyName;
     [NonSerialized] public float speed;
+    [NonSerialized] public float damageModifier;
     [NonSerialized] public IWeapon weapon;
 
     private void Awake()

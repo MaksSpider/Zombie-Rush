@@ -45,6 +45,7 @@ public class MainMenuController : MonoBehaviour
 
         _setupMenu.SetActive(false);
         _settingsMenu.SetActive(false);
+        _scoreboardMenu.SetActive(false);
 
         _audioManager.PlayMusic("mainmenu");
 
@@ -92,7 +93,7 @@ public class MainMenuController : MonoBehaviour
 
     private void DisplayScorebaord()
     {
-        if(scoreboard == null) return;
+        if(scoreboard == null || scoreboard.Count == 0) return;
         _scoreboardMenu.SetActive(true);
 
         int currentPlace = 1;

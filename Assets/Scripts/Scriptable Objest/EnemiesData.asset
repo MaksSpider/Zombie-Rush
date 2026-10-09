@@ -19,6 +19,7 @@ MonoBehaviour:
     spawnChance: 0.9
     health: 10
     speed: 1.6
+    damageModifier: 1
     exp: 2
     weaponItemId: 10
     loot:
@@ -40,10 +41,11 @@ MonoBehaviour:
     attributes: 0000000002000000i
   - name: Axe Zombie
     prefab: {fileID: 6668317591216721449, guid: 28a9e73c8ca5a0a4bab038e7055757c4, type: 3}
-    spawnDay: 2
+    spawnDay: 1
     spawnChance: 0.7
     health: 5
     speed: 1.2
+    damageModifier: 1
     exp: 3
     weaponItemId: 9
     loot:
@@ -72,6 +74,7 @@ MonoBehaviour:
     spawnChance: 0.5
     health: 10
     speed: 3
+    damageModifier: 2
     exp: 4
     weaponItemId: 9
     loot:
@@ -105,7 +108,8 @@ MonoBehaviour:
     spawnDay: 4
     spawnChance: 0.2
     health: 80
-    speed: 0.6
+    speed: 1
+    damageModifier: 5
     exp: 5
     weaponItemId: 10
     loot:

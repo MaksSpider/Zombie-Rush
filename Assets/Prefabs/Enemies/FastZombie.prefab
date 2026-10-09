@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4932027289373721371}
   - component: {fileID: 84162201373920586}
   - component: {fileID: 1935598597247635709}
+  - component: {fileID: 1382406095647368458}
   m_Layer: 6
   m_Name: FastZombie
   m_TagString: Enemy
@@ -110,7 +111,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6144407864174073582, guid: 4e6a07df27a017543b38272d4363c714, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.6367924, b: 0.6367924, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -133,7 +134,7 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1399
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 640
@@ -154,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.00090395287, y: -0.047533203}
-  m_Radius: 0.028515931
+  m_Offset: {x: 0, y: 0.035}
+  m_Radius: 0.033162814
 --- !u!70 &4932027289373721371
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ CapsuleCollider2D:
     m_Bits: 128
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 375
+    m_Bits: 1399
   m_LayerOverridePriority: 2
   m_ForceSendLayers:
     serializedVersion: 2
@@ -190,8 +191,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0010855831, y: -0.004093051}
-  m_Size: {x: 0.09160105, y: 0.14194614}
+  m_Offset: {x: 0, y: 0.08}
+  m_Size: {x: 0.10046357, y: 0.1595093}
   m_Direction: 0
 --- !u!50 &84162201373920586
 Rigidbody2D:
@@ -317,3 +318,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &1382406095647368458
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6668317591216721449}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f2afd1ed6ad0e3d469c69a6a26a15e4d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

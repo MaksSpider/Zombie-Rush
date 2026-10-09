@@ -278,8 +278,9 @@ public class EnemiesManager : MonoBehaviour
         enemy.Health = (int)(enemyToSpawn.health * difficultyModifier);
         enemy.speed = (int)(enemyToSpawn.speed * difficultyModifier);
         enemy.experience = (int)(enemyToSpawn.exp * difficultyModifier);
+        enemy.damageModifier = enemyToSpawn.damageModifier * difficultyModifier;
 
-        if(enemyToSpawn.loot.Count > 0)
+        if (enemyToSpawn.loot.Count > 0)
         {
             DropOnDestroyController dropCtr = enemy.gameObject.AddComponent<DropOnDestroyController>();
             dropCtr.loot = enemyToSpawn.loot;

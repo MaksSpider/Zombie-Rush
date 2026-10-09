@@ -16,7 +16,7 @@ public class MeleeAttack: EnemyAttribute
             _attackTimer = meleeWeapon.attackRate;
 
             self.gameObject.GetComponent<AudioSource>().PlayOneShot(meleeWeapon.attackSound);
-            self.playerController.OnDamageDealt(meleeWeapon.damage);
+            self.playerController.OnDamageDealt((int)((float)meleeWeapon.damage * self.damageModifier));
 
             self.animator.SetTrigger("Attack");
         }
@@ -42,7 +42,7 @@ public class RangedAttack : EnemyAttribute
 
             self.animator.SetTrigger("Attack");
 
-            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, 30f, new Vector2(0, 0), 1f, include);
+            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, 30f, new Vector2(0, 0), self.damageModifier, include);
             self.gameObject.GetComponent<AudioSource>().PlayOneShot(normalWeapon.attackSound);
         }
     }

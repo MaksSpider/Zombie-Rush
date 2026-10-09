@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4932027289373721371}
   - component: {fileID: 84162201373920586}
   - component: {fileID: 7926484444247127105}
+  - component: {fileID: 4086344649046147910}
   m_Layer: 6
   m_Name: AxeZombie
   m_TagString: Enemy
@@ -109,12 +110,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 757614673138258070, guid: 3f85c10773fb21045aa48a0fb6eaa65c, type: 3}
+  m_Sprite: {fileID: -1809315971955709277, guid: e7aa09850ae57374c83569523f7aac30, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.15, y: 0.2}
+  m_Size: {x: 0.16, y: 0.23}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -154,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.007043533, y: -0.063734874}
-  m_Radius: 0.030050827
+  m_Offset: {x: 0.024, y: 0.047005203}
+  m_Radius: 0.029045623
 --- !u!70 &4932027289373721371
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -190,7 +191,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0073957033, y: 0}
+  m_Offset: {x: 0.024, y: 0.11}
   m_Size: {x: 0.07898081, y: 0.18628752}
   m_Direction: 0
 --- !u!50 &84162201373920586
@@ -317,3 +318,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &4086344649046147910
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6668317591216721449}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 56a45ddd9c7aea04d8c847479f57e3a2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

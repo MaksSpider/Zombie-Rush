@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -42,10 +43,19 @@ public class PauseMenuController : MonoBehaviour
     {
         _pauseMenu.SetActive(true);
         _statesManager.SwitchState<PauseState>();
+        _pauseMenu.transform.Find("Menu").GetComponent<UIEnterAnimations>().EnterAnimation();
     }
 
     public void Close(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
+        _pauseMenu.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation();
+        StartCoroutine(AfterCloseAnimation());
+    }
+
+    private IEnumerator AfterCloseAnimation()
+    {
+        yield return new WaitForSeconds(0.3f);
+
         _pauseMenu.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
     }

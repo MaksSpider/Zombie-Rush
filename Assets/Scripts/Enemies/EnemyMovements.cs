@@ -27,7 +27,8 @@ public class CircleMovement : EnemyAttribute
         Vector2 targetPosition = (Vector2)self.target.position + circleOffset;
 
         Vector2 dir = (targetPosition - self.rb.position).normalized;
-        self.movementDirection = dir;
+
+        self.movementDirection = (self.target.position - transform.position).normalized;;
 
         self.rb.MovePosition(self.rb.position + dir * self.speed * deltaTime);
     }

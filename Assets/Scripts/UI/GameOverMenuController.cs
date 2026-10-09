@@ -50,6 +50,8 @@ public class GameOverMenuController : MonoBehaviour
 
         _nicknameTitle.text = _gameSession.playerProfile.nickname;
         _scoreTitle.text = "Score: " + _gameSession.playerProfile.score.ToString();
+
+        _gameOverMenu.transform.Find("Menu").GetComponent<UIEnterAnimations>().EnterAnimation();
     }
 
     public void Close()
