@@ -59,8 +59,7 @@ MonoBehaviour:
   experience: 0
   Health: 10
   _killOrbPrefab: {fileID: 8645952043942197739, guid: b249afa15216cb94daae4082a2c784fa, type: 3}
-  enemyName: 
-  speed: 0
+  movementDirection: {x: 0, y: 0}
 --- !u!212 &2933896828729506550
 SpriteRenderer:
   serializedVersion: 3
@@ -119,7 +118,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
   m_BlendShapeWeights: []
 --- !u!58 &2043212035697824849
 CircleCollider2D:

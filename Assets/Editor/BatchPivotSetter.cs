@@ -1,6 +1,8 @@
 
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.U2D.Sprites;
+using System.Linq;
 
 public class BatchPivotSetter : EditorWindow
 {
@@ -14,8 +16,10 @@ public class BatchPivotSetter : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("Set Pivot to Bottom Center",
-            EditorStyles.boldLabel);
+        GUILayout.Label(
+            "Set Pivot to Bottom Center",
+            EditorStyles.boldLabel
+        );
 
         targetFolder = (DefaultAsset)EditorGUILayout.ObjectField(
             "Target Folder",
@@ -44,16 +48,37 @@ public class BatchPivotSetter : EditorWindow
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
 
-                TextureImporter importer =
+                var factory =
+                    new SpriteDataProviderFactories();
+
+                factory.Init();
+
+                var importer =
                     AssetImporter.GetAtPath(path) as TextureImporter;
 
                 if (importer == null ||
                     importer.textureType != TextureImporterType.Sprite)
                     continue;
 
-                importer.spritePivot = new Vector2(0.5f, 0f);
+                var dataProvider =
+                    factory.GetSpriteEditorDataProviderFromObject(importer);
 
-                EditorUtility.SetDirty(importer);
+                if (dataProvider == null)
+                    continue;
+
+                dataProvider.InitSpriteEditorDataProvider();
+
+                var spriteRects = dataProvider.GetSpriteRects();
+
+                foreach (var rect in spriteRects)
+                {
+                    rect.alignment = SpriteAlignment.Custom;
+                    rect.pivot = new Vector2(0.5f, 0f);
+                }
+
+                dataProvider.SetSpriteRects(spriteRects);
+                dataProvider.Apply();
+
                 importer.SaveAndReimport();
 
                 changed++;

@@ -48,13 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49270aaa77971684a8dcf1c8d364f385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExlosiveObjectController
-  isDestructable: 1
-  health: 1
+  _isDestructable: 0
+  _expSpawnRadius: 1.5
+  _damageDisplayOffset: {x: 0, y: 0.25}
+  _expOrbsTransform: {fileID: 0}
+  _expOrbPrefab: {fileID: 0}
+  _damagePopupPrefab: {fileID: 0}
+  _deathSound: {fileID: 0}
   experience: 0
-  expSpawnRadius: 1.5
-  damageDisplayOffset: {x: 0, y: 0.25}
-  expOrbPrefab: {fileID: 0}
-  damagePopupPrefab: {fileID: 0}
+  Health: 1
   explosionRange: 2
   explosionDamage: 30
   explosionCurve:
@@ -102,13 +104,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9caf51f1813d80e4dbb75ef2dc84d3a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectController
-  isDestructable: 1
-  health: 1
+  _isDestructable: 0
+  _expSpawnRadius: 1.5
+  _damageDisplayOffset: {x: 0, y: 0.25}
+  _expOrbsTransform: {fileID: 0}
+  _expOrbPrefab: {fileID: 0}
+  _damagePopupPrefab: {fileID: 0}
+  _deathSound: {fileID: 0}
   experience: 0
-  expSpawnRadius: 1.5
-  damageDisplayOffset: {x: 0, y: 0.25}
-  expOrbPrefab: {fileID: 2134258344108940189, guid: ac146208aa73bba4a8d720793dfca5a9, type: 3}
-  damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
+  Health: 1
 --- !u!70 &2722482922267127409
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -185,7 +189,7 @@ CapsuleCollider2D:
   m_Direction: 0
 --- !u!212 &4912496463271395655
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -241,4 +245,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
+  m_BlendShapeWeights: []

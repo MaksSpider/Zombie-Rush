@@ -6719,7 +6719,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.000048922248, y: -0.065}
+  m_Offset: {x: 0.000048922248, y: 0.015}
   m_Size: {x: 0.07303153, y: 0.029667314}
   m_Direction: 1
 --- !u!50 &1595515486
@@ -6806,8 +6806,8 @@ SpriteRenderer:
   m_Size: {x: 0.11, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
-  m_SpriteSortPoint: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 1
   m_BlendShapeWeights: []
 --- !u!114 &1595515488
 MonoBehaviour:
@@ -7022,8 +7022,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.11, y: 0.16}
+  m_Offset: {x: 0, y: 0.08}
+  m_Size: {x: 0.11, y: 0.172}
   m_Direction: 0
 --- !u!1 &1612623113
 GameObject:
