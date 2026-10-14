@@ -13,91 +13,43 @@ MonoBehaviour:
   m_Name: Items
   m_EditorClassIdentifier: Assembly-CSharp::Items
   itemsData:
-  - <id>k__BackingField: 0
-    <name>k__BackingField: Pistol
-    <description>k__BackingField: Pistol desc
-    <icon>k__BackingField: {fileID: 4459829494417465688, guid: a381d72fe1df53f4998bb23bb6faa3e3, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
-  - <id>k__BackingField: 1
-    <name>k__BackingField: Rifle
-    <description>k__BackingField: Rifle desc
-    <icon>k__BackingField: {fileID: 3431268230107433469, guid: 145f7d79661af01428d60fa614360a91, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
-  - <id>k__BackingField: 2
-    <name>k__BackingField: Shotgun
-    <description>k__BackingField: Shotgun desc
-    <icon>k__BackingField: {fileID: 4161039767378812005, guid: 1d1928182aa05ec479674153c26bee15, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
-  - <id>k__BackingField: 3
+  - <id>k__BackingField: ammo_pistol
     <name>k__BackingField: Pistol ammo box
     <description>k__BackingField: Pistol ammo box desc
     <icon>k__BackingField: {fileID: -7833240276873349136, guid: b87245b8db635ee46a747a4f97f29660, type: 3}
     <maxStack>k__BackingField: 16
     <type>k__BackingField: common
     <isUsable>k__BackingField: 1
-    <usageDuration>k__BackingField: 1
-  - <id>k__BackingField: 4
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: 05046bf6d965d804ebcf9e458dd8197e, type: 2}
+  - <id>k__BackingField: ammo_rifle
     <name>k__BackingField: Rifle ammo box
     <description>k__BackingField: Rifle ammo box desc
     <icon>k__BackingField: {fileID: -3339920041963615713, guid: d3d7e1a071c99ea4c9d13454a773dd0c, type: 3}
     <maxStack>k__BackingField: 16
-    <type>k__BackingField: rare
+    <type>k__BackingField: common
     <isUsable>k__BackingField: 1
-    <usageDuration>k__BackingField: 1
-  - <id>k__BackingField: 5
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: f76960835bae3974a9f51664ce3b599e, type: 2}
+  - <id>k__BackingField: ammo_shotgun
     <name>k__BackingField: Shotgun ammo box
     <description>k__BackingField: Shotgun ammo box desc
     <icon>k__BackingField: {fileID: 158777831206505336, guid: 28eb11fbf0c66e44cbc8c4d23357a81c, type: 3}
     <maxStack>k__BackingField: 16
-    <type>k__BackingField: legendary
+    <type>k__BackingField: common
     <isUsable>k__BackingField: 1
-    <usageDuration>k__BackingField: 1
-  - <id>k__BackingField: 6
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: fba4cd07fc32a2b42a9434cd8d31669d, type: 2}
+  - <id>k__BackingField: medkit
     <name>k__BackingField: Medkit
     <description>k__BackingField: Medkit desc
     <icon>k__BackingField: {fileID: -8350017915244704703, guid: 9f6f215c9dd6d6d449231526fb15b54e, type: 3}
     <maxStack>k__BackingField: 16
     <type>k__BackingField: epic
     <isUsable>k__BackingField: 1
-    <usageDuration>k__BackingField: 4
-  - <id>k__BackingField: 7
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: 058e24bcfad016b468934c34150c4220, type: 2}
+  - <id>k__BackingField: bandage
     <name>k__BackingField: Bandage
     <description>k__BackingField: Bandage desc
     <icon>k__BackingField: {fileID: 2034566960907004412, guid: ccccdbf006750494ba1745ab17493835, type: 3}
     <maxStack>k__BackingField: 8
     <type>k__BackingField: rare
     <isUsable>k__BackingField: 1
-    <usageDuration>k__BackingField: 2
-  - <id>k__BackingField: 8
-    <name>k__BackingField: Bat
-    <description>k__BackingField: Bat desc
-    <icon>k__BackingField: {fileID: -8419024768148562069, guid: 043fb6874a711734087770642c724cc1, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
-  - <id>k__BackingField: 9
-    <name>k__BackingField: Throwing Axe
-    <description>k__BackingField: Throwing Axe desc
-    <icon>k__BackingField: {fileID: -6946007662723423348, guid: a90c1280f63d31f48be816842e17031c, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
-  - <id>k__BackingField: 10
-    <name>k__BackingField: Zombie Hands
-    <description>k__BackingField: Zombie Hands desc
-    <icon>k__BackingField: {fileID: -3331023729081140327, guid: 71ac75878a6d90d4ca796510ff9147cc, type: 3}
-    <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
-    <isUsable>k__BackingField: 0
-    <usageDuration>k__BackingField: 0
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: ece308678a3f4a743ade4329923c0f3c, type: 2}

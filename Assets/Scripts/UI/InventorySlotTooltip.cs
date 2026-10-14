@@ -11,22 +11,22 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        (bool empty, Item item) = _inventoryController.GetItemOnSlot(slotIndex);
+        (bool empty, IItem item) = _inventoryController.GetItemOnSlot(slotIndex);
         if (empty) return;
 
         string description = item.description;
 
-        (bool isWeapon, IWeapon weapon) = _inventoryController.GetWeaponByItemId(item.id);
+        (bool isWeapon, IWeapon weapon) = _inventoryController.GetWeapon(item.id);
 
         if (isWeapon)
         {
             if (weapon is MeleeWeapon meleeWeapon)
             {
-                description += $"\nDamage: {meleeWeapon.damage}\nAttack Rate: {meleeWeapon.attackRate}\nAttack Range: {meleeWeapon.attackRange}\nAttack Radius: {meleeWeapon.attackRadius}\nMulti Targeting: {meleeWeapon.multiTargeting}";
+                description += $"\nDamage: {meleeWeapon.damage}\nAttack Rate: {meleeWeapon.attackRate}\nAttack Range: {meleeWeapon.attackRange}\nAttack Radius: {meleeWeapon.attackAngle}\nMulti Targeting: {meleeWeapon.multiTargeting}";
             }
             else if (weapon is Weapon normalWeapon)
             {
-                description += $"\nDamage: {normalWeapon.damage}\nAttack Rate: {normalWeapon.attackRate}\nBullets Per Shot: {normalWeapon.bulletsPerShot}\nAccuracy: {normalWeapon.accuracy}\nAmmo ID: {normalWeapon.ammoId}\nMagazine Size: {normalWeapon.magazineSize}\nReload Time: {normalWeapon.reloadTime}";
+                description += $"\nDamage: {normalWeapon.damage}\nAttack Rate: {normalWeapon.attackRate}\nBullets Per Shot: {normalWeapon.bulletsPerShot}\nAccuracy: {normalWeapon.accuracy}\nMagazine Size: {normalWeapon.magazineSize}\nReload Time: {normalWeapon.reloadTime}";
             }
         }
 

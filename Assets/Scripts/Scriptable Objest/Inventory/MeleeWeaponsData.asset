@@ -13,19 +13,35 @@ MonoBehaviour:
   m_Name: MeleeWeaponsData
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponsData
   meleeWeapons:
-  - <itemId>k__BackingField: 8
-    <damage>k__BackingField: 15
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_bat
+      <name>k__BackingField: Bat
+      <description>k__BackingField: Bat desc
+      <icon>k__BackingField: {fileID: -8419024768148562069, guid: 043fb6874a711734087770642c724cc1, type: 3}
+      <maxStack>k__BackingField: 0
+      <type>k__BackingField: common
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
+    <damage>k__BackingField: 10
     <attackRate>k__BackingField: 1
-    <attackRange>k__BackingField: 1.2
-    <attackRadius>k__BackingField: 80
+    <attackRange>k__BackingField: 0.75
+    <attackAngle>k__BackingField: 60
     <multiTargeting>k__BackingField: 1
     <attackSound>k__BackingField: {fileID: 0}
     <weaponUiSprite>k__BackingField: {fileID: 0}
-  - <itemId>k__BackingField: 10
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_hands
+      <name>k__BackingField: Hands
+      <description>k__BackingField: Hands desc
+      <icon>k__BackingField: {fileID: 0}
+      <maxStack>k__BackingField: 0
+      <type>k__BackingField: 
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
     <damage>k__BackingField: 2
     <attackRate>k__BackingField: 1
     <attackRange>k__BackingField: 0.4
-    <attackRadius>k__BackingField: 80
+    <attackAngle>k__BackingField: 0
     <multiTargeting>k__BackingField: 1
     <attackSound>k__BackingField: {fileID: 8300000, guid: 52c71509088144443811ae0a777edcf3, type: 3}
     <weaponUiSprite>k__BackingField: {fileID: 0}

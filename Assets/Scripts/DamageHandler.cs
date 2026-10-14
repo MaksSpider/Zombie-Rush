@@ -30,15 +30,14 @@ public class DamageHandler : MonoBehaviour
         {
             if (_isDying) return;
 
-            BulletController bulletController = other.gameObject.GetComponent<BulletController>();
-            if (bulletController.targetHited) return;
+            AttackController attackController = other.gameObject.GetComponent<AttackController>();
 
-            bulletController.targetHited = true;
+            if (attackController.targetHited && !attackController.multiTarget) return;
+            attackController.targetHited = true;
 
-            int damage = bulletController.damage;
+            if(!attackController.multiTarget) Destroy(other.gameObject);
 
-            Destroy(other.gameObject);
-            OnDamageDealt(damage);
+            OnDamageDealt(attackController.damage);
         }
     }
 

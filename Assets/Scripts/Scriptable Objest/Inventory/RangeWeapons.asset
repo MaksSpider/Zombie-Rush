@@ -13,13 +13,21 @@ MonoBehaviour:
   m_Name: RangeWeapons
   m_EditorClassIdentifier: Assembly-CSharp::Weapons
   weaponsData:
-  - <itemId>k__BackingField: 0
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_pistol
+      <name>k__BackingField: Pistol
+      <description>k__BackingField: Pistol desc
+      <icon>k__BackingField: {fileID: 4459829494417465688, guid: a381d72fe1df53f4998bb23bb6faa3e3, type: 3}
+      <maxStack>k__BackingField: 1
+      <type>k__BackingField: common
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 0.5
     <attackRange>k__BackingField: 20
+    <attackAngle>k__BackingField: 20
     <bulletsPerShot>k__BackingField: 1
-    <accuracy>k__BackingField: 0.9
-    <ammoId>k__BackingField: 3
+    <accuracy>k__BackingField: 0.8
     <magazineSize>k__BackingField: 8
     <reloadTime>k__BackingField: 0.2
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
@@ -29,13 +37,21 @@ MonoBehaviour:
     <bulletLifeTime>k__BackingField: 10
     <weaponUiSprite>k__BackingField: {fileID: 7068474958986945146, guid: 8c46afbf7847c6d459e7438ef7ef8149, type: 3}
     <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: b3ad84ed67ca4b940989aa23e61b8d95, type: 3}
-  - <itemId>k__BackingField: 1
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_rifle
+      <name>k__BackingField: Rifle
+      <description>k__BackingField: Rifle desc
+      <icon>k__BackingField: {fileID: 3431268230107433469, guid: 145f7d79661af01428d60fa614360a91, type: 3}
+      <maxStack>k__BackingField: 1
+      <type>k__BackingField: common
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 0.15
     <attackRange>k__BackingField: 25
+    <attackAngle>k__BackingField: 25
     <bulletsPerShot>k__BackingField: 1
     <accuracy>k__BackingField: 0.7
-    <ammoId>k__BackingField: 4
     <magazineSize>k__BackingField: 32
     <reloadTime>k__BackingField: 0.1
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
@@ -45,13 +61,21 @@ MonoBehaviour:
     <bulletLifeTime>k__BackingField: 15
     <weaponUiSprite>k__BackingField: {fileID: -6918401477004292292, guid: 1ce42743ac19b0849b8b4ab391025a7c, type: 3}
     <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: 612a537dee063014e8c2349a5eb2edd6, type: 3}
-  - <itemId>k__BackingField: 2
-    <damage>k__BackingField: 20
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_shotgun
+      <name>k__BackingField: Shotgun
+      <description>k__BackingField: Shotgun desc
+      <icon>k__BackingField: {fileID: 4161039767378812005, guid: 1d1928182aa05ec479674153c26bee15, type: 3}
+      <maxStack>k__BackingField: 0
+      <type>k__BackingField: common
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
+    <damage>k__BackingField: 35
     <attackRate>k__BackingField: 0.8
     <attackRange>k__BackingField: 6
+    <attackAngle>k__BackingField: 60
     <bulletsPerShot>k__BackingField: 3
     <accuracy>k__BackingField: 0.4
-    <ammoId>k__BackingField: 5
     <magazineSize>k__BackingField: 6
     <reloadTime>k__BackingField: 0.5
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
@@ -61,13 +85,21 @@ MonoBehaviour:
     <bulletLifeTime>k__BackingField: 8
     <weaponUiSprite>k__BackingField: {fileID: 6364490538398942060, guid: d98a51963cd7fd04888508f103928806, type: 3}
     <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: 135390b6f56a5dd4c991aef906773470, type: 3}
-  - <itemId>k__BackingField: 9
+  - <item>k__BackingField:
+      <id>k__BackingField: weapon_throwable_axe
+      <name>k__BackingField: Throwable Axe
+      <description>k__BackingField: Throwable Axe desc
+      <icon>k__BackingField: {fileID: 0}
+      <maxStack>k__BackingField: 0
+      <type>k__BackingField: 
+      <isUsable>k__BackingField: 0
+      <usageFunction>k__BackingField: {fileID: 0}
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 3
     <attackRange>k__BackingField: 4
+    <attackAngle>k__BackingField: 30
     <bulletsPerShot>k__BackingField: 1
     <accuracy>k__BackingField: 0.7
-    <ammoId>k__BackingField: 11
     <magazineSize>k__BackingField: 3
     <reloadTime>k__BackingField: 0.3
     <attackSound>k__BackingField: {fileID: 8300000, guid: ad9b7fae5e28b254cac6d7f7ee51d292, type: 3}

@@ -76,7 +76,7 @@ MonoBehaviour:
     speed: 3
     damageModifier: 2
     exp: 4
-    weaponItemId: 9
+    weaponItemId: 10
     loot:
     - itemId: -1
       chance: 2

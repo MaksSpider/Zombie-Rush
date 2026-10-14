@@ -16,7 +16,7 @@ public class DropOnDestroyController : MonoBehaviour
         (bool success, ItemDrop itemToDrop) = RandomItem(loot);
         if (!success) return;
 
-        (bool finded, Item item) = _inventoryController.GetItemById(itemToDrop.itemId);
+        (bool finded, IItem item) = _inventoryController.GetItem(itemToDrop.itemId.ToString());
         if (!finded) return;
 
         int amount = UnityEngine.Random.Range(itemToDrop.amount.x, itemToDrop.amount.y + 1);

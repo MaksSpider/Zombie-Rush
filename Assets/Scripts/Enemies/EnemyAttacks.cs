@@ -42,7 +42,7 @@ public class RangedAttack : EnemyAttribute
 
             self.animator.SetTrigger("Attack");
 
-            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, 30f, new Vector2(0, 0), self.damageModifier, include);
+            self.attacksManager.CreateBullet(gameObject.transform.position, direction, normalWeapon, self.damageModifier, include);
             self.gameObject.GetComponent<AudioSource>().PlayOneShot(normalWeapon.attackSound);
         }
     }

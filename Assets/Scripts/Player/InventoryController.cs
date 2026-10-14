@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using ZombieRush.Framework;
+using static UnityEditor.Progress;
 
 public class Slot
 {
@@ -80,10 +82,10 @@ public class Slot
 
 public class SlotItem
 {
-    public Item item;
+    public IItem item;
     public int amount;
 
-    public SlotItem(Item item, int amount)
+    public SlotItem(IItem item, int amount)
     {
         this.item = item;
         this.amount = amount;
@@ -108,11 +110,13 @@ public class InventoryController : MonoBehaviour
     [SerializeField] private ItemsData _itemsData;
     [SerializeField] private WeaponsData _weaponsData;
     [SerializeField] private MeleeWeaponsData _meleeWeaponsData;
-    [SerializeField] private HealingItemsData _healingItemsData;
 
     [SerializeField] private GameObject _dropedItemPrefab;
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private Transform _inventoryUI;
+
+    private Dictionary<string, IWeapon> _weaponsDatabase = new();
+    private Dictionary<string, IItem> _itemsDatabase = new();
 
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
@@ -120,8 +124,9 @@ public class InventoryController : MonoBehaviour
 
     public bool inventoryBlocked = false;
 
-    [NonSerialized] public Dictionary<int, SlotItem> inventory = new Dictionary<int, SlotItem>();
+    [NonSerialized] public Dictionary<int, SlotItem> inventory = new();
     [NonSerialized] public List<Slot> slots = new List<Slot>();
+
     public int selectedSlot = 0;
 
     void Awake()
@@ -144,14 +149,9 @@ public class InventoryController : MonoBehaviour
 
     void Start()
     {
-        ChangeSlotAmount(_baseSlotsAmount);
-
         _upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
 
-        // starting items
-        AddItemById(0, 1);
-        AddItemById(3, 5);
-        AddItemById(7, 2);
+        Init();
     }
 
 
@@ -204,6 +204,34 @@ public class InventoryController : MonoBehaviour
         }
     }
 
+    private void Init()
+    {
+        ChangeSlotAmount(_baseSlotsAmount);
+
+        // register all items
+        foreach (IItem item in _itemsData.itemsData)
+        {
+            _itemsDatabase[item.id] = item;
+        }
+
+        foreach (IWeapon weapon in _weaponsData.weaponsData)
+        {
+            _itemsDatabase[weapon.item.id] = weapon.item;
+            _weaponsDatabase[weapon.item.id] = weapon;
+        }
+
+        foreach (IWeapon weapon in _meleeWeaponsData.meleeWeapons)
+        {
+            _itemsDatabase[weapon.item.id] = weapon.item;
+            _weaponsDatabase[weapon.item.id] = weapon;
+        }
+
+        // starting items
+        AddItem("weapon_pistol", 1);
+        AddItem("ammo_pistol", 5);
+        AddItem("bandage", 2);
+    }
+
     private void OnScrollChangeSlot(InputAction.CallbackContext ctx)
     {
         float scrollValue = ctx.ReadValue<float>();
@@ -228,6 +256,8 @@ public class InventoryController : MonoBehaviour
                 {
                     DropItemOnSlot(i);
                 }
+
+                slots[i].slot.GetComponent<Button>().onClick.RemoveAllListeners();
                 slots[i].slot.SetActive(false);
                 Destroy(slots[i].slot);
             }
@@ -237,8 +267,15 @@ public class InventoryController : MonoBehaviour
 
         for(int i = 0; i < amount; i++)
         {
+            int slotIndex = i;
+
             GameObject slotObject = Instantiate(_slotPrefab, _inventoryUI);
             slotObject.name = $"slot_{i}";
+
+            slotObject.GetComponent<Button>().onClick.AddListener(() => {
+                ChangeSlot(slotIndex);
+                print("change");
+            });
 
             Image slotImage = slotObject.transform.Find("SlotImage").GetComponent<Image>();
             Image itemImage = slotObject.transform.Find("ItemImage").GetComponent<Image>();
@@ -251,13 +288,13 @@ public class InventoryController : MonoBehaviour
             slotImage.sprite = _unselectedSlotSprite;
             itemImage.enabled = false;
 
-            slotObject.GetComponent<InventorySlotTooltip>().slotIndex = i;
+            slotObject.GetComponent<InventorySlotTooltip>().slotIndex = slotIndex;
 
             slots.Add(new Slot(slotObject, slotImage, itemImage, spinningWheel, spinningWheelBackground, amountText, itemNameText));
             UpdateSlot(i);
         }
 
-        ChangeSlot(selectedSlot);
+        if(selectedSlot >= amount) ChangeSlot(0);
         OnSlotsAmountChange?.Invoke();
     }
 
@@ -301,7 +338,7 @@ public class InventoryController : MonoBehaviour
         OnSlotChanged?.Invoke();
     }
 
-    public bool AddItemOnSlot(int slot, Item item, int amount)
+    public bool AddItemOnSlot(int slot, IItem item, int amount)
     {
         if (inventory.ContainsKey(slot))
         {
@@ -321,7 +358,7 @@ public class InventoryController : MonoBehaviour
         return true;
     }
 
-    public bool AddItem(Item item, int amount, bool force = false)
+    public bool AddItem(IItem item, int amount, bool force = false)
     {
         foreach((int slot, SlotItem slotItem) in inventory)
         {
@@ -333,8 +370,8 @@ public class InventoryController : MonoBehaviour
             }
         }
 
-        var result = GetFirstEmptySlot();
-        if (!result.found && force)
+        (bool result, int firstFreeSlot) = GetFirstEmptySlot();
+        if (!result && force)
         {
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
             Vector2 playerPosition = _playerController.GetComponent<Rigidbody2D>().position;
@@ -344,12 +381,12 @@ public class InventoryController : MonoBehaviour
             return false;
         }
 
-        return AddItemOnSlot(result.slot, item, amount);
+        return AddItemOnSlot(firstFreeSlot, item, amount);
     }
 
-    public bool AddItemById(int id, int amount)
+    public bool AddItem(string id, int amount)
     {
-        foreach (Item item in _itemsData.itemsData)
+        foreach (IItem item in _itemsDatabase.Values)
         {
             if (item.id == id)
             {
@@ -360,7 +397,7 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
-    public (bool found, int slot) GetFirstEmptySlot()
+    public (bool result, int slot) GetFirstEmptySlot()
     {
         for(int i = 0; i < slots.Count; i++)
         {
@@ -379,132 +416,67 @@ public class InventoryController : MonoBehaviour
         UseItemOnSlot(selectedSlot);
     }
 
-    public void UseItemOnSlot(int slot)
+    public bool UseItemOnSlot(int slot)
     {
-        if (!inventory.ContainsKey(slot)) return;
+        if (!inventory.ContainsKey(slot)) return false;
 
-        Item item = inventory[slot].item;
-        if (!item.isUsable) return;
-
-        var ammoResult = IsAmmo(item.id);
-
-        if (ammoResult.isAmmo)
+        IItem item = inventory[slot].item;
+        
+        if (item is Item itemData)
         {
-            (bool isWeapon, IWeapon weapon) = GetWeaponByItemId(ammoResult.weaponId);
-            if(!isWeapon) return;
+            if (!itemData.isUsable) return false;
 
-            if (weapon is Weapon normalWeapon)
+            if (itemData.usageFunction == null)
             {
-                int ammoToAdd = 4 * normalWeapon.magazineSize;
-
-                if (item.usageDuration > 0f)
-                {
-                    inventoryBlocked = true;
-                    slots[slot].SetAnimationDuration(item.usageDuration, () => {
-                        _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
-                        RemoveItemById(item.id, 1);
-                        inventoryBlocked = false;
-                    });
-                }
-                else
-                {
-                    _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
-                    RemoveItemById(item.id, 1);
-                }
+                Debug.LogError(
+                    $"[Inventory] Item '{itemData.id}' has no usageFunction assigned!",
+                    this
+                );
+                return false;
             }
 
-            return;
-        }
+            if (!itemData.usageFunction.CanUseItem(itemData)) return false;
 
-        var healingResult = IsHealing(item.id);
-
-        if (healingResult.isHealing)
-        {
-            if (item.usageDuration > 0f)
+            if (itemData.usageFunction.usageDuration > 0f)
             {
                 inventoryBlocked = true;
-                slots[slot].SetAnimationDuration(item.usageDuration, () => {
-                    _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
-
-                    if (healingResult.healingItem.duration > 0)
-                    {
-                        _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
-                    }
-                    else
-                    {
-                        _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                        _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
-                    }
-
-                    RemoveItemById(item.id, 1);
+                slots[slot].SetAnimationDuration(itemData.usageFunction.usageDuration, () =>
+                {
+                    itemData.usageFunction.UseItem(itemData);
+                    if (itemData.usageFunction.remove) RemoveItem(item.id, 1);
                     inventoryBlocked = false;
                 });
-            }
-            else
-            {
-                _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
-
-                if (healingResult.healingItem.duration > 0)
-                {
-                    _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd, item.icon);
-                }
-                else
-                {
-                    _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                    _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
-                }
-
-                RemoveItemById(item.id, 1);
+                return true;
             }
 
-            return;
+            itemData.usageFunction.UseItem(itemData);
+            if(itemData.usageFunction.remove) RemoveItem(item.id, 1);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void UseItem(string id)
+    {
+        if (!_itemsDatabase.ContainsKey(id)) return;
+
+        IItem item = _itemsDatabase[id];
+
+        if(item is Item itemData)
+        {
+            if (!itemData.isUsable) return;
+            itemData.usageFunction.UseItem(itemData);
         }
     }
 
-    // TODO: rework
     public void UseItem(Item item)
     {
-        var ammoResult = IsAmmo(item.id);
-
-        if (ammoResult.isAmmo)
-        {
-            (bool isWeapon, IWeapon weapon) = GetWeaponByItemId(ammoResult.weaponId);
-            if(!isWeapon) return; 
-
-            if (weapon is Weapon normalWeapon)
-            {
-                int ammoToAdd = 4 * normalWeapon.magazineSize;
-
-                _playerCombatController.AddAmmo(weapon.itemId, ammoToAdd);
-                RemoveItemById(item.id, 1);
-            }
-
-            return;
-        }
-
-        var healingResult = IsHealing(item.id);
-
-        if (healingResult.isHealing)
-        {
-            _playerController.ChangeHealth(healingResult.healingItem.hpToAdd);
-
-            if(healingResult.healingItem.duration > 0)
-            {
-                _playerController.AddTemporaryHealing(healingResult.healingItem.duration, healingResult.healingItem.maxHpToAdd, healingResult.healingItem.regenerationToAdd);
-            }
-            else
-            {
-                _playerController.ChangeMaxHealth(healingResult.healingItem.maxHpToAdd);
-                _playerController.ChangeRegeneration(healingResult.healingItem.regenerationToAdd);
-            }
-
-
-            RemoveItemById(item.id, 1);
-            return;
-        }
+        if (!item.isUsable) return;
+        item.usageFunction.UseItem(item);
     }
 
-    public bool RemoveItemById(int id, int amount)
+    public bool RemoveItem(string id, int amount)
     {
         foreach((int slot, SlotItem slotItem) in inventory)
         {
@@ -532,7 +504,7 @@ public class InventoryController : MonoBehaviour
         return true;
     }
 
-    public void DropItem(Item item, int amount, Vector2 spawnPosition, Vector2 direction)
+    public void DropItem(IItem item, int amount, Vector2 spawnPosition, Vector2 direction)
     {
         GameObject dropedItem = Instantiate(_dropedItemPrefab, spawnPosition, Quaternion.identity);
 
@@ -568,8 +540,6 @@ public class InventoryController : MonoBehaviour
                 _interactionsManager.RemoveInteraction(interactionId);
             }
         });
-
-
     }
 
     public void DropItemOnSlot(int slot)
@@ -593,7 +563,7 @@ public class InventoryController : MonoBehaviour
         OnDropItemOnSlot?.Invoke();
     }
 
-    public (bool exist, Item item) GetItemById(int id)
+    public (bool result, IItem item) GetItem(string id)
     {
         foreach (Item item in _itemsData.itemsData)
         {
@@ -603,66 +573,28 @@ public class InventoryController : MonoBehaviour
         return (false, new Item());
     }
 
-    public (bool empty, Item item) GetItemOnSlot(int slot)
+    public (bool success, IItem item) GetItemOnSlot(int slot)
     {
-        if (!inventory.ContainsKey(slot)) return (true, new Item());
+        if (!inventory.ContainsKey(slot)) return (false, new Item());
 
-        return (false, inventory[slot].item);
+        return (true, inventory[slot].item);
     }
 
-    public (bool empty, Item item) GetItemInHands()
+    public (bool result, IItem item) GetItemInHands()
     {
         return GetItemOnSlot(selectedSlot);
     }
 
-    public bool IsWeapon(int id)
+    public (bool result, IWeapon iWeapon) GetWeapon(string id)
     {
-        foreach(Weapon weapon in _weaponsData.weaponsData)
+        if(id == null) return (false, null);
+        if (!_weaponsDatabase.ContainsKey(id))
         {
-            if(weapon.itemId == id) return true;
+            Debug.Log($"[Items] Weapon with ID '{id}' does not exist!");
+            return (false, null);
         }
 
-        foreach (MeleeWeapon meleeWeapon in _meleeWeaponsData.meleeWeapons)
-        {
-            if (meleeWeapon.itemId == id) return true;
-        }
-
-        return false;
-    }
-
-    public (bool isWeapon, IWeapon iWeapon) GetWeaponByItemId(int id)
-    {
-        foreach (Weapon weapon in _weaponsData.weaponsData)
-        {
-            if (weapon.itemId == id) return (true, weapon);
-        }
-
-        foreach (MeleeWeapon weapon in _meleeWeaponsData.meleeWeapons)
-        {
-            if (weapon.itemId == id) return (true, weapon);
-        }
-
-        return (false, new Weapon());
-    }
-
-    public (bool isAmmo, int weaponId) IsAmmo(int id)
-    {
-        foreach (Weapon weapon in _weaponsData.weaponsData)
-        {
-            if (weapon.ammoId == id) return (true, weapon.itemId);
-        }
-
-        return (false, -1);
-    }
-
-    public (bool isHealing, HealingItem healingItem) IsHealing(int id)
-    {
-        foreach (HealingItem healingItem in _healingItemsData.healingItems)
-        {
-            if (healingItem.itemId == id) return (true, healingItem);
-        }
-
-        return (false, new HealingItem());
+        return (true, _weaponsDatabase[id]);
     }
 
     public void UpdateSlot(int slot)
@@ -687,7 +619,7 @@ public class InventoryController : MonoBehaviour
 
         if (inventory.ContainsKey(slot))
         {
-            slots[slot].slotImage.color = GetTypeColor(inventory[slot].item.type);
+            slots[slot].slotImage.color = RarityData.GetRarityColor(inventory[slot].item.type);
             slots[slot].itemImage.sprite = inventory[slot].item.icon;
             slots[slot].itemImage.enabled = true;
 
@@ -702,24 +634,7 @@ public class InventoryController : MonoBehaviour
         }
 
         slots[slot].amountText.text = "";
-        slots[slot].slotImage.color = Color.white;
+        slots[slot].slotImage.color = RarityData.GetDefaultRarityColor();
         slots[slot].itemImage.enabled = false;
-    }
-
-    public Color GetTypeColor(string type)
-    {
-        switch (type)
-        {
-            case "common":
-                return Color.white;
-            case "rare":
-                return new Color(0.25f, 0.55f, 1.0f);
-            case "epic":
-                return new Color(0.65f, 0.3f, 1.0f);
-            case "legendary":
-                return new Color(1.0f, 0.65f, 0.1f);
-        }
-
-        return Color.white;
     }
 }

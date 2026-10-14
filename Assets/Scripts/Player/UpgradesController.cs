@@ -28,7 +28,8 @@ public class UpgradesController : MonoBehaviour
 {
     public static UpgradesController Instance;
 
-    private StatesManager _statesManager;
+    private StatesManager _statesManager => StatesManager.Instance;
+    private InventoryController _inventoryController => InventoryController.Instance;
 
     public event Action OnUpgradesChange;
 
@@ -65,14 +66,12 @@ public class UpgradesController : MonoBehaviour
         }
 
         Instance = this;
-
-        _statesManager = StatesManager.Instance;
     }
 
     void Start()
     {
         _upgradesPickerPopUp.SetActive(false);
-        //Invoke(nameof(Debug), 1f);
+        Invoke(nameof(Debug), 1f);
     }
 
     // for debuging
@@ -82,11 +81,17 @@ public class UpgradesController : MonoBehaviour
         //AddUpgrade("additional_xp_2");
 
         // debug
-        //AddUpgrade(_upgradesData.upgradesData[0]);
-        //AddUpgrade(_upgradesData.upgradesData[1]);
-        //AddUpgrade(_upgradesData.upgradesData[7]);
+        AddUpgrade(_upgradesData.upgradesData[0]);
+        AddUpgrade(_upgradesData.upgradesData[1]);
+        AddUpgrade(_upgradesData.upgradesData[2]);
 
-        DisplayUpgradesWindow(4);
+        _inventoryController.AddItem("weapon_rifle", 1);
+        _inventoryController.AddItem("weapon_shotgun", 1);
+        _inventoryController.AddItem("ammo_rifle", 5);
+        _inventoryController.AddItem("ammo_shotgun", 5);
+        _inventoryController.AddItem("weapon_bat", 1);
+
+        //DisplayUpgradesWindow(4);
     }
 
     private IEnumerator AfterCloseAnimation()

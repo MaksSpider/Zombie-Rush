@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class AttackController : MonoBehaviour
 {
     private float lifeTime;
 
     private Rigidbody2D _rb;
 
     [NonSerialized] public int damage;
+    [NonSerialized] public bool multiTarget;
     [NonSerialized] public bool targetHited;
     [NonSerialized] public Vector2 direction;
     [NonSerialized] public float maxLifeTime;
@@ -29,9 +30,7 @@ public class BulletController : MonoBehaviour
             return;
         }
 
-        Vector2 nextPosition =
-            _rb.position + direction.normalized * speed * deltaTime;
-
+        Vector2 nextPosition = _rb.position + direction.normalized * speed * deltaTime;
         _rb.MovePosition(nextPosition);
     }
 }
