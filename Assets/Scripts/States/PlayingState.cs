@@ -17,7 +17,6 @@ public class PlayingState : State
 
     public override void OnEnterState()
     {
-        _interactionsManager.OnEnterState();
         _inventoryController.OnEnterState();
         _playerCombatController.OnEnterState();
         _playerController.OnEnterState();
@@ -30,7 +29,6 @@ public class PlayingState : State
 
     public override void OnExitState()
     {
-        _interactionsManager.OnExitState();
         _inventoryController.OnExitState();
         _playerCombatController.OnExitState();
         _playerController.OnExitState();

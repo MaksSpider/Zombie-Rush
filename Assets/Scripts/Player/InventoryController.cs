@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using ZombieRush.Framework;
-using static UnityEditor.Progress;
 
 public class Slot
 {
@@ -524,20 +523,18 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 3f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 3f, dropedItem, new Vector2(0, 0.2f), 1.5f, true, (int interactionId) =>
         {
             if (!inventory.ContainsKey(selectedSlot))
             {
                 AddItemOnSlot(selectedSlot, item, amount);
                 Destroy(dropedItem);
-                _interactionsManager.RemoveInteraction(interactionId);
                 return;
             }
 
             if (AddItem(item, amount))
             {
                 Destroy(dropedItem);
-                _interactionsManager.RemoveInteraction(interactionId);
             }
         });
     }
