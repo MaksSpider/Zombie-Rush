@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "PlayingState", menuName = "States/PlayingState")]
 public class PlayingState : State
 {
     private PlayerCombatController _playerCombatController => PlayerCombatController.Instance;
@@ -17,8 +18,9 @@ public class PlayingState : State
 
     public override void OnEnterState()
     {
-        _inventoryController.OnEnterState();
         _playerCombatController.OnEnterState();
+        _interactionsManager.OnEnterState();
+        _inventoryController.OnEnterState();
         _playerController.OnEnterState();
 
         _cursorManager.ChangeCurrentDefault("crosshair");
@@ -29,8 +31,9 @@ public class PlayingState : State
 
     public override void OnExitState()
     {
-        _inventoryController.OnExitState();
         _playerCombatController.OnExitState();
+        _interactionsManager.OnExitState();
+        _inventoryController.OnExitState();
         _playerController.OnExitState();
 
         _cursorManager.SetNormal();

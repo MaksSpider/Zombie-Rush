@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
-public class State : MonoBehaviour
+public class State : ScriptableObject
 {
     public virtual void OnEnterState()
     {

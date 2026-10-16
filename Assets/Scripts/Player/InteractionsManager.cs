@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class Interaction
 {
@@ -19,6 +16,7 @@ public class Interaction
     public bool removeOnUse;
 
     public Action<int> onInteraction;
+
     public Interaction(int id, string title, float duration, Func<Vector2> getPosition, float range, bool removeOnUse, Action<int> onInteraction)
     {
         this.id = id;
@@ -60,6 +58,20 @@ public class InteractionsManager : MonoBehaviour
         Instance = this;
     }
 
+    public void OnEnterState()
+    {
+        if (_currentInteractionId < 0 || _interactionPopUp == null) return;
+
+        _interactionPopUp.SetActive(true);
+    }
+
+    public void OnExitState()
+    {
+        if (_currentInteractionId < 0 || _interactionPopUp == null) return;
+
+        _interactionPopUp.SetActive(false);
+    }
+
     public void Tick()
     {
         HandleInteractionPostion();
@@ -89,6 +101,7 @@ public class InteractionsManager : MonoBehaviour
             if (_interactionProgress >= current.duration)
             {
                 current.onInteraction?.Invoke(current.id);
+                _interactionProgress = 0f;
 
                 if (current.removeOnUse)
                 {
@@ -99,7 +112,10 @@ public class InteractionsManager : MonoBehaviour
             return;
         }
 
-        _interactionProgress -= Time.deltaTime;
+        if(_interactionProgress > 0f)
+        {
+            _interactionProgress -= Time.deltaTime;
+        }
     }
 
     private void HandleInteractionPostion()

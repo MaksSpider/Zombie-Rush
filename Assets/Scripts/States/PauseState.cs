@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "PauseState", menuName = "States/PauseState")]
 public class PauseState : State
 {
     private PauseMenuController _pauseMenuController => PauseMenuController.Instance;

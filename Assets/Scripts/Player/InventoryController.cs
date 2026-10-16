@@ -511,7 +511,7 @@ public class InventoryController : MonoBehaviour
         dropedItemSpriteRenderer.sprite = item.icon;
 
         Rigidbody2D dropedItemRb = dropedItem.GetComponent<Rigidbody2D>();
-        dropedItemRb.linearVelocity = direction * 5f;
+        dropedItemRb.linearVelocity = direction * 3f;
         dropedItemRb.linearDamping = 3f;
 
         if(amount > 1)
@@ -523,7 +523,7 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 3f, dropedItem, new Vector2(0, 0.2f), 1.5f, true, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.75f, dropedItem, new Vector2(0, 0.2f), 1.5f, true, (int interactionId) =>
         {
             if (!inventory.ContainsKey(selectedSlot))
             {
