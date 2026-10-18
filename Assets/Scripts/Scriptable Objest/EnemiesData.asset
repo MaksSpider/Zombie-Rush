@@ -21,7 +21,7 @@ MonoBehaviour:
     speed: 1.6
     damageModifier: 1
     exp: 2
-    weaponItemId: 10
+    weaponItemId: weapon_zombie_hands
     loot:
     - itemId: -1
       chance: 4
@@ -47,7 +47,7 @@ MonoBehaviour:
     speed: 1.2
     damageModifier: 1
     exp: 3
-    weaponItemId: 9
+    weaponItemId: weapon_throwable_axes
     loot:
     - itemId: -1
       chance: 3
@@ -76,7 +76,7 @@ MonoBehaviour:
     speed: 3
     damageModifier: 2
     exp: 4
-    weaponItemId: 10
+    weaponItemId: weapon_zombie_hands
     loot:
     - itemId: -1
       chance: 2
@@ -111,7 +111,7 @@ MonoBehaviour:
     speed: 1
     damageModifier: 5
     exp: 5
-    weaponItemId: 10
+    weaponItemId: weapon_zombie_hands
     loot:
     - itemId: -1
       chance: 1

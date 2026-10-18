@@ -9,4 +9,9 @@ public class UIShopItem : MonoBehaviour
     public TextMeshProUGUI amount;
     public Image icon;
     public Button buyButton;
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

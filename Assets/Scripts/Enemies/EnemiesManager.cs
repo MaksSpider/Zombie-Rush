@@ -268,7 +268,7 @@ public class EnemiesManager : MonoBehaviour
         Enemy enemy = builder.Build(spawnPosition, transform);
         enemy.enemyName = enemyToSpawn.name;
 
-        (bool isWeapon, IWeapon iWeapon) = _inventoryController.GetWeapon("pistol"); // enemyToSpawn.weaponItemId
+        (bool isWeapon, IWeapon iWeapon, _) = _inventoryController.GetWeapon(enemyToSpawn.weaponItemId);
         if (isWeapon)
         {
             iWeapon.damage *= (int)difficultyModifier;

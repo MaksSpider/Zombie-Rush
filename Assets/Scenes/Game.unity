@@ -286,11 +286,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopMenuController
   _shopMenu: {fileID: 82406288}
-  _shopItems: {fileID: 0}
-  _shopHeader: {fileID: 0}
-  _titleText: {fileID: 0}
-  _categoryPrefab: {fileID: 0}
-  _itemPrefab: {fileID: 0}
+  _shopItems: {fileID: 579710150}
+  _shopHeader: {fileID: 584812608}
+  _titleText: {fileID: 955226462}
+  _categoryPrefab: {fileID: 6080958055687024393, guid: e8784e95994f8de4d9c4bb31e848ed54, type: 3}
+  _itemPrefab: {fileID: 5232787820178199694, guid: cb00bfc790eac6247891c5d2655d500c, type: 3}
 --- !u!1 &11089217
 GameObject:
   m_ObjectHideFlags: 0
@@ -11703,11 +11703,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1014975887}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 2.0231}
-  m_SizeDelta: {x: 0, y: 50.756}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -27.40115}
+  m_SizeDelta: {x: 71.79, y: 43.0742}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &955226462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12092,6 +12092,7 @@ GameObject:
   - component: {fileID: 1014975889}
   - component: {fileID: 1014975888}
   - component: {fileID: 1014975890}
+  - component: {fileID: 1014975891}
   m_Layer: 0
   m_Name: Header
   m_TagString: Untagged
@@ -12116,9 +12117,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 134.2, y: 18}
-  m_SizeDelta: {x: 211.2357, y: 54.8023}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 35.10498, y: 18.50003}
+  m_SizeDelta: {x: 0, y: 54.8023}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1014975888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12169,8 +12170,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
-  m_HorizontalFit: 3
+  m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!114 &1014975891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014975886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 25
+    m_Right: 25
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 20
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1022810620
 GameObject:
   m_ObjectHideFlags: 0
@@ -17230,7 +17257,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25841b83faa1211418842a82ba988d6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopController
-  shopItems: []
+  shop:
+    index: adminshop
+    name: Admin Shop
+    currentPage: weapons
+    shopData:
+    - index: 
+      name: 
+      icon: {fileID: 0}
+      items:
+      - item:
+          rid: -2
+        price: 0
+        amount: 0
+    - index: 
+      name: 
+      icon: {fileID: 0}
+      items: []
+    - index: 
+      name: 
+      icon: {fileID: 0}
+      items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!70 &1435240213
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -19385,9 +19437,6 @@ MonoBehaviour:
   _selectedSlotSprite: {fileID: 170785150928764123, guid: 8c83eda241408fb46bf35cd0d877688d, type: 3}
   _unselectedSlotSprite: {fileID: -3118375651057578339, guid: 54481384cf9bc664d89b6f60542f1880, type: 3}
   _baseSlotsAmount: 3
-  _itemsData: {fileID: 11400000, guid: 3e4845b94285c7a48ae161fe14147c84, type: 2}
-  _weaponsData: {fileID: 11400000, guid: 97bf7207ef7369b498c4f0492982a163, type: 2}
-  _meleeWeaponsData: {fileID: 11400000, guid: 8cc01d01ddcfec34f9be4d682d3c760d, type: 2}
   _dropedItemPrefab: {fileID: 3909631400680050161, guid: f9590dfec6e249646b9de02db6e4751c, type: 3}
   _slotPrefab: {fileID: 2394187092924258993, guid: 1f2f83968322c37468d160e7ebb36e49, type: 3}
   _inventoryUI: {fileID: 230974075}

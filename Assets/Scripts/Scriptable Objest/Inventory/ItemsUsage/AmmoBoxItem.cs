@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/Usage/Ammo Box")]
+[CreateAssetMenu(menuName = "Items/UsageFunctions/Ammo Box")]
 public class AmmoBoxItem : ItemUsage
 {
     private InventoryController _inventoryController => InventoryController.Instance;
@@ -9,14 +9,14 @@ public class AmmoBoxItem : ItemUsage
     public string weaponId;
     public int amountOfMags = 3;
 
-    public override void UseItem(Item item)
+    public override void UseItem(UsableItem item)
     {
-        (bool result, IWeapon weapon) = _inventoryController.GetWeapon(weaponId);
+        (bool result, IWeapon weapon, IItem weaponItem) = _inventoryController.GetWeapon(weaponId);
         if (!result) return;
 
-        if (weapon is Weapon rangeWeapon)
+        if (weapon is RangeWeapon rangeWeapon)
         {
-            _playerCombatController.AddAmmo(weapon.item.id, amountOfMags * rangeWeapon.magazineSize);
+            _playerCombatController.AddAmmo(weaponItem.id, amountOfMags * rangeWeapon.magazineSize);
         }
     }
 }

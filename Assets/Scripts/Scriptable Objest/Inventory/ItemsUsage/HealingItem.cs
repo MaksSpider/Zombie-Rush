@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/Usage/Healing")]
+[CreateAssetMenu(menuName = "Items/UsageFunctions/Healing")]
 public class HealingItem : ItemUsage
 {
     private PlayerController _playerController => PlayerController.Instance;
@@ -11,7 +11,7 @@ public class HealingItem : ItemUsage
 
     public float duration = 0f;
 
-    public override void UseItem(Item item)
+    public override void UseItem(UsableItem item)
     {
         _playerController.ChangeHealth(health);
 

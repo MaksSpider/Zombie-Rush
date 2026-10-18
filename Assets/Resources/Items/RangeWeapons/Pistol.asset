@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce3fd8f8c20b141a3e3d0353448480, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: Assembly-CSharp::RangeWeaponData
+  item:
+    <id>k__BackingField: weapon_pistol
+    <name>k__BackingField: Pistol
+    <description>k__BackingField: Pistol desc
+    <icon>k__BackingField: {fileID: 4459829494417465688, guid: a381d72fe1df53f4998bb23bb6faa3e3, type: 3}
+    <maxStack>k__BackingField: 1
+    <type>k__BackingField: common
+  weapon:
+    <damage>k__BackingField: 5
+    <attackRate>k__BackingField: 0.5
+    <attackRange>k__BackingField: 20
+    <attackAngle>k__BackingField: 20
+    <bulletsPerShot>k__BackingField: 1
+    <accuracy>k__BackingField: 0.8
+    <magazineSize>k__BackingField: 8
+    <reloadTime>k__BackingField: 0.2
+    <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
+    <bulletGameObject>k__BackingField: {fileID: 0}
+    <attackSpeed>k__BackingField: 15
+    <bulletSpawnOffset>k__BackingField: 0
+    <bulletLifeTime>k__BackingField: 10
+    <multiTargeting>k__BackingField: 0
+    <weaponUiSprite>k__BackingField: {fileID: 7068474958986945146, guid: 8c46afbf7847c6d459e7438ef7ef8149, type: 3}
+    <bulletUiSprite>k__BackingField: {fileID: 21300000, guid: b3ad84ed67ca4b940989aa23e61b8d95, type: 3}

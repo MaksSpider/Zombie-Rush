@@ -77,9 +77,19 @@
                     "priority": 0
                 },
                 {
-                    "name": "DropAll",
+                    "name": "SelectAll",
                     "type": "Button",
                     "id": "7c068aa3-9e51-4d7b-a273-d95dd98032ee",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SelectX5",
+                    "type": "Button",
+                    "id": "8b8510a1-5aa8-464a-9490-ab54957f63da",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -531,11 +541,22 @@
                 {
                     "name": "",
                     "id": "14d02915-a693-4821-9972-4cff88ab3fe4",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectAll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "982cb1fd-89a3-4fd4-babe-519b8ec7442c",
                     "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DropAll",
+                    "action": "SelectX5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

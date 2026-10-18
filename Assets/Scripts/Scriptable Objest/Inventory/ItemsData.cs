@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ItemUsage : ScriptableObject
@@ -7,19 +6,19 @@ public abstract class ItemUsage : ScriptableObject
     public float usageDuration = 1.0f;
     public bool remove = true;
 
-    public virtual bool CanUseItem(Item itemData)
+    public virtual bool CanUseItem(UsableItem itemData)
     {
         return true;
     }
 
-    public abstract void UseItem(Item itemData);
+    public abstract void UseItem(UsableItem itemData);
 }
 
 
-[CreateAssetMenu(fileName = "Items", menuName = "Scriptable Objects/Items")]
+[CreateAssetMenu(fileName = "Item", menuName = "Items/Item")]
 public class ItemsData : ScriptableObject
 {
-    public List<Item> itemsData;
+    public Item item;
 }
 
 public interface IItem
@@ -33,7 +32,7 @@ public interface IItem
 }
 
 [Serializable]
-public struct Item: IItem
+public struct Item : IItem
 {
     [field: SerializeField] public string id { get; set; }
 
@@ -44,7 +43,4 @@ public struct Item: IItem
     [field: SerializeField] public int maxStack { get; set; }
 
     [field: SerializeField] public string type { get; set; }
-
-    [field: SerializeField] public bool isUsable { get; set; }
-    [field: SerializeField] public ItemUsage usageFunction { get; set; }
 }

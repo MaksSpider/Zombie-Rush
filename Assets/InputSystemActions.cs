@@ -163,9 +163,19 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
-                    ""name"": ""DropAll"",
+                    ""name"": ""SelectAll"",
                     ""type"": ""Button"",
                     ""id"": ""7c068aa3-9e51-4d7b-a273-d95dd98032ee"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectX5"",
+                    ""type"": ""Button"",
+                    ""id"": ""8b8510a1-5aa8-464a-9490-ab54957f63da"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -617,11 +627,22 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""14d02915-a693-4821-9972-4cff88ab3fe4"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectAll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""982cb1fd-89a3-4fd4-babe-519b8ec7442c"",
                     ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DropAll"",
+                    ""action"": ""SelectX5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -668,7 +689,8 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_DropItem = m_Player.FindAction("Drop Item", throwIfNotFound: true);
-        m_Player_DropAll = m_Player.FindAction("DropAll", throwIfNotFound: true);
+        m_Player_SelectAll = m_Player.FindAction("SelectAll", throwIfNotFound: true);
+        m_Player_SelectX5 = m_Player.FindAction("SelectX5", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_UseItem = m_Player.FindAction("Use Item", throwIfNotFound: true);
         m_Player_Slot1 = m_Player.FindAction("Slot1", throwIfNotFound: true);
@@ -771,7 +793,8 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_DropItem;
-    private readonly InputAction m_Player_DropAll;
+    private readonly InputAction m_Player_SelectAll;
+    private readonly InputAction m_Player_SelectX5;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_UseItem;
     private readonly InputAction m_Player_Slot1;
@@ -823,9 +846,13 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @DropItem => m_Wrapper.m_Player_DropItem;
         /// <summary>
-        /// Provides access to the underlying input action "Player/DropAll".
+        /// Provides access to the underlying input action "Player/SelectAll".
         /// </summary>
-        public InputAction @DropAll => m_Wrapper.m_Player_DropAll;
+        public InputAction @SelectAll => m_Wrapper.m_Player_SelectAll;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectX5".
+        /// </summary>
+        public InputAction @SelectX5 => m_Wrapper.m_Player_SelectX5;
         /// <summary>
         /// Provides access to the underlying input action "Player/Interact".
         /// </summary>
@@ -917,9 +944,12 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
             @DropItem.started += instance.OnDropItem;
             @DropItem.performed += instance.OnDropItem;
             @DropItem.canceled += instance.OnDropItem;
-            @DropAll.started += instance.OnDropAll;
-            @DropAll.performed += instance.OnDropAll;
-            @DropAll.canceled += instance.OnDropAll;
+            @SelectAll.started += instance.OnSelectAll;
+            @SelectAll.performed += instance.OnSelectAll;
+            @SelectAll.canceled += instance.OnSelectAll;
+            @SelectX5.started += instance.OnSelectX5;
+            @SelectX5.performed += instance.OnSelectX5;
+            @SelectX5.canceled += instance.OnSelectX5;
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
@@ -985,9 +1015,12 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
             @DropItem.started -= instance.OnDropItem;
             @DropItem.performed -= instance.OnDropItem;
             @DropItem.canceled -= instance.OnDropItem;
-            @DropAll.started -= instance.OnDropAll;
-            @DropAll.performed -= instance.OnDropAll;
-            @DropAll.canceled -= instance.OnDropAll;
+            @SelectAll.started -= instance.OnSelectAll;
+            @SelectAll.performed -= instance.OnSelectAll;
+            @SelectAll.canceled -= instance.OnSelectAll;
+            @SelectX5.started -= instance.OnSelectX5;
+            @SelectX5.performed -= instance.OnSelectX5;
+            @SelectX5.canceled -= instance.OnSelectX5;
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
@@ -1207,12 +1240,19 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDropItem(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "DropAll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SelectAll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDropAll(InputAction.CallbackContext context);
+        void OnSelectAll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectX5" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectX5(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

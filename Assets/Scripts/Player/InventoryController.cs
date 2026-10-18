@@ -1,6 +1,9 @@
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -106,16 +109,12 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField] private int _baseSlotsAmount = 3;
 
-    [SerializeField] private ItemsData _itemsData;
-    [SerializeField] private WeaponsData _weaponsData;
-    [SerializeField] private MeleeWeaponsData _meleeWeaponsData;
-
     [SerializeField] private GameObject _dropedItemPrefab;
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private Transform _inventoryUI;
 
-    private Dictionary<string, IWeapon> _weaponsDatabase = new();
     private Dictionary<string, IItem> _itemsDatabase = new();
+    private Dictionary<string, IWeapon> _weaponsDatabase = new();
 
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
@@ -207,28 +206,43 @@ public class InventoryController : MonoBehaviour
     {
         ChangeSlotAmount(_baseSlotsAmount);
 
-        // register all items
-        foreach (IItem item in _itemsData.itemsData)
+        ScriptableObject[] allItems = Resources.LoadAll<ScriptableObject>("Items");
+
+        foreach (ScriptableObject asset in allItems)
         {
-            _itemsDatabase[item.id] = item;
+            switch (asset)
+            {
+                case ItemsData data:
+                    RegisterItem(data.item);
+                    break;
+
+                case UsableItemData data:
+                    RegisterItem(data.usableItem);
+                    break;
+
+                case RangeWeaponData data:
+                    RegisterItem(data.item);
+                    _weaponsDatabase[data.item.id] = data.weapon;
+                    break;
+
+                case MeleeWeaponData data:
+                    RegisterItem(data.item);
+                    _weaponsDatabase[data.item.id] = data.weapon;
+                    break;
+            }
         }
 
-        foreach (IWeapon weapon in _weaponsData.weaponsData)
-        {
-            _itemsDatabase[weapon.item.id] = weapon.item;
-            _weaponsDatabase[weapon.item.id] = weapon;
-        }
-
-        foreach (IWeapon weapon in _meleeWeaponsData.meleeWeapons)
-        {
-            _itemsDatabase[weapon.item.id] = weapon.item;
-            _weaponsDatabase[weapon.item.id] = weapon;
-        }
+        Debug.Log($"Loaded {allItems.Length} items.");
 
         // starting items
         AddItem("weapon_pistol", 1);
         AddItem("ammo_pistol", 5);
         AddItem("bandage", 2);
+    }
+
+    private void RegisterItem(IItem item)
+    {
+        _itemsDatabase[item.id] = item;
     }
 
     private void OnScrollChangeSlot(InputAction.CallbackContext ctx)
@@ -396,13 +410,13 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
-    public (bool result, int slot) GetFirstEmptySlot()
+    public (bool result, int slot) GetFirstEmptySlot(IItem item = null, int amount = 1)
     {
-        for(int i = 0; i < slots.Count; i++)
+        for(int slot = 0; slot < slots.Count; slot++)
         {
-            if(!inventory.ContainsKey(i))
+            if(!inventory.ContainsKey(slot) || item != null && (inventory[slot].item.id == item.id && inventory[slot].amount + amount <= item.maxStack))
             {
-                return (true, i);
+                return (true, slot);
             }
         }
 
@@ -421,10 +435,8 @@ public class InventoryController : MonoBehaviour
 
         IItem item = inventory[slot].item;
         
-        if (item is Item itemData)
+        if (item is UsableItem itemData)
         {
-            if (!itemData.isUsable) return false;
-
             if (itemData.usageFunction == null)
             {
                 Debug.LogError(
@@ -462,16 +474,16 @@ public class InventoryController : MonoBehaviour
 
         IItem item = _itemsDatabase[id];
 
-        if(item is Item itemData)
+        if(item is UsableItem itemData)
         {
-            if (!itemData.isUsable) return;
+            if (itemData.usageFunction == null) return;
             itemData.usageFunction.UseItem(itemData);
         }
     }
 
-    public void UseItem(Item item)
+    public void UseItem(UsableItem item)
     {
-        if (!item.isUsable) return;
+        if (item.usageFunction == null) return;
         item.usageFunction.UseItem(item);
     }
 
@@ -552,7 +564,7 @@ public class InventoryController : MonoBehaviour
         Vector2 direction = ((Vector2)mouseWorldPos - _playerController.GetComponent<Rigidbody2D>().position).normalized;
         Vector2 spawnPosition = _playerController.GetComponent<Rigidbody2D>().position + direction * 0.5f;
 
-        int amount = _inputManager.InputActions.Player.DropAll.IsPressed() ? inventory[slot].amount : 1;
+        int amount = _inputManager.InputActions.Player.SelectAll.IsPressed() ? inventory[slot].amount : 1;
 
         DropItem(inventory[slot].item, amount, spawnPosition, direction);
         RemoveItemOnSlot(slot, amount);
@@ -562,12 +574,12 @@ public class InventoryController : MonoBehaviour
 
     public (bool result, IItem item) GetItem(string id)
     {
-        foreach (Item item in _itemsData.itemsData)
+        foreach (IItem item in _itemsDatabase.Values)
         {
             if (item.id == id) return (true, item);
         }
 
-        return (false, new Item());
+        return (false, null);
     }
 
     public (bool success, IItem item) GetItemOnSlot(int slot)
@@ -582,16 +594,28 @@ public class InventoryController : MonoBehaviour
         return GetItemOnSlot(selectedSlot);
     }
 
-    public (bool result, IWeapon iWeapon) GetWeapon(string id)
+    public (bool result, IItem item) GetWeaponItem(IWeapon weapon)
     {
-        if(id == null) return (false, null);
-        if (!_weaponsDatabase.ContainsKey(id))
+        if (weapon == null) return (false, null);
+
+        foreach((string id, IWeapon weaponData) in _weaponsDatabase)
         {
-            Debug.Log($"[Items] Weapon with ID '{id}' does not exist!");
-            return (false, null);
+            if (weaponData == weapon && _itemsDatabase.ContainsKey(id)) return (true, _itemsDatabase[id]);
         }
 
-        return (true, _weaponsDatabase[id]);
+        return (false, null);
+    }
+
+    public (bool result, IWeapon iWeapon, IItem item) GetWeapon(string id)
+    {
+        if(id == null) return (false, null, null);
+        if (!_weaponsDatabase.ContainsKey(id) || !_itemsDatabase.ContainsKey(id))
+        {
+            Debug.Log($"[Items] Weapon with ID '{id}' does not exist!");
+            return (false, null, null);
+        }
+
+        return (true, _weaponsDatabase[id], _itemsDatabase[id]);
     }
 
     public void UpdateSlot(int slot)

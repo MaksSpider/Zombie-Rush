@@ -16,7 +16,7 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
 
         string description = item.description;
 
-        (bool isWeapon, IWeapon weapon) = _inventoryController.GetWeapon(item.id);
+        (bool isWeapon, IWeapon weapon, _) = _inventoryController.GetWeapon(item.id);
 
         if (isWeapon)
         {
@@ -24,7 +24,7 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
             {
                 description += $"\nDamage: {meleeWeapon.damage}\nAttack Rate: {meleeWeapon.attackRate}\nAttack Range: {meleeWeapon.attackRange}\nAttack Radius: {meleeWeapon.attackAngle}\nMulti Targeting: {meleeWeapon.multiTargeting}";
             }
-            else if (weapon is Weapon normalWeapon)
+            else if (weapon is RangeWeapon normalWeapon)
             {
                 description += $"\nDamage: {normalWeapon.damage}\nAttack Rate: {normalWeapon.attackRate}\nBullets Per Shot: {normalWeapon.bulletsPerShot}\nAccuracy: {normalWeapon.accuracy}\nMagazine Size: {normalWeapon.magazineSize}\nReload Time: {normalWeapon.reloadTime}";
             }

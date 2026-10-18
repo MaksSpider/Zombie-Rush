@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d7bfcd1de248942935227797e789c2, type: 3}
+  m_Name: ShotgunAmmo
+  m_EditorClassIdentifier: Assembly-CSharp::UsableItemData
+  usableItem:
+    <id>k__BackingField: ammo_shotgun
+    <name>k__BackingField: Shotgun Ammo Box
+    <description>k__BackingField: Shotgun Ammo Box desc
+    <icon>k__BackingField: {fileID: 158777831206505336, guid: 28eb11fbf0c66e44cbc8c4d23357a81c, type: 3}
+    <maxStack>k__BackingField: 8
+    <type>k__BackingField: common
+    <usageFunction>k__BackingField: {fileID: 11400000, guid: fba4cd07fc32a2b42a9434cd8d31669d, type: 2}

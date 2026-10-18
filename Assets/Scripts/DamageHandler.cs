@@ -32,10 +32,10 @@ public class DamageHandler : MonoBehaviour
 
             AttackController attackController = other.gameObject.GetComponent<AttackController>();
 
-            if (attackController.targetHited && !attackController.multiTarget) return;
+            if (attackController.targetHited && !attackController.weapon.multiTargeting) return;
             attackController.targetHited = true;
 
-            if(!attackController.multiTarget) Destroy(other.gameObject);
+            if(!attackController.weapon.multiTargeting) Destroy(other.gameObject);
 
             OnDamageDealt(attackController.damage);
         }

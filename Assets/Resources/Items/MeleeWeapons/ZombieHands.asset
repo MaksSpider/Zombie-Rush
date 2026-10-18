@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba6b826bdf5e82b4da93cd804d9a9b3f, type: 3}
+  m_Name: ZombieHands
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
+  item:
+    <id>k__BackingField: weapon_zombie_hands
+    <name>k__BackingField: Zombie Hands
+    <description>k__BackingField: 
+    <icon>k__BackingField: {fileID: 0}
+    <maxStack>k__BackingField: 1
+    <type>k__BackingField: common
+  weapon:
+    <damage>k__BackingField: 2
+    <attackRate>k__BackingField: 1
+    <attackRange>k__BackingField: 0.4
+    <attackAngle>k__BackingField: 10
+    <attackSpeed>k__BackingField: 2
+    <multiTargeting>k__BackingField: 0
+    <attackSound>k__BackingField: {fileID: 8300000, guid: 52c71509088144443811ae0a777edcf3, type: 3}
+    <weaponUiSprite>k__BackingField: {fileID: 0}

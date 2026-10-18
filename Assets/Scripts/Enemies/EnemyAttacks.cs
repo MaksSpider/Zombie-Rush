@@ -29,7 +29,7 @@ public class RangedAttack : EnemyAttribute
 
     public override void UpdateAttribute(float deltaTime)
     {
-        if (self.weapon is Weapon normalWeapon)
+        if (self.weapon is RangeWeapon normalWeapon)
         {
             if (Vector2.Distance(self.target.position, gameObject.transform.position) > normalWeapon.attackRange) return;
 

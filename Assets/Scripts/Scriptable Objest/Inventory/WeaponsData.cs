@@ -2,29 +2,28 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponsData", menuName = "Scriptable Objects/Weapons")]
-public class WeaponsData : ScriptableObject
+[CreateAssetMenu(fileName = "RangeWeapon", menuName = "Items/Weapons/Range")]
+public class RangeWeaponData : ScriptableObject
 {
-    public List<Weapon> weaponsData;
+    public Item item;
+    public RangeWeapon weapon;
 }
 
 public interface IWeapon
 {
-    Item item { get; set; }
-
     int damage { get; set; }
     float attackRate { get; set; }
     float attackRange { get; set; }
     float attackAngle { get; set; }
+    float attackSpeed { get; set; }
+    bool multiTargeting { get; set; }
 
     Sprite weaponUiSprite { get; set; }
 }
 
 [Serializable]
-public class Weapon: IWeapon
+public class RangeWeapon: IWeapon
 {
-    [field: SerializeField] public Item item { get; set; }
-
     [Header("Weapon Settings")]
     [field: SerializeField] public int damage { get; set; }
     [field: SerializeField] public float attackRate { get; set; }
@@ -40,12 +39,12 @@ public class Weapon: IWeapon
 
     [Header("Bullet Settings")]
     [field: SerializeField] public GameObject bulletGameObject { get; set; }
-    [field: SerializeField] public float bulletSpeed { get; set; }
+    [field: SerializeField] public float attackSpeed { get; set; }
     [field: SerializeField] public float bulletSpawnOffset { get; set; }
     [field: SerializeField] public float bulletLifeTime { get; set; }
+    [field: SerializeField] public bool multiTargeting { get; set; }
 
     [Header("UI Settings")]
     [field: SerializeField] public Sprite weaponUiSprite { get; set; }
     [field: SerializeField] public Sprite bulletUiSprite { get; set; }
 }
-

@@ -108,7 +108,7 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        (bool isWeapon, IWeapon weapon) = _inventoryController.GetWeapon(item.id);
+        (bool isWeapon, IWeapon weapon, _) = _inventoryController.GetWeapon(item.id);
         if(!isWeapon)
         {
             currentWeapon = null;
@@ -142,9 +142,9 @@ public class PlayerCombatController : MonoBehaviour
 
             _attacksManager.CreateMeleeAttack(playerRb.position + new Vector2(0, 0.15f), baseDirection, meleeWeapon, damageMultiplier, include);
         }
-        else if (weapon is Weapon normalWeapon)
+        else if (weapon is RangeWeapon normalWeapon)
         {
-            bool result = RemoveAmmoFromMag(currentWeapon.item.id, 1);
+            bool result = RemoveAmmoFromMag(_inventoryController.GetWeaponItem(currentWeapon).item.id, 1);
             if (!result)
             {
                 ReloadWeapon(weapon);
@@ -166,12 +166,14 @@ public class PlayerCombatController : MonoBehaviour
     {
         if(_isReloading) return false;
 
-        if (weapon is Weapon normalWeapon)
+        IItem weaponItem = _inventoryController.GetWeaponItem(currentWeapon).item;
+
+        if (weapon is RangeWeapon normalWeapon)
         {
             if (normalWeapon == null) return false;
-            if (!_ammoInventory.ContainsKey(normalWeapon.item.id)) return false;
+            if (!_ammoInventory.ContainsKey(weaponItem.id)) return false;
 
-            int amountToReload = Mathf.Min(normalWeapon.magazineSize - _ammoInventory[normalWeapon.item.id].inMagazine, _ammoInventory[normalWeapon.item.id].all);
+            int amountToReload = Mathf.Min(normalWeapon.magazineSize - _ammoInventory[weaponItem.id].inMagazine, _ammoInventory[weaponItem.id].all);
 
             if(amountToReload <= 0) return false;
 
@@ -181,10 +183,10 @@ public class PlayerCombatController : MonoBehaviour
 
             _inventoryController.inventoryBlocked = true;
             _inventoryController.slots[_inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {
-                Ammo current = _ammoInventory[normalWeapon.item.id];
+                Ammo current = _ammoInventory[weaponItem.id];
                 current.inMagazine += amountToReload;
                 current.all -= amountToReload;
-                _ammoInventory[normalWeapon.item.id] = current;
+                _ammoInventory[weaponItem.id] = current;
 
                 _inventoryController.inventoryBlocked = false;
                 _isReloading = false;
@@ -200,9 +202,11 @@ public class PlayerCombatController : MonoBehaviour
     public (bool result, int inMagazine, int all) GetCurrentAmmo()
     {
         if (currentWeapon == null) return (false, 0, 0);
-        if (!_ammoInventory.ContainsKey(currentWeapon.item.id)) return (true, 0, 0);
 
-        return (true, _ammoInventory[currentWeapon.item.id].inMagazine, _ammoInventory[currentWeapon.item.id].all);
+        IItem weaponItem = _inventoryController.GetWeaponItem(currentWeapon).item;
+        if (!_ammoInventory.ContainsKey(weaponItem.id)) return (true, 0, 0);
+
+        return (true, _ammoInventory[weaponItem.id].inMagazine, _ammoInventory[weaponItem.id].all);
     }
 
     public void AddAmmo(string weaponItemId, int amount)
@@ -336,7 +340,7 @@ public class PlayerCombatController : MonoBehaviour
 
         _weaponIcon.enabled = true;
 
-        if (currentWeapon is Weapon weapon)
+        if (currentWeapon is RangeWeapon weapon)
         {
             _ammoTMP.text = inMagazine + "/" + weapon.magazineSize + " <" + allAmmo + ">";
             _bulletIcon.enabled = true;

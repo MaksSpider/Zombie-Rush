@@ -38,7 +38,7 @@ public struct EnemyData
     public float damageModifier;
     public int exp;
 
-    public int weaponItemId;
+    public string weaponItemId;
 
     public List<ItemDrop> loot;
 

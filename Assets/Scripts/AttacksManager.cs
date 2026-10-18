@@ -38,7 +38,7 @@ public class AttacksManager : MonoBehaviour
         }
     }
 
-    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, Weapon weapon, float damageModifer = 1f, LayerMask targets = default)
+    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, RangeWeapon weapon, float damageModifer = 1f, LayerMask targets = default)
     {
         for (int i = 0; i < weapon.bulletsPerShot; i++)
         {
@@ -60,9 +60,7 @@ public class AttacksManager : MonoBehaviour
 
             attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * damageModifer);
             attackCtr.direction = direction.normalized;
-            attackCtr.speed = weapon.bulletSpeed;
-            attackCtr.maxLifeTime = weapon.attackRange / weapon.bulletSpeed;
-            attackCtr.multiTarget = false;
+            attackCtr.weapon = weapon;
 
             if (targets.value != 0)
             {
@@ -79,7 +77,7 @@ public class AttacksManager : MonoBehaviour
 
     public void CreateMeleeAttack(Vector2 spawnPosition, Vector2 baseDirection, MeleeWeapon weapon, float damageModifer = 1f, LayerMask targets = default)
     {
-        Vector2 bulletPosition = spawnPosition + baseDirection * 0.2f;
+        Vector2 bulletPosition = spawnPosition + baseDirection * 0.01f;
 
         float angle = Mathf.Atan2(baseDirection.y, baseDirection.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(0f, 0f, angle + 0);
@@ -91,11 +89,7 @@ public class AttacksManager : MonoBehaviour
 
         attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * damageModifer);
         attackCtr.direction = baseDirection.normalized;
-        attackCtr.speed = 4f;
-        attackCtr.maxLifeTime = weapon.attackRange / 4f;
-        attackCtr.multiTarget = weapon.multiTargeting;
-
-        DrawSemicircle(bulletGameObject, 0.32f, 0.25f, weapon.attackAngle);
+        attackCtr.weapon = weapon;
 
         if (targets.value != 0)
         {
@@ -107,57 +101,5 @@ public class AttacksManager : MonoBehaviour
         }
 
         Bullets.Add(attackCtr);
-    }
-
-    private void DrawSemicircle(GameObject gameObject, float radius, float innerRadius, float spreadAngle, int segments = 40)
-    {
-        Vector3[] vertices = new Vector3[(segments + 1) * 2];
-        int[] triangles = new int[segments * 6];
-
-        for (int i = 0; i <= segments; i++)
-        {
-            float angle = Mathf.Deg2Rad * (-spreadAngle / 2f + spreadAngle * i / segments);
-
-            float x = Mathf.Cos(angle);
-            float y = Mathf.Sin(angle);
-
-            vertices[i * 2] = new Vector3(
-                x * innerRadius,
-                y * innerRadius,
-                0f
-            );
-
-            vertices[i * 2 + 1] = new Vector3(
-                x * radius,
-                y * radius,
-                0f
-            );
-        }
-
-        for (int i = 0; i < segments; i++)
-        {
-            int innerCurrent = i * 2;
-            int outerCurrent = innerCurrent + 1;
-            int innerNext = innerCurrent + 2;
-            int outerNext = innerCurrent + 3;
-
-            triangles[i * 6] = innerCurrent;
-            triangles[i * 6 + 1] = outerCurrent;
-            triangles[i * 6 + 2] = outerNext;
-
-            triangles[i * 6 + 3] = innerCurrent;
-            triangles[i * 6 + 4] = outerNext;
-            triangles[i * 6 + 5] = innerNext;
-        }
-
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        gameObject.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.75f);
     }
 }
