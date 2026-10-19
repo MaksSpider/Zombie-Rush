@@ -1,11 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using ZombieRush.Framework;
 
-[CreateAssetMenu(fileName = "UpgradesData", menuName = "Scriptable Objects/UpgradesData")]
-public class UpgradesData : ScriptableObject
+public enum Rarity
 {
-    public List<Upgrade> upgradesData;
+    Common,
+    Rare,
+    Epic,
+    Legendary
+}
+
+[CreateAssetMenu(fileName = "UpgradeData", menuName = "Scriptable Objects/UpgadeData")]
+public class UpgradeData : ScriptableObject
+{
+    public List<Upgrade> upgrade;
 }
 
 [Serializable]
@@ -16,20 +25,54 @@ public struct Bonus
 }
 
 [Serializable]
-public struct Upgrade
+public class Upgrade
 {
     [field: SerializeField]
-    public String name { get; set; }
+    public string id { get; set; }
     [field: SerializeField]
-    public String title { get; set; }
+    public string name { get; set; }
     [field: SerializeField]
-    public String description { get; set; }
+    public string description { get; set; }
     [field: SerializeField]
-    public String type { get; set; }
+    public Rarity rarity { get; set; }
 
     [field: SerializeField]
     public List<Bonus> bonuses { get; set; }
 
     [field: SerializeField]
     public Sprite icon { get; set; }
+
+    public Color GetRarityColor()
+    {
+        switch (rarity)
+        {
+            case Rarity.Common:
+                return Color.white;
+            case Rarity.Rare:
+                return new Color(0.25f, 0.55f, 1.0f);
+            case Rarity.Epic:
+                return new Color(0.65f, 0.3f, 1.0f);
+            case Rarity.Legendary:
+                return new Color(1.0f, 0.65f, 0.1f);
+        }
+
+        return Color.white;
+    }
+
+    public (float baseChance, float chanceMultiplierPerLevel) GetUpgradeChance()
+    {
+        switch (rarity)
+        {
+            case Rarity.Common:
+                return (0.5f, 1.05f);
+            case Rarity.Rare:
+                return (0.3f, 1.15f);
+            case Rarity.Epic:
+                return (0.15f, 1.2f);
+            case Rarity.Legendary:
+                return (0.05f, 1.25f);
+        }
+
+        return (0f, 0f);
+    }
 }

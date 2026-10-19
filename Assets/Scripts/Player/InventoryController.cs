@@ -232,7 +232,7 @@ public class InventoryController : MonoBehaviour
             }
         }
 
-        Debug.Log($"Loaded {allItems.Length} items.");
+        Debug.Log($"Loaded {_itemsDatabase.Count} items.");
 
         // starting items
         AddItem("weapon_pistol", 1);
@@ -640,7 +640,7 @@ public class InventoryController : MonoBehaviour
 
         if (inventory.ContainsKey(slot))
         {
-            slots[slot].slotImage.color = RarityData.GetRarityColor(inventory[slot].item.type);
+            //slots[slot].slotImage.color = RarityData.GetRarityColor(inventory[slot].item.type);
             slots[slot].itemImage.sprite = inventory[slot].item.icon;
             slots[slot].itemImage.enabled = true;
 

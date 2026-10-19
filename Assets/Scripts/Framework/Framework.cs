@@ -69,17 +69,17 @@ namespace ZombieRush.Framework
 
     public static class RarityData
     {
-        public static Color GetRarityColor(string rarity)
+        public static Color GetRarityColor(Rarity rarity)
         {
             switch (rarity)
             {
-                case "common":
+                case Rarity.Common:
                     return Color.white;
-                case "rare":
+                case Rarity.Rare:
                     return new Color(0.25f, 0.55f, 1.0f);
-                case "epic":
+                case Rarity.Epic:
                     return new Color(0.65f, 0.3f, 1.0f);
-                case "legendary":
+                case Rarity.Legendary:
                     return new Color(1.0f, 0.65f, 0.1f);
             }
 
@@ -89,6 +89,23 @@ namespace ZombieRush.Framework
         public static Color GetDefaultRarityColor()
         {
             return Color.white;
+        }
+
+        public static (float baseChance, float chanceIncreasePerLevel) GetUpgradeChance(Rarity rarity)
+        {
+            switch (rarity)
+            {
+                case Rarity.Common:
+                    return (75f, 1f);
+                case Rarity.Rare:
+                    return (15f, 0.1f);
+                case Rarity.Epic:
+                    return (7.5f, 0.15f);
+                case Rarity.Legendary:
+                    return (2.5f, 0.2f);
+            }
+
+            return (0f, 0f);
         }
     }
 }

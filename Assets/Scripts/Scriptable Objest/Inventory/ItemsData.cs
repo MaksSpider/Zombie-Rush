@@ -14,7 +14,7 @@ public interface IItem
     public string description { get; set; }
     public Sprite icon { get; set; }
     public int maxStack { get; set; }
-    public string type { get; set; }
+    public Rarity rarity { get; set; }
 }
 
 [Serializable]
@@ -28,5 +28,5 @@ public struct Item : IItem
 
     [field: SerializeField] public int maxStack { get; set; }
 
-    [field: SerializeField] public string type { get; set; }
+    [field: SerializeField] public Rarity rarity { get; set; }
 }

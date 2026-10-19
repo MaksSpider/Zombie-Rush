@@ -31,7 +31,7 @@ public struct UsableItem : IItem
 
     [field: SerializeField] public int maxStack { get; set; }
 
-    [field: SerializeField] public string type { get; set; }
+    [field: SerializeField] public Rarity rarity { get; set; }
 
     [field: SerializeField] public ItemUsage usageFunction { get; set; }
 }

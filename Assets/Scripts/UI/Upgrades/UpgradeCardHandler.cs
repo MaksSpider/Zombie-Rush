@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
+    private UpgradesMenuController _upgradesMenuController => UpgradesMenuController.Instance;
     private UpgradesController _upgradesController => UpgradesController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private CursorManager _cursorManager => CursorManager.Instance;
@@ -16,23 +17,29 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!_upgradesMenuController.openedUpgradesMenu) return;
         Select();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!_upgradesMenuController.openedUpgradesMenu) return;
         UnSelect();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!_upgradesMenuController.openedUpgradesMenu) return;
         if (_isHolding) return;
+
         _cursorManager.Change("grabHover");
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!_upgradesMenuController.openedUpgradesMenu) return;
         if (_isHolding) return;
+
         _cursorManager.SetDefault();
     }
 
@@ -43,8 +50,10 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     private void Select()
     {
-        if (_upgradesController.isSelectingUpgradeCard) return;
+        if (_upgradesMenuController.holdingCard) return;
         _isHolding = true;
+
+        print($"Holding card: {gameObject.name}");
 
         _originalParent = transform.parent;
         _originalSiblingIndex = transform.GetSiblingIndex();
@@ -53,114 +62,46 @@ public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         _cursorManager.Change("grab");
 
-        _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(true);
-        _upgradesController.isSelectingUpgradeCard = true;
+        _upgradesMenuController.SetActivePlayerCardsBackground(true);
+        _upgradesMenuController.holdingCard = true;
     }
 
     private void UnSelect()
     {
-        _upgradesController.isSelectingUpgradeCard = false;
+        _upgradesMenuController.holdingCard = false;
 
         RectTransform rectTransform = GetComponent<RectTransform>();
 
         Vector2 mousePosition = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
+        (string position, int closestIndex) = _upgradesMenuController.GetPosition(mousePosition);
 
-        bool isInside = RectTransformUtility.RectangleContainsScreenPoint(
-            _upgradesController.playerUpgradeCards.GetComponent<RectTransform>(),
-            mousePosition,
-            null
-        );
-
-
-        if (!isInside)
+        if (position == "wrong")
         {
-            _isHolding = false;
             transform.SetParent(_originalParent, true);
             transform.SetSiblingIndex(_originalSiblingIndex);
-            _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
-            _cursorManager.SetDefault();
-            return;
         }
 
-        Transform upgradeToSwitch = null;
-
-        for (int i = 0; i < _upgradesController.playerUpgradeCards.transform.childCount; i++)
+        if(position == "trash")
         {
-            Transform child = _upgradesController.playerUpgradeCards.transform.GetChild(i);
-
-            if(child.name == "Background") continue;
-
-            bool insideUpgrade = RectTransformUtility.RectangleContainsScreenPoint(
-                child.GetComponent<RectTransform>(),
-                mousePosition,
-                null
-            );
-
-            if (insideUpgrade)
+            if(_upgradesController.playerUpgrades.Contains(GetComponent<UpgradeCard>()))
             {
-                upgradeToSwitch = child;
-                break;
+                _upgradesController.playerUpgrades.Remove(GetComponent<UpgradeCard>());
             }
+
+            Destroy(gameObject);
         }
 
-        UpgradeCard upgradeCard = gameObject.GetComponent<UpgradeCard>();
-
-        if (_upgradesController.GetFirstFreeSlot().exist)
+        if (position == "playerDeck")
         {
-            _upgradesController.AddUpgrade(_upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
-        }
-        else if(upgradeToSwitch == null)
-        {
-            _isHolding = false;
-            transform.SetParent(_originalParent, true);
-            transform.SetSiblingIndex(_originalSiblingIndex);
-            _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
-            _cursorManager.SetDefault();
-            return;
-        }
-        else
-        {
-            UpgradeCard upgradeCardToSwitch = upgradeToSwitch.Find("CardButton").GetComponent<UpgradeCard>();
-            _upgradesController.AddUpgradeOnSlot(upgradeCardToSwitch.upgradeIndex, _upgradesController.upgradesToPick[upgradeCard.upgradeIndex]);
+            _upgradesController.playerUpgrades.Add(GetComponent<UpgradeCard>());
 
-            Destroy(upgradeToSwitch.gameObject);
+            transform.SetParent(_upgradesMenuController.playerUpgrades.transform, true);
+            transform.SetSiblingIndex(closestIndex);
         }
-
-        int siblingIndex = GetClosestSiblingIndex(mousePosition);
 
         _isHolding = false;
-
-        transform.SetParent(_upgradesController.playerUpgradeCards.transform, false);
-        transform.SetSiblingIndex(siblingIndex);
-
+        _upgradesMenuController.SetActivePlayerCardsBackground(false);
         _cursorManager.SetDefault();
-        _upgradesController.playerUpgradeCards.transform.Find("Background").gameObject.SetActive(false);
-        _upgradesController.CloseUpgradesPopUp();
-    }
-
-    private int GetClosestSiblingIndex(Vector2 mousePosition)
-    {
-        RectTransform deck = _upgradesController.playerUpgradeCards.GetComponent<RectTransform>();
-
-        int closestIndex = 0;
-        float closestDistance = float.MaxValue;
-
-        for (int i = 0; i < deck.childCount; i++)
-        {
-            RectTransform slot = deck.GetChild(i).GetComponent<RectTransform>();
-
-            Vector2 slotScreenPosition = RectTransformUtility.WorldToScreenPoint(null, slot.position);
-
-            float distance = Vector2.Distance(mousePosition, slotScreenPosition);
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestIndex = i;
-            }
-        }
-
-        return closestIndex;
     }
 
     private void HandleMovement()

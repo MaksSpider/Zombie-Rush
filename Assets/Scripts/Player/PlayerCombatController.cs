@@ -153,7 +153,7 @@ public class PlayerCombatController : MonoBehaviour
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
-            float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletsDamage");
+            float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletDamage");
 
             _attacksManager.CreateBullet(playerRb.position + new Vector2(0, 0.15f), baseDirection, normalWeapon, damageMultiplier, include);
 
