@@ -1,20 +1,6 @@
 using System;
 using UnityEngine;
 
-public abstract class ItemUsage : ScriptableObject
-{
-    public float usageDuration = 1.0f;
-    public bool remove = true;
-
-    public virtual bool CanUseItem(UsableItem itemData)
-    {
-        return true;
-    }
-
-    public abstract void UseItem(UsableItem itemData);
-}
-
-
 [CreateAssetMenu(fileName = "Item", menuName = "Items/Item")]
 public class ItemsData : ScriptableObject
 {

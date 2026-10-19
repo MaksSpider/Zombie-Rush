@@ -70,7 +70,7 @@ public class UpgradesController : MonoBehaviour
 
     void Start()
     {
-        _upgradesPickerPopUp.SetActive(false);
+        //_upgradesPickerPopUp.SetActive(false);
         Invoke(nameof(Debug), 1f);
     }
 
@@ -101,7 +101,7 @@ public class UpgradesController : MonoBehaviour
         upgradesToPick.Clear();
         isSelectingUpgradeCard = false;
 
-        _upgradesPickerPopUp.SetActive(false);
+        //_upgradesPickerPopUp.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
     }
 
@@ -167,15 +167,14 @@ public class UpgradesController : MonoBehaviour
             upgradeCard.transform.SetSiblingIndex(slot);
         }
 
-        _upgradesPickerPopUp.SetActive(true);
+        //_upgradesPickerPopUp.SetActive(true);
         _statesManager.SwitchState<UpgradeState>();
-        _upgradesPickerPopUp.transform.Find("Menu").GetComponent<UIEnterAnimations>().EnterAnimation();
     }
 
     public void CloseUpgradesPopUp()
     {
-        _upgradesPickerPopUp.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation();
-        StartCoroutine(AfterCloseAnimation());
+        //_upgradesPickerPopUp.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation();
+        //StartCoroutine(AfterCloseAnimation());
     }
 
 
