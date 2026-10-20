@@ -90,22 +90,5 @@ namespace ZombieRush.Framework
         {
             return Color.white;
         }
-
-        public static (float baseChance, float chanceIncreasePerLevel) GetUpgradeChance(Rarity rarity)
-        {
-            switch (rarity)
-            {
-                case Rarity.Common:
-                    return (75f, 1f);
-                case Rarity.Rare:
-                    return (15f, 0.1f);
-                case Rarity.Epic:
-                    return (7.5f, 0.15f);
-                case Rarity.Legendary:
-                    return (2.5f, 0.2f);
-            }
-
-            return (0f, 0f);
-        }
     }
 }

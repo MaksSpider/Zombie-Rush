@@ -48,18 +48,13 @@ public class PauseMenuController : MonoBehaviour
 
     public void Close(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
     {
-        _pauseMenu.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation();
-        StartCoroutine(AfterCloseAnimation());
-    }
-
-    private IEnumerator AfterCloseAnimation()
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        isSettingsOpen = false;
-        _pauseMenu.SetActive(false);
-        _settingsMenu.SetActive(false);
-        _statesManager.SwitchState<PlayingState>();
+        _pauseMenu.transform.Find("Menu").GetComponent<UIEnterAnimations>().ExitAnimation(() =>
+        {
+            isSettingsOpen = false;
+            _pauseMenu.SetActive(false);
+            _settingsMenu.SetActive(false);
+            _statesManager.SwitchState<PlayingState>();
+        });
     }
 
     private void MainMenu()

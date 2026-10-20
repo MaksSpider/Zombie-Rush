@@ -71,7 +71,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("ammo_shotgun", 5);
         _inventoryController.AddItem("weapon_bat", 1);
 
-        DisplayUpgradesWindow(4);
+        DisplayUpgradesWindow(1);
     }
 
     private IEnumerator AfterCloseAnimation()
@@ -126,10 +126,15 @@ public class UpgradesController : MonoBehaviour
             }
 
             (float chance, float chanceMultiplierPerLevel) = upgrade.GetUpgradeChance();
-            float finalChance = chance * Mathf.Pow(chanceMultiplierPerLevel, level);
+            float finalChance = chance * Mathf.Pow(chanceMultiplierPerLevel, level - 1);
 
             chances.Add(finalChance);
             upgradeList.Add(upgrade);
+
+            Debug.Log("==============================");
+            Debug.Log("Upgrade: " + upgrade.name);
+            Debug.Log("Chance: " + finalChance);
+            Debug.Log("Rarity: " + upgrade.rarity);
 
             totalChance += finalChance;
         }
@@ -141,12 +146,19 @@ public class UpgradesController : MonoBehaviour
 
         float randomValue = UnityEngine.Random.Range(0f, totalChance);
 
+        Debug.Log("==============================");
+        Debug.Log("totalChance: " + totalChance);
+        Debug.Log("randomValue: " + randomValue);
+
         for (int i = 0; i < upgradeList.Count; i++)
         {
             randomValue -= chances[i];
 
-            if (randomValue <= 0f)
+            if (randomValue < 0f)
             {
+                Debug.Log("Upgrade: " + upgradeList[i].name);
+                Debug.Log("Chance: " + chances[i]);
+                Debug.Log("Rarity: " + upgradeList[i].rarity);
                 return (true, upgradeList[i]);
             }
         }

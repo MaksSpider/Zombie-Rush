@@ -661,6 +661,16 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""OpenKeysGuide"",
+                    ""type"": ""Button"",
+                    ""id"": ""6b7a295b-7e23-40f9-99f5-e0eaadf720e7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -672,6 +682,17 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2869ee7b-8a7c-46f0-9695-25c9b26dbbf2"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenKeysGuide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -705,6 +726,7 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Escape = m_Menu.FindAction("Escape", throwIfNotFound: true);
+        m_Menu_OpenKeysGuide = m_Menu.FindAction("OpenKeysGuide", throwIfNotFound: true);
     }
 
     ~@InputSystemActions()
@@ -1092,6 +1114,7 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Menu;
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
     private readonly InputAction m_Menu_Escape;
+    private readonly InputAction m_Menu_OpenKeysGuide;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -1107,6 +1130,10 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Menu/Escape".
         /// </summary>
         public InputAction @Escape => m_Wrapper.m_Menu_Escape;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/OpenKeysGuide".
+        /// </summary>
+        public InputAction @OpenKeysGuide => m_Wrapper.m_Menu_OpenKeysGuide;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1136,6 +1163,9 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
+            @OpenKeysGuide.started += instance.OnOpenKeysGuide;
+            @OpenKeysGuide.performed += instance.OnOpenKeysGuide;
+            @OpenKeysGuide.canceled += instance.OnOpenKeysGuide;
         }
 
         /// <summary>
@@ -1150,6 +1180,9 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
+            @OpenKeysGuide.started -= instance.OnOpenKeysGuide;
+            @OpenKeysGuide.performed -= instance.OnOpenKeysGuide;
+            @OpenKeysGuide.canceled -= instance.OnOpenKeysGuide;
         }
 
         /// <summary>
@@ -1345,5 +1378,12 @@ public partial class @InputSystemActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEscape(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenKeysGuide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenKeysGuide(InputAction.CallbackContext context);
     }
 }
