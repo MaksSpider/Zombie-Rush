@@ -17,8 +17,8 @@ public class PlayerController : DamageHandler
 
     private InventoryController _inventoryController;
 
-    public ModifiersController modifiersController;
-    public StatusesController statusesController;
+    [NonSerialized] public ModifiersController modifiersController;
+    [NonSerialized] public StatusesController statusesController;
 
     public event Action OnLevelUp;
 
@@ -82,6 +82,26 @@ public class PlayerController : DamageHandler
     {
         rb.position = _spawnPosition;
 
+        ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
+
+        modifiersController.AddOnChangeListener("base_max_health", () =>
+        {
+            SetMaxHealth((int)(modifiersController.GetModifierValue("base_max_health") * (1f + modifiersController.GetModifierValue("max_health_multiplier_modifier"))));
+        });
+        modifiersController.AddOnChangeListener("max_health_multiplier_modifier", () =>
+        {
+            SetMaxHealth((int)(modifiersController.GetModifierValue("base_max_health") * (1f + modifiersController.GetModifierValue("max_health_multiplier_modifier"))));
+        });
+
+        modifiersController.AddOnChangeListener("base_max_stamina", () =>
+        {
+            SetMaxStamina((int)(modifiersController.GetModifierValue("base_max_stamina") * (1f + modifiersController.GetModifierValue("max_stamina_multiplier_modifier"))));
+        });
+        modifiersController.AddOnChangeListener("max_stamina_multiplier_modifier", () =>
+        {
+            SetMaxStamina((int)(modifiersController.GetModifierValue("base_max_stamina") * (1f + modifiersController.GetModifierValue("max_stamina_multiplier_modifier"))));
+        });
+
         modifiersController.AddModifier(new List<ModifierProperty>
         {
             new ModifierProperty
@@ -115,11 +135,6 @@ public class PlayerController : DamageHandler
                 value = 3
             }
         });
-
-        ChangeMaxHealth((int)modifiersController.GetModifierValue("base_max_health"));
-        ChangeMaxStamina((int)modifiersController.GetModifierValue("base_max_stamina"));
-
-        ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
         SetupUI();
     }
@@ -258,9 +273,9 @@ public class PlayerController : DamageHandler
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
     }
 
-    public void ChangeMaxHealth(int value)
+    public void SetMaxHealth(int value)
     {
-        MaxHealth += value;
+        MaxHealth = value;
 
         if (value > 0)
         {
@@ -268,15 +283,15 @@ public class PlayerController : DamageHandler
             return;
         }
 
-        if (Health > MaxHealth)
+        if (Health > MaxHealth) 
         {
             Health = MaxHealth;
         }
     }
 
-    public void ChangeMaxStamina(int value)
+    public void SetMaxStamina(int value)
     {
-        MaxStamina += value;
+        MaxStamina = value;
         ChangeStamina(value);
     }
 
@@ -312,8 +327,10 @@ public class PlayerController : DamageHandler
 
     public void ChangeMoney(int value)
     {
-        Money += value;
-        Score += value;
+        float valueWithMultiplier = (float)value * (1 + modifiersController.GetModifierValue("money_gain_multiplier_modifier"));
+
+        Money += (int)valueWithMultiplier;
+        Score += (int)valueWithMultiplier;
 
         cashTMP.text = Money.ToString();
     }

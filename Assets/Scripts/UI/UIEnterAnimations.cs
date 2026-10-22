@@ -139,7 +139,6 @@ public class UIEnterAnimations : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float t = duration > 0f ? Mathf.Clamp01(elapsed / duration) : 1f;
 
-            // SmoothStep zapewnia płynne rozpędzanie i hamowanie.
             float easedT = Mathf.SmoothStep(0f, 1f, t);
 
             _rect.anchoredPosition =

@@ -38,7 +38,6 @@ public class UpgradesMenuController : MonoBehaviour
     {
         _finishButton.onClick.AddListener(() =>
         {
-            print(_upgradesController.playerUpgrades.Count);
             if(_upgradesController.maxUpgradesAmount < _upgradesController.playerUpgrades.Count) return;
 
             _statesManager.SwitchState<PlayingState>();

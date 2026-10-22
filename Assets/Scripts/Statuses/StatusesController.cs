@@ -22,6 +22,7 @@ public class StatusesController : MonoBehaviour
 
             if (status.UpdateAnimation())
             {
+                status.OnRemove();
                 Destroy(status.gameObject);
                 statuses.RemoveAt(i);
             }

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public struct Ammo
 {
@@ -136,7 +137,7 @@ public class PlayerCombatController : MonoBehaviour
 
         if (weapon is MeleeWeapon meleeWeapon)
         {
-            float damageMultiplier = 1f + _upgradesController.GetBonusValues("meleeDamage");
+            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("melee_damage_multipler_modifier");
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
@@ -153,7 +154,7 @@ public class PlayerCombatController : MonoBehaviour
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
-            float damageMultiplier = 1f + _upgradesController.GetBonusValues("bulletDamage");
+            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("bullets_damage_multipler_modifier");
 
             _attacksManager.CreateBullet(playerRb.position + new Vector2(0, 0.15f), baseDirection, normalWeapon, damageMultiplier, include);
 

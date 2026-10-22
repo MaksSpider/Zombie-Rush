@@ -8186,6 +8186,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6646683379653701900, guid: da4bd1a696e21bf46b5e8c4faec39c6e, type: 3}
+      propertyPath: _value
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9610,12 +9614,12 @@ GameObject:
   - component: {fileID: 1595515488}
   - component: {fileID: 1595515495}
   - component: {fileID: 1595515496}
+  - component: {fileID: 1595515498}
   - component: {fileID: 1595515487}
   - component: {fileID: 1595515486}
   - component: {fileID: 1595515485}
   - component: {fileID: 1595515497}
   - component: {fileID: 1595515484}
-  - component: {fileID: 1595515498}
   m_Layer: 8
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -9841,8 +9845,6 @@ MonoBehaviour:
   experience: 0
   money: 0
   Health: 100
-  modifiersController: {fileID: 0}
-  statusesController: {fileID: 0}
   _spawnPosition: {x: 0, y: 0, z: 0}
   _baseSpeed: 3
   _sprintBoost: 1.5

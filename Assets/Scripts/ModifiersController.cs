@@ -12,16 +12,48 @@ public class ModifierProperty
 [Serializable]
 public class Modifier
 {
-    public int id {  get; private set; }
-    public List<ModifierProperty> modifiers { get; set; }
+    public int id;
+    public List<ModifierProperty> properties;
 
     private ModifiersController _modifiersController;
 
-    public Modifier(int id, List<ModifierProperty> modifiers, ModifiersController modifiersController)
+    public Modifier(int id, List<ModifierProperty> properties, ModifiersController modifiersController)
     {
         this.id = id;
-        this.modifiers = modifiers;
+        this.properties = properties;
         _modifiersController = modifiersController;
+    }
+
+    public void AddProperty(ModifierProperty property)
+    {
+        properties.Add(property);
+        _modifiersController.ExecuteOnChange(property.name);
+    }
+
+    public void RemoveProperty(string name)
+    {
+        for(int i = 0; i < properties.Count; i++)
+        {
+            if (properties[i].name == name)
+            {
+                _modifiersController.ExecuteOnChange(name);
+                properties.RemoveAt(i);
+                return;
+            }
+        }
+    }
+
+    public void ChangePropertyValue(string name, float newValue)
+    {
+        foreach (ModifierProperty property in properties)
+        {
+            if (property.name == name)
+            {
+                property.value = newValue;
+                _modifiersController.ExecuteOnChange(name);
+                return;
+            }
+        }
     }
 
     public void Remove()
@@ -33,6 +65,7 @@ public class Modifier
 public class ModifiersController : MonoBehaviour
 {
     private int _nextId = 0;
+    private Dictionary<string, List<Action>> OnModifiersChange = new();
 
     public List<Modifier> modifiers;
 
@@ -43,6 +76,11 @@ public class ModifiersController : MonoBehaviour
         Modifier modifier = new Modifier(id, modifierProperties, this);
 
         modifiers.Add(modifier);
+
+        foreach (ModifierProperty property in modifier.properties)
+        {
+            ExecuteOnChange(property.name);
+        }
 
         _nextId++;
 
@@ -55,7 +93,13 @@ public class ModifiersController : MonoBehaviour
         {
             if (modifiers[i].id == id)
             {
+                foreach (ModifierProperty property in modifiers[i].properties)
+                {
+                    ExecuteOnChange(property.name);
+                }
+
                 modifiers.RemoveAt(i);
+
                 return true;
             }
         }
@@ -79,7 +123,7 @@ public class ModifiersController : MonoBehaviour
 
         foreach(Modifier modifier in modifiers)
         {
-            foreach(ModifierProperty property in modifier.modifiers)
+            foreach(ModifierProperty property in modifier.properties)
             {
                 if(property.name == name)
                 {
@@ -89,5 +133,34 @@ public class ModifiersController : MonoBehaviour
         }
 
         return value;
+    }
+
+    public void AddOnChangeListener(string name, Action action)
+    {
+        if (!OnModifiersChange.ContainsKey(name))
+        {
+            OnModifiersChange.Add(name, new List<Action>());
+        }
+
+        OnModifiersChange[name].Add(action);
+    }
+
+    public void RemoveOnChangeListener(string name, Action action)
+    {
+        if (!OnModifiersChange.ContainsKey(name)) return;
+        if (!OnModifiersChange[name].Contains(action)) return;
+
+        OnModifiersChange[name].Remove(action);
+    }
+
+    public void ExecuteOnChange(string name)
+    {
+        if(OnModifiersChange.ContainsKey(name))
+        {
+            foreach(Action action in OnModifiersChange[name])
+            {
+                action?.Invoke();
+            }
+        }
     }
 }

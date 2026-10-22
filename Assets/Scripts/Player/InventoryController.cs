@@ -113,6 +113,8 @@ public class InventoryController : MonoBehaviour
     private Dictionary<string, IItem> _itemsDatabase = new();
     private Dictionary<string, IWeapon> _weaponsDatabase = new();
 
+    private Action _inventorySlotsListener;
+
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
     public event Action OnSlotsAmountChange;
@@ -139,15 +141,27 @@ public class InventoryController : MonoBehaviour
         _upgradesController = UpgradesController.Instance;
 
         _playerController = gameObject.GetComponent<PlayerController>();
+
+        _inventorySlotsListener = () =>
+        {
+            ChangeSlotAmount((int)_playerController.modifiersController.GetModifierValue("base_inventory_slots"));
+        };
     }
 
     void Start()
     {
-        //_upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
-
         Init();
     }
 
+    void OnEnable()
+    {
+        _playerController.modifiersController.AddOnChangeListener("base_inventory_slots", _inventorySlotsListener);
+    }
+
+    void OnDisable()
+    {
+        _playerController.modifiersController.RemoveOnChangeListener("base_inventory_slots", _inventorySlotsListener);
+    }
 
     public void OnEnterState()
     {
@@ -187,7 +201,12 @@ public class InventoryController : MonoBehaviour
 
     public void Tick()
     {
-        UpdateSpinningWheelAniamtions();
+        if (slots.Count < 1) return;
+
+        foreach (Slot slot in slots)
+        {
+            slot.UpdateAnimation();
+        }
     }
 
     private void OnDestroy()
@@ -200,7 +219,7 @@ public class InventoryController : MonoBehaviour
 
     private void Init()
     {
-        ChangeSlotAmount((int)_playerController.modifiersController.GetModifierValue("base_inventory_slots"));
+        _inventorySlotsListener();
 
         ScriptableObject[] allItems = Resources.LoadAll<ScriptableObject>("Items");
 
@@ -305,16 +324,6 @@ public class InventoryController : MonoBehaviour
 
         if(selectedSlot >= amount) ChangeSlot(0);
         OnSlotsAmountChange?.Invoke();
-    }
-
-    private void UpdateSpinningWheelAniamtions()
-    {
-        if (slots.Count < 1) return;
-
-        foreach(Slot slot in slots)
-        {
-            slot.UpdateAnimation();
-        }
     }
 
     public void ChangeSlotAmount(int amount)
