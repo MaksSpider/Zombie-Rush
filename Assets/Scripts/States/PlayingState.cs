@@ -7,7 +7,6 @@ public class PlayingState : State
     private PauseMenuController _pauseMenuController => PauseMenuController.Instance;
     private InventoryController _inventoryController => InventoryController.Instance;
     private InteractionsManager _interactionsManager => InteractionsManager.Instance;
-    private StatusesController _statusesController => StatusesController.Instance;
     private CameraController _cameraController => CameraController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
@@ -15,6 +14,7 @@ public class PlayingState : State
     private AttacksManager _attacksManager => AttacksManager.Instance;
     private CursorManager _cursorManager => CursorManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
+    private OrbsManager _orbsManager => OrbsManager.Instance;
 
     public override void OnEnterState()
     {
@@ -43,34 +43,50 @@ public class PlayingState : State
 
     public override void Tick()
     {
-        _cameraController.Tick();
-        _interactionsManager.Tick();
-        _inventoryController.Tick();
         _playerCombatController.Tick();
+        _inventoryController.Tick();
+        _interactionsManager.Tick();
+        _cameraController.Tick();
         _playerController.Tick();
-        _statusesController.Tick();
+        _orbsManager.Tick();
     }
 
     public override void FixedTick()
     {
         float fixedDeltaTime = Time.fixedDeltaTime;
 
-        _interactionsManager.FixedTick();
         _playerController.FixedTick(fixedDeltaTime);
         _attacksManager.FixedTick(fixedDeltaTime);
         _enemiesManager.FixedTick(fixedDeltaTime);
+        _interactionsManager.FixedTick();
     }
 
     public override void Tick1s()
     {
-        _worldGenerator.Tick1s();
         _playerController.Tick1s();
+        _worldGenerator.Tick1s();
         _enemiesManager.Tick1s();
+        _orbsManager.Tick1s();
     }
 
     public override void Tick5s()
     {
         _playerController.Tick5s();
         _enemiesManager.Tick5s();
+    }
+
+    public override void Tick10s()
+    {
+        _playerController.Tick10s();
+    }
+
+    public override void Tick30s()
+    {
+        _playerController.Tick30s();
+    }
+
+    public override void Tick1m()
+    {
+        _playerController.Tick1m();
     }
 }

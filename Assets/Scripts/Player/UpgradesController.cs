@@ -70,6 +70,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("ammo_rifle", 5);
         _inventoryController.AddItem("ammo_shotgun", 5);
         _inventoryController.AddItem("weapon_bat", 1);
+        _inventoryController.AddItem("medkit", 3);
 
         DisplayUpgradesWindow(1);
     }

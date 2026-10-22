@@ -1,24 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-
-public class TemporaryHealing
-{
-    public float endTime;
-
-    public int additionalMaxHp;
-    public int additionalRegeneration;
-
-    public TemporaryHealing(float endTime, int additionalMaxHp, int additionalRegeneration)
-    {
-        this.endTime = endTime;
-        this.additionalMaxHp = additionalMaxHp;
-        this.additionalRegeneration = additionalRegeneration;
-    }
-}
 
 public class PlayerController : DamageHandler
 {
@@ -26,7 +9,6 @@ public class PlayerController : DamageHandler
 
     private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
     private UpgradesController _upgradesController => UpgradesController.Instance;
-    private StatusesController _statusesController => StatusesController.Instance;
     private CameraController _cameraController => CameraController.Instance;
     private StatesManager _stationsManager => StatesManager.Instance;
     private AudioManager _audioManager => AudioManager.Instance;
@@ -34,6 +16,9 @@ public class PlayerController : DamageHandler
     private GameSession _gameSession => GameSession.Instance;
 
     private InventoryController _inventoryController;
+
+    public ModifiersController modifiersController;
+    public StatusesController statusesController;
 
     public event Action OnLevelUp;
 
@@ -43,13 +28,6 @@ public class PlayerController : DamageHandler
 
     [SerializeField] private float _collectExpRadius = 1.5f;
 
-    [SerializeField] private int _baseHealth = 100;
-    [SerializeField] private int _baseStamina = 500;
-    [SerializeField] private int _baseLevelCost = 50;
-    [SerializeField] private float _levelExpCostMultipler = 1.25f;
-    [SerializeField] private int _healthRegeneration = 2;
-    [SerializeField] private int _baseStaminaRegeneration = 2;
-
     [SerializeField] public Transform overlay;
 
     [SerializeField] public TextMeshProUGUI levelTMP;
@@ -57,13 +35,12 @@ public class PlayerController : DamageHandler
     [SerializeField] public TextMeshProUGUI hpTMP;
     [SerializeField] public TextMeshProUGUI killsTMP;
     [SerializeField] public TextMeshProUGUI staminaTMP;
+    [SerializeField] public TextMeshProUGUI cashTMP;
 
-    [SerializeField] public RectTransform levelXpFillMask;
+    [SerializeField] public ProgressBar xpProgressBar;
 
     [NonSerialized] public Vector3 MovementDirection;
     [NonSerialized] public Vector2 LastMovementDirection = Vector2.down;
-
-    private Coroutine updateXpBarRoutine;
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -82,8 +59,6 @@ public class PlayerController : DamageHandler
 
     private bool staminaRegeneration = false;
 
-    private List<TemporaryHealing> temporaryHealing = new List<TemporaryHealing>();
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -96,6 +71,9 @@ public class PlayerController : DamageHandler
 
         _inventoryController = gameObject.GetComponent<InventoryController>();
 
+        modifiersController = GetComponent<ModifiersController>();
+        statusesController = GetComponent<StatusesController>();
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
@@ -104,45 +82,111 @@ public class PlayerController : DamageHandler
     {
         rb.position = _spawnPosition;
 
-        ExperienceToNextLevel = _baseLevelCost;
+        modifiersController.AddModifier(new List<ModifierProperty>
+        {
+            new ModifierProperty
+            {
+                name = "base_max_health",
+                value = 100
+            },
+            new ModifierProperty
+            {
+                name = "base_health_regeneration",
+                value = 1
+            },
+            new ModifierProperty
+            {
+                name = "base_max_stamina",
+                value = 500
+            },
+            new ModifierProperty
+            {
+                name = "base_xp_to_next_level",
+                value = 50
+            },
+            new ModifierProperty
+            {
+                name = "level_xp_cost_multipler",
+                value = 1.25f
+            },
+            new ModifierProperty
+            {
+                name = "base_inventory_slots",
+                value = 3
+            }
+        });
 
-        ChangeMaxHealth(_baseHealth);
-        ChangeMaxStamina(_baseStamina);
+        ChangeMaxHealth((int)modifiersController.GetModifierValue("base_max_health"));
+        ChangeMaxStamina((int)modifiersController.GetModifierValue("base_max_stamina"));
+
+        ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
         SetupUI();
     }
 
     public void OnEnterState()
     {
-        _inventoryController.OnSlotsAmountChange += UpdateXpBar;
+        _inventoryController.OnSlotsAmountChange += () => 
+        {
+            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
+        };
     }
 
     public void OnExitState()
     {
-        _inventoryController.OnSlotsAmountChange -= UpdateXpBar;
+        _inventoryController.OnSlotsAmountChange -= () =>
+        {
+            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
+        };
     }
 
 
     public void Tick()
     {
         HandleMovementControlls();
+        statusesController.Tick();
         CollectExperience();
     }
 
     public void FixedTick(float deltaTime)
     {
         HandleMovement(deltaTime);
+        statusesController.FixedTick();
     }
 
     public void Tick1s()
     {
-        CheckTemporaryHealing();
-        ChangeStamina(_baseStaminaRegeneration);
+        statusesController.Tick1s();
+
+        float staminaRegeneration = modifiersController.GetModifierValue("base_stamina_regeneration");
+        staminaRegeneration *= 1f + modifiersController.GetModifierValue("base_stamina_regeneration_multiplier_modifier");
+
+        ChangeStamina((int)staminaRegeneration);
     }
 
     public void Tick5s()
     {
-        ChangeHealth(_healthRegeneration);
+        statusesController.Tick5s();
+
+        float healthRegeneration = modifiersController.GetModifierValue("base_health_regeneration");
+        healthRegeneration *= 1f + modifiersController.GetModifierValue("health_regeneration_multiplier_modifier");
+
+        ChangeHealth((int)healthRegeneration);
+    }
+
+    public void Tick10s()
+    {
+        statusesController.Tick10s();
+    }
+
+    public void Tick30s()
+    {
+        statusesController.Tick30s();
+    }
+
+    public void Tick1m()
+    {
+        statusesController.Tick1m();
     }
 
     public override void OnDamageDealt(int damage)
@@ -176,11 +220,12 @@ public class PlayerController : DamageHandler
             Experience = 0;
             Level++;
 
-            float levelCost = _baseLevelCost;
+            float levelCost = modifiersController.GetModifierValue("base_xp_to_next_level");
+            levelCost *= 1f + modifiersController.GetModifierValue("xp_to_next_level_multipler_modifier");
 
             for (int i = 0; i < Level; i++)
             {
-                levelCost *= _levelExpCostMultipler;
+                levelCost *= (float)modifiersController.GetModifierValue("level_xp_cost_multipler"); ;
             }
 
             ExperienceToNextLevel = (int)levelCost;
@@ -193,8 +238,7 @@ public class PlayerController : DamageHandler
 
         levelTMP.text = "LVL " + Level.ToString();
         xpTMP.text = Experience.ToString() + "/" + ExperienceToNextLevel.ToString() + " EXP";
-
-        UpdateXpBar();
+        xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
     }
 
     public void ChangeHealth(int value)
@@ -228,32 +272,6 @@ public class PlayerController : DamageHandler
         {
             Health = MaxHealth;
         }
-    }
-
-    public void ChangeRegeneration(int value)
-    {
-        _healthRegeneration += value;
-
-        if (_healthRegeneration < 0)
-        {
-            _healthRegeneration = 0;
-        }
-    }
-
-    public void AddTemporaryHealing(float duration, int additionalMaxHp, int additionalRegeneration, Sprite icon = null)
-    {
-        temporaryHealing.Add(new TemporaryHealing(Time.time + duration, additionalMaxHp, additionalRegeneration));
-
-        ChangeMaxHealth(additionalMaxHp);
-        ChangeRegeneration(additionalRegeneration);
-
-        if (icon == null) return;
-
-        _statusesController.RegisterStatus(
-            icon,
-            duration,
-            new Color(255, 0, 0)
-        );
     }
 
     public void ChangeMaxStamina(int value)
@@ -296,6 +314,8 @@ public class PlayerController : DamageHandler
     {
         Money += value;
         Score += value;
+
+        cashTMP.text = Money.ToString();
     }
 
     private void HandleMovementControlls()
@@ -348,22 +368,6 @@ public class PlayerController : DamageHandler
         );
     }
 
-    private void CheckTemporaryHealing()
-    {
-        for (int i = temporaryHealing.Count - 1; i >= 0; i--)
-        {
-            TemporaryHealing tempHealing = temporaryHealing[i];
-
-            if (Time.time > tempHealing.endTime)
-            {
-                ChangeMaxHealth(-tempHealing.additionalMaxHp);
-                ChangeRegeneration(-tempHealing.additionalRegeneration);
-
-                temporaryHealing.RemoveAt(i);
-            }
-        }
-    }
-
     private void CollectExperience()
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(
@@ -375,8 +379,7 @@ public class PlayerController : DamageHandler
         {
             if (hit.CompareTag("ExpOrb"))
             {
-                ExpOrbController orb =
-                    hit.GetComponent<ExpOrbController>();
+                OrbController orb = hit.GetComponent<OrbController>();
 
                 if (orb != null)
                 {
@@ -390,29 +393,5 @@ public class PlayerController : DamageHandler
     {
         levelTMP.text = "LVL " + Level.ToString();
         xpTMP.text = Experience.ToString() + "/" + ExperienceToNextLevel.ToString() + " EXP";
-        UpdateXpBar();
-    }
-
-    private void UpdateXpBar()
-    {
-        if (updateXpBarRoutine != null)
-            StopCoroutine(updateXpBarRoutine);
-
-        updateXpBarRoutine = StartCoroutine(UpdateXpBarNextFrame());
-    }
-
-    private IEnumerator UpdateXpBarNextFrame()
-    {
-        yield return null;
-
-        RectMask2D rectMask = levelXpFillMask.GetComponent<RectMask2D>();
-
-        float percentage = Mathf.Clamp01((float)Experience / (float)ExperienceToNextLevel);
-        float width = levelXpFillMask.rect.width;
-        float progress = width * (1f - percentage);
-
-        rectMask.padding = new Vector4(0, 0, progress, 0);
-
-        updateXpBarRoutine = null;
     }
 }

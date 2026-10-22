@@ -279,6 +279,7 @@ public class EnemiesManager : MonoBehaviour
         enemy.speed = (int)(enemyToSpawn.speed * difficultyModifier);
         enemy.experience = (int)(enemyToSpawn.exp * difficultyModifier);
         enemy.damageModifier = enemyToSpawn.damageModifier * difficultyModifier;
+        enemy.money = (int)(UnityEngine.Random.Range(enemyToSpawn.moneyDrop.x, enemyToSpawn.moneyDrop.y) * difficultyModifier);
 
         if (enemyToSpawn.loot.Count > 0)
         {

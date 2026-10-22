@@ -98,16 +98,13 @@ public class InventoryController : MonoBehaviour
 {
     public static InventoryController Instance { get; private set; }
 
-    private InputManager _inputManager;
-    private PlayerController _playerController;
-    private PlayerCombatController _playerCombatController;
     private InteractionsManager _interactionsManager;
     private UpgradesController _upgradesController;
+    private PlayerController _playerController;
+    private InputManager _inputManager;
 
     [SerializeField] private Sprite _selectedSlotSprite;
     [SerializeField] private Sprite _unselectedSlotSprite;
-
-    [SerializeField] private int _baseSlotsAmount = 3;
 
     [SerializeField] private GameObject _dropedItemPrefab;
     [SerializeField] private GameObject _slotPrefab;
@@ -142,12 +139,11 @@ public class InventoryController : MonoBehaviour
         _upgradesController = UpgradesController.Instance;
 
         _playerController = gameObject.GetComponent<PlayerController>();
-        _playerCombatController = gameObject.GetComponent<PlayerCombatController>();
     }
 
     void Start()
     {
-        _upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
+        //_upgradesController.OnUpgradesChange += () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
 
         Init();
     }
@@ -198,13 +194,13 @@ public class InventoryController : MonoBehaviour
     {
         if (_upgradesController != null)
         {
-            _upgradesController.OnUpgradesChange -= () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
+            //_upgradesController.OnUpgradesChange -= () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
         }
     }
 
     private void Init()
     {
-        ChangeSlotAmount(_baseSlotsAmount);
+        ChangeSlotAmount((int)_playerController.modifiersController.GetModifierValue("base_inventory_slots"));
 
         ScriptableObject[] allItems = Resources.LoadAll<ScriptableObject>("Items");
 
@@ -237,7 +233,7 @@ public class InventoryController : MonoBehaviour
         // starting items
         AddItem("weapon_pistol", 1);
         AddItem("ammo_pistol", 5);
-        AddItem("bandage", 2);
+        AddItem("medkit", 2);
     }
 
     private void RegisterItem(IItem item)

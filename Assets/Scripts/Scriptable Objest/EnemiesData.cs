@@ -36,7 +36,9 @@ public struct EnemyData
     public int health;
     public float speed;
     public float damageModifier;
+
     public int exp;
+    public Vector2 moneyDrop;
 
     public string weaponItemId;
 

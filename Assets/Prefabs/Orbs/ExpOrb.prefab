@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2134258344108940189}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.315, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -108,18 +108,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109fee1acffeff34ea80ae6c35bced72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExpOrbController
-  speed: 8
-  acceleration: 25
-  expValue: 10
-  _collectSounds:
-  - {fileID: 8300000, guid: b0461b9d9ecfd9e4cadeff1945eb4218, type: 3}
-  - {fileID: 8300000, guid: 428dc1326fe6445479993d7e12e0ab1b, type: 3}
-  - {fileID: 8300000, guid: b87dcbf3a096cda42806d56e99fafc5d, type: 3}
-  - {fileID: 8300000, guid: 2b12d07d4a4d253449c390ab1e6571f8, type: 3}
-  bobAmplitude: 0.1
-  bobFrequency: 2
-  burstDuration: 0.3
-  burstCurve:
+  _speed: 8
+  _acceleration: 25
+  _bobAmplitude: 0.15
+  _bobFrequency: 4
+  _burstDuration: 0.3
+  _burstCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -143,8 +137,14 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  activationRadius: 10
-  proximityCheckInterval: 2
+  _activationRadius: 10
+  _proximityCheckInterval: 2
+  _collectSounds:
+  - {fileID: 8300000, guid: b0461b9d9ecfd9e4cadeff1945eb4218, type: 3}
+  - {fileID: 8300000, guid: 428dc1326fe6445479993d7e12e0ab1b, type: 3}
+  - {fileID: 8300000, guid: b87dcbf3a096cda42806d56e99fafc5d, type: 3}
+  - {fileID: 8300000, guid: 2b12d07d4a4d253449c390ab1e6571f8, type: 3}
+  expierience: 1
 --- !u!58 &3374080395566777466
 CircleCollider2D:
   m_ObjectHideFlags: 0

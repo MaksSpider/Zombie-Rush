@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Items/UsageFunctions/Healing")]
@@ -17,11 +18,22 @@ public class HealingItem : ItemUsage
 
         if (duration > 0)
         {
-            _playerController.AddTemporaryHealing(duration, maxHealth, regeneration, item.icon);
+            _playerController.statusesController.AddStatus(new HealingStatus(maxHealth, regeneration),duration, item.icon, new Color(255, 0, 0));
             return;
         }
 
-        _playerController.ChangeMaxHealth(maxHealth);
-        _playerController.ChangeRegeneration(regeneration);
+        _playerController.modifiersController.AddModifier(new List<ModifierProperty>
+        {
+            new ModifierProperty
+            {
+                name = "base_max_health",
+                value = maxHealth
+            },
+            new ModifierProperty
+            {
+                name = "base_health_regeneration",
+                value = regeneration
+            }
+        });
     }
 }

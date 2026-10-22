@@ -68,4 +68,18 @@ public class ProgressBar : MonoBehaviour
         rectMask.padding = new Vector4(0, 0, progress, 0);
     }
 
+    public RectTransform GetProgressPosition()
+    {
+        Transform fillBar = transform.Find("FillBar");
+
+        if (fillBar == null)
+            return null;
+
+        RectTransform rect = fillBar.GetComponent<RectTransform>();
+
+        if (rect == null)
+            return null;
+
+        return rect;
+    }
 }

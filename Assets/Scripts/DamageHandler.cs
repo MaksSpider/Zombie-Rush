@@ -1,22 +1,25 @@
+using TMPro;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
 public class DamageHandler : MonoBehaviour
 {
     private UpgradesController _upgradesController => UpgradesController.Instance;
+    private OrbsManager _orbsManager => OrbsManager.Instance;
 
     [SerializeField] private bool _isDestructable = false;
 
     [SerializeField] private float _expSpawnRadius = 1.5f;
 
     [SerializeField] private Vector2 _damageDisplayOffset = new Vector2(0, 0.25f);
-    [SerializeField] private Transform _expOrbsTransform;
     [SerializeField] private GameObject _expOrbPrefab;
+    [SerializeField] private GameObject _cashOrbPrefab;
     [SerializeField] private GameObject _damagePopupPrefab;
 
     [SerializeField] private AudioClip _deathSound;
 
     [SerializeField] public int experience = 0;
+    [SerializeField] public int money = 0;
 
     private bool _isDying = false;
 
@@ -70,10 +73,7 @@ public class DamageHandler : MonoBehaviour
             Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
             Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
 
-            GameObject orb = Instantiate(_expOrbPrefab, transform.position, Quaternion.identity);
-            ExpOrbController orbController = orb.GetComponent<ExpOrbController>();
-            orbController.expValue = 1;
-            orbController.Burst(targetPosition);
+            _orbsManager.CreateOrb(_expOrbPrefab, transform.position, targetPosition);
         }
 
         DropOnDestroyController dropCtr = gameObject.GetComponent<DropOnDestroyController>();
@@ -83,6 +83,15 @@ public class DamageHandler : MonoBehaviour
             dropCtr.DropLoot();
         }
 
+        if(money > 0)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
+            Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+            OrbController orbCtr = _orbsManager.CreateOrb(_cashOrbPrefab, transform.position, targetPosition);
+            orbCtr.transform.GetComponent<CashOrbController>().money = money;
+        }
+
         Destroy(gameObject);
     }
 
@@ -90,7 +99,7 @@ public class DamageHandler : MonoBehaviour
     {
         Vector3 spawnPosition = transform.position + new Vector3(_damageDisplayOffset.x, _damageDisplayOffset.y, 0f);
 
-        GameObject popup = Instantiate(_damagePopupPrefab, spawnPosition, _expOrbsTransform != null ? _expOrbsTransform.rotation : Quaternion.identity);
+        GameObject popup = Instantiate(_damagePopupPrefab, spawnPosition, Quaternion.identity);
         popup.GetComponent<DamagePopupController>().Setup(damage);
     }
 }

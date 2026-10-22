@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class EnemyAttribute : MonoBehaviour
@@ -12,6 +13,7 @@ public abstract class EnemyAttribute : MonoBehaviour
 public class Enemy : DamageHandler
 {
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
+    private OrbsManager _orbsManager => OrbsManager.Instance;
 
     public PlayerController playerController => PlayerController.Instance;
     public AttacksManager attacksManager => AttacksManager.Instance;
@@ -63,10 +65,7 @@ public class Enemy : DamageHandler
     {
         yield return new WaitForSeconds(1.2f);
 
-        playerController.ChangeKills(1);
-
-        Instantiate(_killOrbPrefab, transform.position, Quaternion.identity);
-
+        _orbsManager.CreateOrb(_killOrbPrefab, transform.position, transform.position, false, true);
         _enemiesManager.AddToEnemyPool(enemyName);
 
         base.OnObjectDestroy();
