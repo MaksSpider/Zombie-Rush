@@ -72,7 +72,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("weapon_bat", 1);
         _inventoryController.AddItem("medkit", 3);
 
-        DisplayUpgradesWindow(1);
+        //DisplayUpgradesWindow(1);
     }
 
     private IEnumerator AfterCloseAnimation()
@@ -87,6 +87,8 @@ public class UpgradesController : MonoBehaviour
 
     public void DisplayUpgradesWindow(int level)
     {
+        return;
+
         upgradesToPick.Clear();
 
         for (int i = 0; i < maxUpgradesToPickAmount; i++)

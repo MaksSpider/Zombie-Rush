@@ -101,8 +101,9 @@ public class PlayerCombatController : MonoBehaviour
 
     private void GetNewWeapon()
     {
-        (bool isItem, IItem item) = _inventoryController.GetItemInHands();
-        if(!isItem)
+        (bool exist, IItem item) = _inventoryController.GetItemInHands();
+
+        if(!exist)
         {
             currentWeapon = null;
             UpdateUI();

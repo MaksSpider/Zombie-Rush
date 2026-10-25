@@ -1,23 +1,26 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class UpgradesMenuController : MonoBehaviour
 {
     public static UpgradesMenuController Instance { get; private set; }
 
-    private StatesManager _statesManager => StatesManager.Instance;
     private UpgradesController _upgradesController => UpgradesController.Instance;
+    private StatesManager _statesManager => StatesManager.Instance;
 
     [SerializeField] private GameObject _upgradeCardPrefab;
-    [SerializeField] private Button _finishButton;
+
+    private Vector2 _deckOriginalPosition;
 
     public GameObject playerUpgrades;
     public GameObject upgradesPicking;
-    public GameObject cardsTrash;
 
     public Transform _cardsToPickGrid;
+    public Transform hoverLayer;
 
 
     [NonSerialized] public bool openedUpgradesMenu = false;
@@ -34,23 +37,15 @@ public class UpgradesMenuController : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        _finishButton.onClick.AddListener(() =>
-        {
-            if(_upgradesController.maxUpgradesAmount < _upgradesController.playerUpgrades.Count) return;
-
-            _statesManager.SwitchState<PlayingState>();
-            CloseUpgradesPicker();
-        });
-    }
-
     public UpgradeCard AddPlayerUpgrade(Upgrade upgrade, int siblingIndex)
     {
         GameObject upgradeCard = Instantiate(_upgradeCardPrefab, playerUpgrades.transform);
         upgradeCard.name = $"upgrade_{upgradeCard.name}";
 
+        upgradeCard.AddComponent<UpgradeCardHandler>();
+
         UpgradeCard cardCtr = upgradeCard.GetComponent<UpgradeCard>();
+
         cardCtr.UpdateUpgrade(upgrade);
 
         if (siblingIndex >= 0)
@@ -63,10 +58,15 @@ public class UpgradesMenuController : MonoBehaviour
 
     public void OpenUpgradesPicker(List<Upgrade> upgrades)
     {
+        _statesManager.SwitchState<UpgradeState>();
+
         openedUpgradesMenu = true;
         upgradesPicking.SetActive(true);
 
-        playerUpgrades.GetComponent<Animator>().SetBool("Picking", true);
+        _deckOriginalPosition = playerUpgrades.GetComponent<RectTransform>().anchoredPosition;
+        StartCoroutine(AnimatePlayerDeck(playerUpgrades.GetComponent<RectTransform>(), new Vector2(0, 450), 1f));
+
+        upgradesPicking.GetComponent<UIEnterAnimations>().EnterAnimation();
 
         for (int i = 0; i < upgrades.Count; i++)
         {
@@ -75,16 +75,18 @@ public class UpgradesMenuController : MonoBehaviour
             GameObject upgradeCard = Instantiate(_upgradeCardPrefab, _cardsToPickGrid.transform);
             upgradeCard.name = $"upgrade_{upgradeCard.name}";
 
+            upgradeCard.AddComponent<UpgradeCardHandlerToPick>();
+
             UpgradeCard cardCtr = upgradeCard.GetComponent<UpgradeCard>();
             cardCtr.UpdateUpgrade(upgrade);
         }
-
-        _statesManager.SwitchState<UpgradeState>();
     }
 
     public void CloseUpgradesPicker()
     {
-        playerUpgrades.GetComponent<Animator>().SetBool("Picking", false);
+        StartCoroutine(AnimatePlayerDeck(playerUpgrades.GetComponent<RectTransform>(), _deckOriginalPosition, 1f));
+
+        _statesManager.SwitchState<PlayingState>();
 
         for (int i = _cardsToPickGrid.childCount - 1; i >= 0; i--)
         {
@@ -100,7 +102,7 @@ public class UpgradesMenuController : MonoBehaviour
         upgradesPicking.SetActive(false);
     }
 
-    public (string where, int index) GetPosition(Vector2 position)
+    public (bool insideDeck, int index) GetPosition(Vector2 position)
     {
         RectTransform deck = playerUpgrades.GetComponent<RectTransform>();
 
@@ -124,17 +126,34 @@ public class UpgradesMenuController : MonoBehaviour
 
         if(RectTransformUtility.RectangleContainsScreenPoint(playerUpgrades.GetComponent<RectTransform>(), position, null))
         {
-            return ("playerDeck", closestIndex);
-        } else if(RectTransformUtility.RectangleContainsScreenPoint(cardsTrash.GetComponent<RectTransform>(), position, null))
-        {
-            return ("trash", closestIndex);
+            return (true, closestIndex);
         }
 
-        return ("wrong", closestIndex);
+        return (false, closestIndex);
     }
 
     public void SetActivePlayerCardsBackground(bool active)
     {
         playerUpgrades.transform.Find("Background").gameObject.SetActive(active);
+    }
+
+    private IEnumerator AnimatePlayerDeck(RectTransform element, Vector2 targetPos, float duration)
+    {
+        float elapsed = 0f;
+
+        Vector2 startPos = element.anchoredPosition;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            element.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+
+            yield return null;
+        }
+
+        element.anchoredPosition = targetPos;
     }
 }

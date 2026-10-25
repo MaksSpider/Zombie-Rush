@@ -1,130 +1,42 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
-public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+public class UpgradeCardHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private UpgradesMenuController _upgradesMenuController => UpgradesMenuController.Instance;
-    private UpgradesController _upgradesController => UpgradesController.Instance;
-    private PlayerController _playerController => PlayerController.Instance;
-    private CursorManager _cursorManager => CursorManager.Instance;
-    private InputManager _inputManager => InputManager.Instance;
 
-    private bool _isHolding = false;
-
+    private GameObject _CardButton;
     private Transform _originalParent;
-    private int _originalSiblingIndex;
 
-    public void OnPointerDown(PointerEventData eventData)
+    private bool _hover = false;
+    private bool _blockHover = false;
+
+    public virtual void OnPointerEnter(PointerEventData eventData = null)
     {
-        if (!_upgradesMenuController.openedUpgradesMenu) return;
-        Select();
+        if (_hover || _blockHover) return;
+
+        _hover = true;
+
+        _CardButton = transform.Find("CardButton").gameObject;
+        _originalParent = _CardButton.transform.parent;
+
+        Vector3 position = _CardButton.GetComponent<RectTransform>().position;
+
+        _CardButton.transform.SetParent(_upgradesMenuController.hoverLayer, true);
+        _CardButton.transform.SetAsLastSibling();
+
+        _CardButton.transform.GetComponent<RectTransform>().position = position + new Vector3(0, 15, 0);
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData = null)
     {
-        if (!_upgradesMenuController.openedUpgradesMenu) return;
-        UnSelect();
-    }
+        if(!_hover) return;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (!_upgradesMenuController.openedUpgradesMenu) return;
-        if (_isHolding) return;
+        Vector3 position = _CardButton.GetComponent<RectTransform>().position;
+        _CardButton.transform.GetComponent<RectTransform>().position = position - new Vector3(0, 15, 0);
+        _CardButton.transform.SetParent(_originalParent, true);
 
-        _cursorManager.Change("grabHover");
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (!_upgradesMenuController.openedUpgradesMenu) return;
-        if (_isHolding) return;
-
-        _cursorManager.SetDefault();
-    }
-
-    private void LateUpdate()
-    {
-        HandleMovement();
-    }
-
-    private void Select()
-    {
-        if (_upgradesMenuController.holdingCard) return;
-        _isHolding = true;
-
-        print($"Holding card: {gameObject.name}");
-
-        _originalParent = transform.parent;
-        _originalSiblingIndex = transform.GetSiblingIndex();
-
-        transform.SetParent(_playerController.overlay, true);
-
-        _cursorManager.Change("grab");
-
-        _upgradesMenuController.SetActivePlayerCardsBackground(true);
-        _upgradesMenuController.holdingCard = true;
-    }
-
-    private void UnSelect()
-    {
-        _upgradesMenuController.holdingCard = false;
-
-        RectTransform rectTransform = GetComponent<RectTransform>();
-
-        Vector2 mousePosition = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
-        (string position, int closestIndex) = _upgradesMenuController.GetPosition(mousePosition);
-
-        if (position == "wrong")
-        {
-            transform.SetParent(_originalParent, true);
-            transform.SetSiblingIndex(_originalSiblingIndex);
-        }
-
-        if(position == "trash")
-        {
-            if(_upgradesController.playerUpgrades.Contains(GetComponent<UpgradeCard>()))
-            {
-                _upgradesController.playerUpgrades.Remove(GetComponent<UpgradeCard>());
-            }
-
-            Destroy(gameObject);
-        }
-
-        if (position == "playerDeck")
-        {
-            _upgradesController.playerUpgrades.Add(GetComponent<UpgradeCard>());
-
-            transform.SetParent(_upgradesMenuController.playerUpgrades.transform, true);
-            transform.SetSiblingIndex(closestIndex);
-        }
-
-        _isHolding = false;
-        _upgradesMenuController.SetActivePlayerCardsBackground(false);
-        _cursorManager.SetDefault();
-    }
-
-    private void HandleMovement()
-    {
-        if (!_isHolding) return;
-
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        Vector2 mousePosition = _inputManager.InputActions.Player.MousePosition.ReadValue<Vector2>();
-
-        Vector2 bordersOffset = new Vector2(0, 0);
-        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-
-        float minX = mousePosition.x - (rectTransform.rect.width / 2);
-        float minY = mousePosition.y - (rectTransform.rect.height / 2);
-        float maxX = mousePosition.x + (rectTransform.rect.width / 2);
-        float maxY = mousePosition.y + (rectTransform.rect.height / 2);
-
-        if (minX < 0) bordersOffset.x -= minX;
-        if (minY < 0) bordersOffset.y -= minY;
-        if (maxX > screenSize.x) bordersOffset.x -= maxX - screenSize.x;
-        if (maxY > screenSize.y) bordersOffset.y -= maxY - screenSize.y;
-
-
-        rectTransform.position = mousePosition + bordersOffset;
+        _hover = false;
     }
 }

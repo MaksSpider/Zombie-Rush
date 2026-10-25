@@ -84,20 +84,12 @@ public class PlayerController : DamageHandler
 
         ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
-        modifiersController.AddOnChangeListener("base_max_health", () =>
-        {
-            SetMaxHealth((int)(modifiersController.GetModifierValue("base_max_health") * (1f + modifiersController.GetModifierValue("max_health_multiplier_modifier"))));
-        });
-        modifiersController.AddOnChangeListener("max_health_multiplier_modifier", () =>
+        modifiersController.AddOnChangeListener(new List<string>{ "base_max_health", "max_health_multiplier_modifier" }, () =>
         {
             SetMaxHealth((int)(modifiersController.GetModifierValue("base_max_health") * (1f + modifiersController.GetModifierValue("max_health_multiplier_modifier"))));
         });
 
-        modifiersController.AddOnChangeListener("base_max_stamina", () =>
-        {
-            SetMaxStamina((int)(modifiersController.GetModifierValue("base_max_stamina") * (1f + modifiersController.GetModifierValue("max_stamina_multiplier_modifier"))));
-        });
-        modifiersController.AddOnChangeListener("max_stamina_multiplier_modifier", () =>
+        modifiersController.AddOnChangeListener(new List<string> { "base_max_stamina", "max_stamina_multiplier_modifier" }, () =>
         {
             SetMaxStamina((int)(modifiersController.GetModifierValue("base_max_stamina") * (1f + modifiersController.GetModifierValue("max_stamina_multiplier_modifier"))));
         });
@@ -133,8 +125,15 @@ public class PlayerController : DamageHandler
             {
                 name = "base_inventory_slots",
                 value = 3
-            }
+            },
+            new ModifierProperty
+            {
+                name = "base_stamina_regeneration",
+                value = 25
+            },
         });
+
+        ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
         SetupUI();
     }
@@ -238,7 +237,7 @@ public class PlayerController : DamageHandler
             float levelCost = modifiersController.GetModifierValue("base_xp_to_next_level");
             levelCost *= 1f + modifiersController.GetModifierValue("xp_to_next_level_multipler_modifier");
 
-            for (int i = 0; i < Level; i++)
+            for (int i = 0; i < Level - 1; i++)
             {
                 levelCost *= (float)modifiersController.GetModifierValue("level_xp_cost_multipler"); ;
             }

@@ -181,8 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e29f19cbfd531543975fd0ac78d1c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinOrbController
-  _speed: 8
-  _acceleration: 25
+  _speed: 5
+  _acceleration: 15
   _bobAmplitude: 0.15
   _bobFrequency: 4
   _burstDuration: 0.3

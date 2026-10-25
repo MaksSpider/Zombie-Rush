@@ -145,12 +145,36 @@ public class ModifiersController : MonoBehaviour
         OnModifiersChange[name].Add(action);
     }
 
+    public void AddOnChangeListener(List<string> names, Action action)
+    {
+        foreach (string name in names)
+        {
+            if (!OnModifiersChange.ContainsKey(name))
+            {
+                OnModifiersChange.Add(name, new List<Action>());
+            }
+
+            OnModifiersChange[name].Add(action);
+        }
+    }
+
     public void RemoveOnChangeListener(string name, Action action)
     {
         if (!OnModifiersChange.ContainsKey(name)) return;
         if (!OnModifiersChange[name].Contains(action)) return;
 
         OnModifiersChange[name].Remove(action);
+    }
+
+    public void RemoveOnChangeListener(List<string> names, Action action)
+    {
+        foreach(string name in names)
+        {
+            if (!OnModifiersChange.ContainsKey(name)) return;
+            if (!OnModifiersChange[name].Contains(action)) return;
+
+            OnModifiersChange[name].Remove(action);
+        }
     }
 
     public void ExecuteOnChange(string name)
