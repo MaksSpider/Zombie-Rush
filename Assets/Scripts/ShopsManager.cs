@@ -9,13 +9,13 @@ using UnityEngine.UI;
 public class ShopItem
 {
     [SerializeReference]
-    public IItem item;
+    public string itemId;
     public int price;
     public int amount;
 
-    public ShopItem(IItem item, int price, int amount)
+    public ShopItem(string itemId, int price, int amount)
     {
-        this.item = item;
+        this.itemId = itemId;
         this.price = price;
         this.amount = amount;
     }
@@ -37,13 +37,13 @@ public class ShopCategory
         this.items = items;
     }
 
-    public bool AddItem(IItem item, int amount, int price = -1)
+    public bool AddItem(string itemId, int amount, int price = -1)
     {
         if (amount <= 0) return false;
 
         foreach (ShopItem shopItem in items)
         {
-            if (shopItem.item.id == item.id)
+            if (shopItem.itemId == itemId)
             {
                 shopItem.amount += amount;
                 shopItem.price += price;
@@ -60,18 +60,18 @@ public class ShopCategory
             return false;
         }
 
-        items.Add(new ShopItem(item, price, amount));
+        items.Add(new ShopItem(itemId, price, amount));
 
         return true;
     }
 
-    public bool RemoveItem(IItem item, int amount)
+    public bool RemoveItem(string itemId, int amount)
     {
         if (amount <= 0) return false;
 
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i].item.id == item.id)
+            if (items[i].itemId == itemId)
             {
                 items.RemoveAt(i);
                 return true;
@@ -118,7 +118,7 @@ public class Shop
         _shopsManager.Close();
     }
 
-    public bool AddItem(string categoryIndex, IItem item, int amount, int price = -1)
+    public bool AddItem(string categoryIndex, string itemId, int amount, int price = -1)
     {
         (bool result, ShopCategory shopCategory) = GetCategory(categoryIndex);
         if (!result)
@@ -127,10 +127,10 @@ public class Shop
             return false;
         }
 
-        return shopCategory.AddItem(item, amount, price);
+        return shopCategory.AddItem(itemId, amount, price);
     }
 
-    public bool RemoveItem(string categoryIndex, IItem item, int amount)
+    public bool RemoveItem(string categoryIndex, string itemId, int amount)
     {
         (bool result, ShopCategory shopCategory) = GetCategory(categoryIndex);
         if (!result)
@@ -139,7 +139,7 @@ public class Shop
             return false;
         }
 
-        return shopCategory.RemoveItem(item, amount);
+        return shopCategory.RemoveItem(itemId, amount);
     }
 
     // TODO: implement
@@ -226,6 +226,7 @@ public class ShopsManager : MonoBehaviour
         GenerateCategory(shop.shopData);
 
         LoadCategoryItems(shop.GetCategory(shop.currentPage).shopCategory);
+        Canvas.ForceUpdateCanvases();
     }
 
     public void Close(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
@@ -279,15 +280,22 @@ public class ShopsManager : MonoBehaviour
 
         foreach(ShopItem shopItem in shopCategory.items)
         {
+            (bool result, IItem item) = _inventoryController.GetItem(shopItem.itemId);
+            if(!result)
+            {
+                Debug.Log($"Item with id {shopItem.itemId} doesnt exist!");
+                continue;
+            }
+
             GameObject itemObject = Instantiate(_itemPrefab, _shopItems);
-            itemObject.name = $"item_{shopItem.item.name}";
+            itemObject.name = $"item_{item.name}";
 
             UIShopItem uiShopItem = itemObject.GetComponent<UIShopItem>();
 
-            uiShopItem.title.text = shopItem.item.name;
+            uiShopItem.title.text = item.name;
             uiShopItem.amount.text = shopItem.amount.ToString();
             uiShopItem.price.text = shopItem.price.ToString("#,0", CultureInfo.InvariantCulture).Replace(",", ".");
-            uiShopItem.icon.sprite = shopItem.item.icon;
+            uiShopItem.icon.sprite = item.icon;
 
             uiShopItem.buyButton.onClick.AddListener(() => {
                 TryToBuy(shopItem, uiShopItem);
@@ -309,12 +317,21 @@ public class ShopsManager : MonoBehaviour
 
         amountToBuy = Mathf.Clamp(amountToBuy, 1, shopItem.amount);
 
-        if (_playerController.Money < shopItem.price * amountToBuy) return;
-        if (!_inventoryController.GetFirstEmptySlot(shopItem.item, amountToBuy).result) return;
+        (bool result, IItem item) = _inventoryController.GetItem(shopItem.itemId);
+        if (!result)
+        {
+            Debug.Log($"Item with id {shopItem.itemId} doesnt exist!");
+            return;
+        }
 
-        _playerController.Money -= shopItem.price * amountToBuy;
-        _inventoryController.AddItem(shopItem.item, amountToBuy);
+        if (_playerController.Money < shopItem.price * amountToBuy) return;
+        if (!_inventoryController.GetFirstEmptySlot(item, amountToBuy).result) return;
+
+        _playerController.ChangeMoney(-shopItem.price * amountToBuy);
+        _inventoryController.AddItem(item, amountToBuy);
         shopItem.amount -= amountToBuy;
+
+        uIShopItem.amount.text = shopItem.amount.ToString();
 
         if (shopItem.amount < 1)
         {

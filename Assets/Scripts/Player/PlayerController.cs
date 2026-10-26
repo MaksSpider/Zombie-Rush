@@ -326,10 +326,14 @@ public class PlayerController : DamageHandler
 
     public void ChangeMoney(int value)
     {
-        float valueWithMultiplier = (float)value * (1 + modifiersController.GetModifierValue("money_gain_multiplier_modifier"));
+        if(value > 0 )
+        {
+            float valueWithMultiplier = (float)value * (1 + modifiersController.GetModifierValue("money_gain_multiplier_modifier"));
+            value = (int)valueWithMultiplier;
+        }
 
-        Money += (int)valueWithMultiplier;
-        Score += (int)valueWithMultiplier;
+        Money += value;
+        Score += value;
 
         cashTMP.text = Money.ToString();
     }

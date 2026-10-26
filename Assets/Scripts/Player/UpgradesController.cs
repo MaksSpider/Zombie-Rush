@@ -75,16 +75,6 @@ public class UpgradesController : MonoBehaviour
         //DisplayUpgradesWindow(1);
     }
 
-    private IEnumerator AfterCloseAnimation()
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        upgradesToPick.Clear();
-
-        //_upgradesPickerPopUp.SetActive(false);
-        _statesManager.SwitchState<PlayingState>();
-    }
-
     public void DisplayUpgradesWindow(int level)
     {
         return;
