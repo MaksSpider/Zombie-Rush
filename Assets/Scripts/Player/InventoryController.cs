@@ -616,7 +616,6 @@ public class InventoryController : MonoBehaviour
         if(id == null) return (false, null, null);
         if (!_weaponsDatabase.ContainsKey(id) || !_itemsDatabase.ContainsKey(id))
         {
-            Debug.Log($"[Items] Weapon with ID '{id}' does not exist!");
             return (false, null, null);
         }
 

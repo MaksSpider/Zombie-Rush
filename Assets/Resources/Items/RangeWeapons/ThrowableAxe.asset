@@ -18,7 +18,7 @@ MonoBehaviour:
     <description>k__BackingField: Throwable Axe desc
     <icon>k__BackingField: {fileID: 0}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 3
