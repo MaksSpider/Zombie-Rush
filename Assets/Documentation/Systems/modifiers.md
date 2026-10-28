@@ -20,6 +20,8 @@ xp_to_next_level_multipler_modifier (float) [IMPLEMENTED]
 
 level_xp_cost_multipler (float) [IMPLEMENTED]
 
+experience_gain_multipler_modifier
+
 money_multipler_modifier (float) [IMPLEMENTED]
 
 bullets_damage_multipler_modifier (float) [IMPLEMENTED]

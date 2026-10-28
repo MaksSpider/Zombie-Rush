@@ -18,13 +18,6 @@ public class UpgradeData : ScriptableObject
 }
 
 [Serializable]
-public struct Bonus
-{
-    public string name;
-    public float value;
-}
-
-[Serializable]
 public class Upgrade
 {
     [field: SerializeField]
@@ -37,7 +30,7 @@ public class Upgrade
     public Rarity rarity { get; set; }
 
     [field: SerializeField]
-    public List<Bonus> bonuses { get; set; }
+    public List<ModifierProperty> modifiers { get; set; }
 
     [field: SerializeField]
     public Sprite icon { get; set; }

@@ -165,7 +165,7 @@ public class UpgradesController : MonoBehaviour
 
         foreach(UpgradeCard upgradeCard in playerUpgrades)
         {
-            foreach (Bonus bonus in upgradeCard.upgrade.bonuses)
+            foreach (ModifierProperty bonus in upgradeCard.upgrade.modifiers)
             {
                 if (bonus.name == bonusIndex)
                 {

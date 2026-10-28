@@ -17,31 +17,31 @@ MonoBehaviour:
     <name>k__BackingField: Bullet Damage
     <description>k__BackingField: 'Bullet Damage: +20%'
     <rarity>k__BackingField: 0
-    <bonuses>k__BackingField:
-    - name: bulletDamage
+    <modifiers>k__BackingField:
+    - name: bullets_damage_multipler_modifier
       value: 0.2
     <icon>k__BackingField: {fileID: -433317323, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: bullet_damage_1
     <name>k__BackingField: Bullet Damage
     <description>k__BackingField: 'Bullet Damage: +40%'
     <rarity>k__BackingField: 1
-    <bonuses>k__BackingField:
-    - name: bulletDamage
+    <modifiers>k__BackingField:
+    - name: bullets_damage_multipler_modifier
       value: 0.4
     <icon>k__BackingField: {fileID: -433317323, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: bullet_damage_2
     <name>k__BackingField: Bullet Damage
     <description>k__BackingField: 'Bullet Damage: +60%'
     <rarity>k__BackingField: 2
-    <bonuses>k__BackingField:
-    - name: bulletDamage
+    <modifiers>k__BackingField:
+    - name: bullets_damage_multipler_modifier
       value: 0.6
     <icon>k__BackingField: {fileID: -433317323, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: bullet_damage_3
     <name>k__BackingField: Bullet Damage
     <description>k__BackingField: 'Bullet Damage: +100%'
     <rarity>k__BackingField: 3
-    <bonuses>k__BackingField:
-    - name: bulletDamage
+    <modifiers>k__BackingField:
+    - name: bullets_damage_multipler_modifier
       value: 1
     <icon>k__BackingField: {fileID: -433317323, guid: 5108b914a619aab42a7d514f41bee824, type: 3}

@@ -17,23 +17,23 @@ MonoBehaviour:
     <name>k__BackingField: More Slots
     <description>k__BackingField: 'More Slots: +1'
     <rarity>k__BackingField: 1
-    <bonuses>k__BackingField:
-    - name: bonusInventorySlot
+    <modifiers>k__BackingField:
+    - name: base_inventory_slots
       value: 1
     <icon>k__BackingField: {fileID: -1236092391, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: more_slots_1
     <name>k__BackingField: More Slots
     <description>k__BackingField: 'More Slots: +2'
     <rarity>k__BackingField: 2
-    <bonuses>k__BackingField:
-    - name: bonusInventorySlot
+    <modifiers>k__BackingField:
+    - name: base_inventory_slots
       value: 2
     <icon>k__BackingField: {fileID: -1236092391, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: more_slots_2
     <name>k__BackingField: More Slots
     <description>k__BackingField: 'More Slots: +3'
     <rarity>k__BackingField: 3
-    <bonuses>k__BackingField:
-    - name: bonusInventorySlot
+    <modifiers>k__BackingField:
+    - name: base_inventory_slots
       value: 3
     <icon>k__BackingField: {fileID: -1236092391, guid: 5108b914a619aab42a7d514f41bee824, type: 3}

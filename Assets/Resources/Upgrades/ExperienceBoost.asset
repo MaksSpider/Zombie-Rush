@@ -17,31 +17,31 @@ MonoBehaviour:
     <name>k__BackingField: Experience Boost
     <description>k__BackingField: 'Additional XP: +15%'
     <rarity>k__BackingField: 0
-    <bonuses>k__BackingField:
-    - name: additionalXp
-      value: 0.15
+    <modifiers>k__BackingField:
+    - name: experience_gain_multipler_modifier
+      value: 0.2
     <icon>k__BackingField: {fileID: 1785694082, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: experience_boost_1
     <name>k__BackingField: Experience Boost
     <description>k__BackingField: 'Additional XP: +25%'
     <rarity>k__BackingField: 1
-    <bonuses>k__BackingField:
-    - name: additionalXp
-      value: 0.25
+    <modifiers>k__BackingField:
+    - name: experience_gain_multipler_modifier
+      value: 0.3
     <icon>k__BackingField: {fileID: 1785694082, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: experience_boost_2
     <name>k__BackingField: Experience Boost
     <description>k__BackingField: 'Additional XP: +50%'
     <rarity>k__BackingField: 2
-    <bonuses>k__BackingField:
-    - name: additionalXp
-      value: 0.5
+    <modifiers>k__BackingField:
+    - name: experience_gain_multipler_modifier
+      value: 0.6
     <icon>k__BackingField: {fileID: 1785694082, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
   - <id>k__BackingField: experience_boost_3
     <name>k__BackingField: Experience Boost
     <description>k__BackingField: 'Additional XP: +100%'
     <rarity>k__BackingField: 3
-    <bonuses>k__BackingField:
-    - name: additionalXp
+    <modifiers>k__BackingField:
+    - name: experience_gain_multipler_modifier
       value: 1
     <icon>k__BackingField: {fileID: 1785694082, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
