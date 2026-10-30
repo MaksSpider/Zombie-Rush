@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -14,15 +13,13 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField] public float UnloadDistance = 100f;
 
     [SerializeField] private GameObject _debugTile;
-    [SerializeField] private float _tileSize = 0.2f;
+    [SerializeField] private float _tileSize = 0.5f;
 
     [SerializeField] private Transform _worldBackground;
     [SerializeField] private Transform _worldObjects;
 
     [SerializeField] private MapBiomesData _biomesData;
     [SerializeField] private MapObjectsData _objectsData;
-
-    [SerializeField] private int tilesPerFrame = 20;
 
     private Dictionary<Vector2Int, string> _mapBiomes = new();
     private Dictionary<Vector2Int, GameObject> _mapTiles = new();
@@ -246,9 +243,6 @@ public class WorldGenerator : MonoBehaviour
     {
         Vector2 playerPosition = _playerController.transform.position;
 
-        List<Vector2Int> tilesToRemove = new List<Vector2Int>();
-        List<Vector2> objectsToRemove = new List<Vector2>();
-
         foreach ((Vector2Int index, GameObject tile) in _mapTiles)
         {
             float distance = Vector2.Distance(
@@ -265,7 +259,7 @@ public class WorldGenerator : MonoBehaviour
                     _mapObjectInstances[index].SetActive(false);
                 }
 
-                if (UnloadDistance < distance)
+                if (UnloadDistance < distance && !tilesToUnloadQueue.Contains(index))
                 {
                     tilesToUnloadQueue.Enqueue(index);
                 }
@@ -308,11 +302,9 @@ public class WorldGenerator : MonoBehaviour
                     new Vector2(x * _tileSize, y * _tileSize)
                 );
 
-                if (distance > RenderDistance)
-                    continue;
-
-                if (_mapTiles.ContainsKey(position))
-                    continue;
+                if (distance > RenderDistance) continue;
+                if (_mapTiles.ContainsKey(position)) continue;
+                if (tilesToLoadQueue.Contains(position)) continue;
 
                 tilesToLoadQueue.Enqueue(position);
             }
@@ -321,37 +313,43 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateMapPerTick()
     {
-        int currentTilesPerFrame = tilesPerFrame;
+        float startTime = Time.realtimeSinceStartup;
+        float maxTime = 0.003f;
 
-        for (int i = 0; i < tilesPerFrame; i++)
+        while (tilesToUnloadQueue.Count > 0)
         {
-            if (tilesToUnloadQueue.Count == 0)
+            if (Time.realtimeSinceStartup - startTime >= maxTime)
                 break;
 
-            Vector2Int ToUnload = tilesToUnloadQueue.Dequeue();
+            Vector2Int position = tilesToUnloadQueue.Dequeue();
 
-            if (_mapTiles.Remove(ToUnload, out GameObject tile))
+            if (_mapTiles.ContainsKey(position))
             {
-                Destroy(tile);
-            }
+                Destroy(_mapTiles[position]);
+                _mapTiles.Remove(position);
 
-            if (_mapObjectInstances.Remove(ToUnload, out GameObject mapObject))
-            {
-                Destroy(mapObject);
+                if (_mapObjectInstances.ContainsKey(position))
+                {
+                    Destroy(_mapTiles[position]);
+                    _mapObjectInstances.Remove(position);
+                }
             }
-
-            currentTilesPerFrame--;
         }
 
-        for (int i = 0; i < currentTilesPerFrame; i++)
+        while (tilesToLoadQueue.Count > 0)
         {
-            if (tilesToLoadQueue.Count == 0)
+            if (Time.realtimeSinceStartup - startTime >= maxTime)
                 break;
 
-            CreateTile(tilesToLoadQueue.Dequeue());
+            Vector2Int position = tilesToLoadQueue.Dequeue();
+
+            if (_mapTiles.ContainsKey(position))
+                continue;
+
+            CreateTile(position);
         }
 
-        if(tilesToLoadQueue.Count == 0 && !isWorldLoaded)
+        if (tilesToLoadQueue.Count == 0 && !isWorldLoaded)
         {
             isWorldLoaded = true;
             OnWorldLoaded?.Invoke();
