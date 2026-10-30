@@ -1,37 +1,26 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using ZombieRush.Framework;
 
 public class UpgradesController : MonoBehaviour
 {
-    public static UpgradesController Instance;
-
     private UpgradesMenuController _upgradesMenuController => UpgradesMenuController.Instance;
     private InventoryController _inventoryController => InventoryController.Instance;
-    private StatesManager _statesManager => StatesManager.Instance;
 
-    public event Action OnUpgradesChange;
+    private PlayerController _playerController;
 
     private Dictionary<string, Upgrade> _upgradesDataBase = new();
-    public List<UpgradeCard> playerUpgrades = new();
+    public List<Upgrade> playerUpgrades = new();
     
     [SerializeField] public int maxUpgradesAmount = 3;
     [SerializeField] public int maxUpgradesToPickAmount = 3;
     
     [NonSerialized] public List<Upgrade> upgradesToPick = new List<Upgrade>();
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        _playerController = GetComponent<PlayerController>();
     }
 
     void Start()
@@ -51,7 +40,7 @@ public class UpgradesController : MonoBehaviour
 
         Debug.Log($"Loaded {_upgradesDataBase.Count} upgrades.");
 
-        Invoke(nameof(DebugFunc), 1f);
+        Invoke(nameof(DebugFunc), 3f);
     }
 
     // for debuging
@@ -72,13 +61,11 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("weapon_bat", 1);
         _inventoryController.AddItem("medkit", 3);
 
-        //DisplayUpgradesWindow(1);
+        //OpenUpgrades(1);
     }
 
-    public void DisplayUpgradesWindow(int level)
+    public void OpenUpgrades(int level)
     {
-        return;
-
         upgradesToPick.Clear();
 
         for (int i = 0; i < maxUpgradesToPickAmount; i++)
@@ -107,9 +94,9 @@ public class UpgradesController : MonoBehaviour
             if (excludeOwned && playerUpgrades.Count > 0)
             {
                 bool alreadyHave = false;
-                foreach (UpgradeCard upgradeCard in playerUpgrades)
+                foreach (Upgrade playerUpgrade in playerUpgrades)
                 {
-                    if (upgradeCard.upgrade.name == upgrade.name)
+                    if (playerUpgrade.name == upgrade.name)
                     {
                         alreadyHave = true;
                         break;
@@ -159,54 +146,37 @@ public class UpgradesController : MonoBehaviour
         return (true, upgradeList[0]);
     }
 
-    public float GetBonusValues(string bonusIndex)
-    {
-        float value = 0f;
-
-        foreach(UpgradeCard upgradeCard in playerUpgrades)
-        {
-            foreach (ModifierProperty bonus in upgradeCard.upgrade.modifiers)
-            {
-                if (bonus.name == bonusIndex)
-                {
-                    value += bonus.value;
-                }
-            }
-        }
-
-        return value;
-    }
-
-    public bool AddUpgrade(string upgradeName, int siblingIndex = 0)
+    public bool AddUpgrade(string upgradeName)
     {
         if(_upgradesDataBase.ContainsKey(upgradeName))
         {
-            return AddUpgrade(_upgradesDataBase[upgradeName], siblingIndex);
+            return AddUpgrade(_upgradesDataBase[upgradeName]);
         }
 
         return false;
     }
 
-    public bool AddUpgrade(Upgrade upgrade, int siblingIndex = 0)
+    public bool AddUpgrade(Upgrade upgrade)
     {
         if (playerUpgrades.Count >= maxUpgradesAmount) return false;
 
-        playerUpgrades.Add(_upgradesMenuController.AddPlayerUpgrade(upgrade, siblingIndex));
-        OnUpgradesChange?.Invoke();
+        upgrade.status = new UpgradeStatus(upgrade.id, upgrade.modifiers);
+        _playerController.statusesController.AddStatus(upgrade.status, 0f, upgrade.icon, RarityData.GetRarityColor(upgrade.rarity), 1000 - playerUpgrades.Count);
+
+        playerUpgrades.Add(upgrade);
 
         return true;
     }
 
     public bool RemoveUpgrade(string upgradeName)
     {
-        for(int i = 0; i < playerUpgrades.Count; i++)
+        for (int i = 0; i < playerUpgrades.Count; i++)
         {
-            UpgradeCard upgradeCard = playerUpgrades[i];
-            if (upgradeName == upgradeCard.upgrade.name)
+            Upgrade upgrade = playerUpgrades[i];
+            if (upgradeName == upgrade.name)
             {
-                Destroy(upgradeCard.gameObject);
+                upgrade.status.Remove();
                 playerUpgrades.RemoveAt(i);
-                OnUpgradesChange?.Invoke();
                 return true;
             }
         }

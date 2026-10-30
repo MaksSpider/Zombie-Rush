@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -21,13 +22,22 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField] private MapBiomesData _biomesData;
     [SerializeField] private MapObjectsData _objectsData;
 
-    private Dictionary<Vector2Int, string> _mapBiomes = new Dictionary<Vector2Int, string>();
-    private Dictionary<Vector2Int, GameObject> _mapTiles = new Dictionary<Vector2Int, GameObject>();
-    private Dictionary<Vector2, GameObject> _mapObjectInstances = new Dictionary<Vector2, GameObject>();
+    [SerializeField] private int tilesPerFrame = 20;
 
-    private Dictionary<string, Vector2> _biomeNoiseOffsets = new Dictionary<string, Vector2>();
+    private Dictionary<Vector2Int, string> _mapBiomes = new();
+    private Dictionary<Vector2Int, GameObject> _mapTiles = new();
+    private Dictionary<Vector2Int, GameObject> _mapObjectInstances = new();
+
+    private Dictionary<string, Vector2> _biomeNoiseOffsets = new();
 
     private System.Random _rng;
+
+    public Queue<Vector2Int> tilesToLoadQueue { get; private set; } = new();
+    public Queue<Vector2Int> tilesToUnloadQueue { get; private set; } = new();
+
+    public Action OnWorldLoaded;
+
+    public bool isWorldLoaded = false;
 
     void Awake()
     {
@@ -42,9 +52,9 @@ public class WorldGenerator : MonoBehaviour
         Init();
     }
 
-    void Start()
+    public void Tick()
     {
-        UpdateMap();
+        GenerateMapPerTick();
     }
 
     public void Tick1s()
@@ -165,25 +175,17 @@ public class WorldGenerator : MonoBehaviour
 
         foreach (MapObject mapObject in _objectsData.mapObjects)
         {
-            if (mapObject.biom != biom.id)
-                continue;
+            if (mapObject.biom != biom.id) continue;
 
             if (mapObject.gameObject == null)
             {
                 Debug.LogWarning($"MapObject for biom '{biom.id}' doesnt have assigned gameobject - skipped.");
-
                 continue;
             }
 
-            if (mapObject.frequency <= 0f)
-                continue;
+            if (mapObject.frequency <= 0f) continue;
 
-            if (!ShouldSpawn(
-                position.x,
-                position.y,
-                mapObject.biom,
-                mapObject.frequency))
-                continue;
+            if (!ShouldSpawn(position.x, position.y, mapObject.biom, mapObject.frequency)) continue;
 
             System.Random tileRng = GetTileRng(position, mapObject.biom);
 
@@ -192,12 +194,7 @@ public class WorldGenerator : MonoBehaviour
                 RandomFloat(tileRng, -_tileSize / 2f, _tileSize / 2f)
             );
 
-            GameObject instance = Instantiate(
-                mapObject.gameObject,
-                tileWorldPos + jitter,
-                Quaternion.identity,
-                _worldObjects
-            );
+            GameObject instance = Instantiate(mapObject.gameObject, tileWorldPos + jitter, Quaternion.identity, _worldObjects);
 
             _mapObjectInstances[position] = instance;
             break;
@@ -208,10 +205,7 @@ public class WorldGenerator : MonoBehaviour
     {
         unchecked
         {
-            int hash = x * 73856093 ^
-                       y * 19349663 ^
-                       GetStableStringHash(salt) ^
-                       _gameSession.playerProfile.seed;
+            int hash = x * 73856093 ^ y * 19349663 ^ GetStableStringHash(salt) ^ _gameSession.playerProfile.seed;
 
             System.Random localRng = new System.Random(hash);
 
@@ -266,49 +260,25 @@ public class WorldGenerator : MonoBehaviour
             {
                 tile.SetActive(false);
 
+                if (_mapObjectInstances.ContainsKey(index))
+                {
+                    _mapObjectInstances[index].SetActive(false);
+                }
+
                 if (UnloadDistance < distance)
                 {
-                    Destroy(tile);
-                    tilesToRemove.Add(index);
+                    tilesToUnloadQueue.Enqueue(index);
                 }
 
                 continue;
             }
 
             tile.SetActive(true);
-        }
 
-        foreach (Vector2Int index in tilesToRemove)
-        {
-            _mapTiles.Remove(index);
-        }
-
-        foreach ((Vector2 position, GameObject mapObject) in _mapObjectInstances)
-        {
-            float distance = Vector2.Distance(
-                playerPosition,
-                (Vector2)mapObject.transform.position
-            );
-
-            if (RenderDistance < distance)
+            if (_mapObjectInstances.ContainsKey(index))
             {
-                mapObject.SetActive(false);
-
-                if (UnloadDistance < distance)
-                {
-                    Destroy(mapObject);
-                    objectsToRemove.Add(position);
-                }
+                _mapObjectInstances[index].SetActive(true);
             }
-            else
-            {
-                mapObject.SetActive(true);
-            }
-        }
-
-        foreach (Vector2 index in objectsToRemove)
-        {
-            _mapObjectInstances.Remove(index);
         }
 
         int minY = Mathf.FloorToInt(
@@ -344,8 +314,47 @@ public class WorldGenerator : MonoBehaviour
                 if (_mapTiles.ContainsKey(position))
                     continue;
 
-                CreateTile(position);
+                tilesToLoadQueue.Enqueue(position);
             }
+        }
+    }
+
+    private void GenerateMapPerTick()
+    {
+        int currentTilesPerFrame = tilesPerFrame;
+
+        for (int i = 0; i < tilesPerFrame; i++)
+        {
+            if (tilesToUnloadQueue.Count == 0)
+                break;
+
+            Vector2Int ToUnload = tilesToUnloadQueue.Dequeue();
+
+            if (_mapTiles.Remove(ToUnload, out GameObject tile))
+            {
+                Destroy(tile);
+            }
+
+            if (_mapObjectInstances.Remove(ToUnload, out GameObject mapObject))
+            {
+                Destroy(mapObject);
+            }
+
+            currentTilesPerFrame--;
+        }
+
+        for (int i = 0; i < currentTilesPerFrame; i++)
+        {
+            if (tilesToLoadQueue.Count == 0)
+                break;
+
+            CreateTile(tilesToLoadQueue.Dequeue());
+        }
+
+        if(tilesToLoadQueue.Count == 0 && !isWorldLoaded)
+        {
+            isWorldLoaded = true;
+            OnWorldLoaded?.Invoke();
         }
     }
 
@@ -353,7 +362,7 @@ public class WorldGenerator : MonoBehaviour
     {
         if (toRemove == null) return false;
 
-        foreach ((Vector2 index, GameObject mapObject) in _mapObjectInstances)
+        foreach ((Vector2Int index, GameObject mapObject) in _mapObjectInstances)
         {
             if (mapObject.transform.position == toRemove.transform.position)
             {

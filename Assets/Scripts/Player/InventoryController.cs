@@ -138,7 +138,6 @@ public class InventoryController : MonoBehaviour
 
         _inputManager = InputManager.Instance;
         _interactionsManager = InteractionsManager.Instance;
-        _upgradesController = UpgradesController.Instance;
 
         _playerController = gameObject.GetComponent<PlayerController>();
 

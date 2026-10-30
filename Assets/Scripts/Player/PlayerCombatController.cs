@@ -22,7 +22,6 @@ public class PlayerCombatController : MonoBehaviour
     public static PlayerCombatController Instance { get; private set; }
 
     private InventoryController _inventoryController => InventoryController.Instance;
-    private UpgradesController _upgradesController => UpgradesController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private AttacksManager _attacksManager => AttacksManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
@@ -54,6 +53,8 @@ public class PlayerCombatController : MonoBehaviour
 
     private void Start()
     {
+        _attackRange.GetComponent<MeshRenderer>().sortingOrder = 1000;
+
         _inventoryController.OnSlotChanged += GetNewWeapon;
         _inventoryController.OnDropItemOnSlot += GetNewWeapon;
         GetNewWeapon();
@@ -325,7 +326,7 @@ public class PlayerCombatController : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-        _attackRange.GetComponent<MeshRenderer>().material.color = new Color(1f, 0f, 0f, 0.27f);
+        _attackRange.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.15f);
     }
 
     private void UpdateUI()

@@ -502,7 +502,7 @@ RectTransform:
   m_GameObject: {fileID: 9084221741582577542}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2085303549449288702}
@@ -530,7 +530,7 @@ MonoBehaviour:
     <name>k__BackingField: 
     <description>k__BackingField: 
     <rarity>k__BackingField: 0
-    <bonuses>k__BackingField: []
+    <modifiers>k__BackingField: []
     <icon>k__BackingField: {fileID: 0}
   icon: {fileID: 9170233253915400135}
   background: {fileID: 3361239973312171603}

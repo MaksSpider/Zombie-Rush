@@ -35,6 +35,8 @@ public class Upgrade
     [field: SerializeField]
     public Sprite icon { get; set; }
 
+    [NonSerialized] public UpgradeStatus status;
+
     public Color GetRarityColor()
     {
         switch (rarity)

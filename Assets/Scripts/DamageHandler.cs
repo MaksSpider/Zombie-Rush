@@ -4,7 +4,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class DamageHandler : MonoBehaviour
 {
-    private UpgradesController _upgradesController => UpgradesController.Instance;
+    private PlayerController _playerController => PlayerController.Instance;
     private OrbsManager _orbsManager => OrbsManager.Instance;
 
     [SerializeField] private bool _isDestructable = false;
@@ -66,7 +66,7 @@ public class DamageHandler : MonoBehaviour
             particleSystem.Play();
         }
 
-        int xpToSpawn = Mathf.RoundToInt((float)experience * (1 + _upgradesController.GetBonusValues("additionalXp")));
+        int xpToSpawn = Mathf.RoundToInt((float)experience * (1 + _playerController.modifiersController.GetModifierValue("experience_gain_multipler_modifier")));
 
         for (int i = 0; i < xpToSpawn; i++)
         {

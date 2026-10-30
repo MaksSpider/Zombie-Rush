@@ -17,12 +17,12 @@ MonoBehaviour:
     <name>k__BackingField: Grassland
     <frequency>k__BackingField: 1
     <size>k__BackingField: 60
-    tileSprite: {fileID: -1902908920, guid: ca72266c5b750984c88e5d8223a201c8, type: 3}
+    tileSprite: {fileID: 581033884, guid: ca72266c5b750984c88e5d8223a201c8, type: 3}
   - <id>k__BackingField: forrest
     <name>k__BackingField: Forrest
     <frequency>k__BackingField: 1
     <size>k__BackingField: 80
-    tileSprite: {fileID: -239471487, guid: ca72266c5b750984c88e5d8223a201c8, type: 3}
+    tileSprite: {fileID: 865347821, guid: ca72266c5b750984c88e5d8223a201c8, type: 3}
   - <id>k__BackingField: destroyed_city
     <name>k__BackingField: Destroyed City
     <frequency>k__BackingField: 0.5

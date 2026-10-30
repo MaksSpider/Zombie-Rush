@@ -20,7 +20,7 @@ xp_to_next_level_multipler_modifier (float) [IMPLEMENTED]
 
 level_xp_cost_multipler (float) [IMPLEMENTED]
 
-experience_gain_multipler_modifier
+experience_gain_multipler_modifier [IMPLEMENTED]
 
 money_multipler_modifier (float) [IMPLEMENTED]
 

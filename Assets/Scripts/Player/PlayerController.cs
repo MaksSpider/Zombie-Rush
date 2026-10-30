@@ -8,7 +8,6 @@ public class PlayerController : DamageHandler
     public static PlayerController Instance { get; private set; }
 
     private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
-    private UpgradesController _upgradesController => UpgradesController.Instance;
     private CameraController _cameraController => CameraController.Instance;
     private StatesManager _stationsManager => StatesManager.Instance;
     private AudioManager _audioManager => AudioManager.Instance;
@@ -19,6 +18,7 @@ public class PlayerController : DamageHandler
 
     [NonSerialized] public ModifiersController modifiersController;
     [NonSerialized] public StatusesController statusesController;
+    [NonSerialized] public UpgradesController upgradesController;
 
     public event Action OnLevelUp;
 
@@ -73,6 +73,7 @@ public class PlayerController : DamageHandler
 
         modifiersController = GetComponent<ModifiersController>();
         statusesController = GetComponent<StatusesController>();
+        upgradesController = GetComponent<UpgradesController>();
 
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -246,7 +247,7 @@ public class PlayerController : DamageHandler
 
             _audioManager.PlaySFX("levelUp");
 
-            _upgradesController.DisplayUpgradesWindow(Level);
+            upgradesController.OpenUpgrades(Level);
             OnLevelUp?.Invoke();
         }
 

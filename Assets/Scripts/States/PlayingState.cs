@@ -48,6 +48,7 @@ public class PlayingState : State
         _interactionsManager.Tick();
         _cameraController.Tick();
         _playerController.Tick();
+        _worldGenerator.Tick();
         _orbsManager.Tick();
     }
 

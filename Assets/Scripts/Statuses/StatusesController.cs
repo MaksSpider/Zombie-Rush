@@ -128,13 +128,25 @@ public class StatusesController : MonoBehaviour
         GameObject statusObject = Instantiate(StatusPrefab, StatusesParent);
         statusObject.name = $"status_{currentId}";
 
+        int slotIndex = statuses.Count;
+
+        foreach (Status statusToCheck in statuses)
+        {
+            if (statusToCheck.priority < priority)
+            {
+                slotIndex = statusToCheck.gameObject.GetComponent<RectTransform>().GetSiblingIndex();
+            }
+        }
+
+        statusObject.GetComponent<RectTransform>().SetSiblingIndex(slotIndex);
+
         Image statusIcon = statusObject.transform.Find("Icon").GetComponent<Image>();
         Image statusProgress = statusObject.transform.Find("Progress").GetComponent<Image>();
 
         statusIcon.sprite = icon;
         statusProgress.color = color;
 
-        status.Initialize(currentId, this, statusObject, duration);
+        status.Initialize(currentId, this, statusObject, duration, priority);
 
         statuses.Add(status);
 

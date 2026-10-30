@@ -23,6 +23,11 @@ public class State : ScriptableObject
 
     }
 
+    public virtual void Tick05s()
+    {
+
+    }
+
     public virtual void Tick1s()
     {
 
@@ -54,6 +59,7 @@ public class StateMachine : MonoBehaviour
     [SerializeField] private List<State> _states = new List<State>();
     public State CurrentState = null;
 
+    private float _timer05s;
     private float _timer1s;
     private float _timer5s;
     private float _timer10s;
@@ -88,11 +94,18 @@ public class StateMachine : MonoBehaviour
 
         float deltaTime = Time.deltaTime;
 
+        _timer05s += deltaTime;
         _timer1s += deltaTime;
         _timer5s += deltaTime;
         _timer10s += deltaTime;
         _timer30s += deltaTime;
         _timer1m += deltaTime;
+
+        if (_timer05s >= 0.5f)
+        {
+            _timer05s -= 0.5f;
+            CurrentState?.Tick05s();
+        }
 
         if (_timer1s >= 1f)
         {

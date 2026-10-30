@@ -21,7 +21,7 @@ public class StatesManager : StateMachine
     private void Start()
     {
         _audioManager.PlayMusic("song_1");
-        SwitchState<PlayingState>();
+        SwitchState<LoadingState>();
     }
 
     private void Update()
