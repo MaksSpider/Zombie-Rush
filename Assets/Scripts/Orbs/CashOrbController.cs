@@ -28,6 +28,11 @@ public class CashOrbController : OrbController
     private void UpdateAmountText()
     {
         if (_amountTMP == null) return;
+        if (_money < 2)
+        {
+            _amountTMP.text = string.Empty;
+            return;
+        }
 
         _amountTMP.text = money.ToString();
     }

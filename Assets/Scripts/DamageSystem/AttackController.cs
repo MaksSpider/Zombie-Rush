@@ -1,5 +1,5 @@
 using System;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackController : MonoBehaviour
@@ -13,8 +13,9 @@ public class AttackController : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private PolygonCollider2D _polygonCollider;
 
+    private List<int> hittedIds = new();
+
     [NonSerialized] public Vector2 direction;
-    [NonSerialized] public bool targetHited;
     [NonSerialized] public IWeapon weapon;
     [NonSerialized] public int damage;
 
@@ -32,6 +33,23 @@ public class AttackController : MonoBehaviour
     {
         if (!_meshFilter || !_meshRenderer) return;
         DrawSemicircle(0.32f, 0.25f, weapon.attackAngle);
+    }
+
+    public bool Hit(int id)
+    {
+        if (!weapon.multiTargeting)
+        {
+            Destroy(gameObject);
+            return true;
+        }
+
+        for(int i = 0; i < hittedIds.Count; i++)
+        {
+            if(hittedIds[i] == id) return false;
+        }
+
+        hittedIds.Add(id);
+        return true;
     }
 
     public void FixedTick(float deltaTime)

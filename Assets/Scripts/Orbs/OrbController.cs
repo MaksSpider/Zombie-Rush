@@ -26,8 +26,15 @@ public class OrbController : MonoBehaviour
     [Header("Sounds")]
     [SerializeField] private List<AudioClip> _collectSounds = new();
 
-    private bool _isCollecting = false;
-    private bool _isBursting = false;
+    enum State
+    {
+        bursting,
+        idle,
+        collecting
+    }
+
+    private State state;
+
     private float _bobTimer = 0f;
     private float _burstTimer = 0f;
     private Vector2 _position;
@@ -39,11 +46,6 @@ public class OrbController : MonoBehaviour
     {
         OnInitialized();
 
-        if (instantCollect)
-        {
-            Collect();
-        }
-
         _spawnPosition = transform.position;
         _position = targetPosition;
         _bobTimer = UnityEngine.Random.Range(0f, 10f);
@@ -51,10 +53,16 @@ public class OrbController : MonoBehaviour
         float _timer = UnityEngine.Random.Range(0f, _proximityCheckInterval);
         enabled = false;
 
-        if(burst)
+        if (instantCollect)
+        {
+            Collect();
+            return;
+        }
+
+        if (burst)
         {
             enabled = true;
-            _isBursting = true;
+            state = State.bursting;
         }
     }
 
@@ -65,19 +73,32 @@ public class OrbController : MonoBehaviour
 
     public void Tick()
     {
+        if (!enabled) return;
+
         _bobTimer += Time.deltaTime;
 
-        if (_isCollecting)
-        {
-            FlyToTarget();
-        }
-        else if (!_isBursting)
+        if (state == State.idle)
         {
             IdleBob();
+            return;
         }
-        else if(_isBursting)
+
+        if(state == State.bursting)
         {
             Burst();
+            return;
+        }
+
+        if (state == State.collecting)
+        {
+            if (target == null)
+            {
+                FlyToPlayer();
+                return;
+            }
+
+            FlyToTarget();
+            return;
         }
     }
 
@@ -88,9 +109,9 @@ public class OrbController : MonoBehaviour
 
     public void Collect()
     {
-        if (_isCollecting) return;
+        if (state == State.collecting) return;
 
-        _isCollecting = true;
+        state = State.collecting;
         enabled = true;
 
         if (_collectSounds.Count > 0)
@@ -113,12 +134,6 @@ public class OrbController : MonoBehaviour
 
     private void FlyToTarget()
     {
-        if (target == null)
-        {
-            OnCollect();
-            return;
-        }
-
         Vector3 targetWorldPos = RectTransformToWorldPos(target, _cameraController.cam);
 
         _speed += _acceleration * Time.deltaTime;
@@ -126,6 +141,18 @@ public class OrbController : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, _speed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.2f)
+        {
+            OnCollect();
+        }
+    }
+
+    private void FlyToPlayer()
+    {
+        _speed += _acceleration * Time.deltaTime;
+
+        transform.position = Vector3.MoveTowards(transform.position, _playerController.transform.position, _speed * Time.deltaTime);
+
+        if (Vector2.Distance(gameObject.transform.position, _playerController.transform.position) < 0.01f)
         {
             OnCollect();
         }
@@ -140,20 +167,19 @@ public class OrbController : MonoBehaviour
         if (_burstTimer > _burstDuration)
         {
             transform.position = _position;
-            _isBursting = false;
+            state = State.idle;
         }
     }
 
     private void CheckProximity()
     {
-        if (_isCollecting || _isBursting)
+        if (state == State.collecting || state == State.bursting)
         {
             enabled = true;
             return;
         }
 
-        float distSqr = (transform.position - _playerController.transform.position).sqrMagnitude;
-        enabled = distSqr <= _activationRadius * _activationRadius;
+        enabled = Vector2.Distance(transform.position, _playerController.transform.position) <= _activationRadius * _activationRadius;
     }
 
     private Vector3 RectTransformToWorldPos(RectTransform rt, Camera camera)

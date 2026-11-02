@@ -330,7 +330,7 @@ public class WorldGenerator : MonoBehaviour
 
                 if (_mapObjectInstances.ContainsKey(position))
                 {
-                    Destroy(_mapTiles[position]);
+                    Destroy(_mapObjectInstances[position]);
                     _mapObjectInstances.Remove(position);
                 }
             }

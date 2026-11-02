@@ -20,8 +20,8 @@ MonoBehaviour:
     health: 10
     speed: 1.6
     damageModifier: 1
-    exp: 2
-    moneyDrop: {x: 1, y: 10}
+    exp: 6
+    moneyDrop: {x: 1, y: 5}
     weaponItemId: weapon_zombie_hands
     loot:
     - itemId: -1
@@ -47,8 +47,8 @@ MonoBehaviour:
     health: 5
     speed: 1.2
     damageModifier: 1
-    exp: 3
-    moneyDrop: {x: 2, y: 15}
+    exp: 9
+    moneyDrop: {x: 2, y: 10}
     weaponItemId: weapon_throwable_axe
     loot:
     - itemId: -1
@@ -77,7 +77,7 @@ MonoBehaviour:
     health: 10
     speed: 3
     damageModifier: 2
-    exp: 4
+    exp: 12
     moneyDrop: {x: 5, y: 20}
     weaponItemId: weapon_zombie_hands
     loot:
@@ -113,7 +113,7 @@ MonoBehaviour:
     health: 80
     speed: 1
     damageModifier: 5
-    exp: 5
+    exp: 15
     moneyDrop: {x: 20, y: 100}
     weaponItemId: weapon_zombie_hands
     loot:

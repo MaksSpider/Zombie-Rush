@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 90115983100880395}
   - component: {fileID: 5069784218081798172}
   - component: {fileID: 3361239973312171603}
+  - component: {fileID: 7137037985725451543}
   m_Layer: 0
   m_Name: CardButton
   m_TagString: Untagged
@@ -399,6 +400,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7137037985725451543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025384105367797351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab12b9b0dbd22245813007d70160966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIEnterAnimations
+  enterAnimation: 5
+  exitAnimation: 9
+  duration: 0.3
+  slideDistance: 1000
 --- !u!1 &7724897252276365613
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,6 +549,7 @@ MonoBehaviour:
     <rarity>k__BackingField: 0
     <modifiers>k__BackingField: []
     <icon>k__BackingField: {fileID: 0}
+  _cardButton: {fileID: 6025384105367797351}
   icon: {fileID: 9170233253915400135}
   background: {fileID: 3361239973312171603}
   title: {fileID: 6554508293939079898}

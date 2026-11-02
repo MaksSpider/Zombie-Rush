@@ -3,7 +3,8 @@ using UnityEngine;
 public class MapObjectController : DamageHandler
 {
     private WorldGenerator _worldGenerator;
-    void Awake()
+
+    protected override void Awake()
     {
         _worldGenerator = WorldGenerator.Instance;
     }

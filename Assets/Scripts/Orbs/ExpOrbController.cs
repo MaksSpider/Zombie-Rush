@@ -10,7 +10,7 @@ public class ExpOrbController : OrbController
 
     protected override void OnInitialized()
     {
-        target = _playerController.xpProgressBar.GetProgressPosition();
+        //target = _playerController.xpProgressBar.GetProgressPosition();
     }
 
     public override void OnCollect()

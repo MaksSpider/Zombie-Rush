@@ -59,8 +59,10 @@ public class PlayerController : DamageHandler
 
     private bool staminaRegeneration = false;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -115,7 +117,7 @@ public class PlayerController : DamageHandler
             new ModifierProperty
             {
                 name = "base_xp_to_next_level",
-                value = 50
+                value = 150
             },
             new ModifierProperty
             {

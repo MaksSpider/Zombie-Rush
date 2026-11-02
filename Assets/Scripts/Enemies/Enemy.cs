@@ -22,8 +22,6 @@ public class Enemy : DamageHandler
 
     private readonly List<EnemyAttribute> _attributes = new();
 
-    private bool _isDead = false;
-
     [NonSerialized] public Rigidbody2D rb;
     [NonSerialized] public Transform target;
     [NonSerialized] public Animator animator;
@@ -35,8 +33,10 @@ public class Enemy : DamageHandler
     [NonSerialized] public float damageModifier;
     [NonSerialized] public IWeapon weapon;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         animator = GetComponent<Animator>();
 
         rb = GetComponent<Rigidbody2D>();
@@ -45,7 +45,7 @@ public class Enemy : DamageHandler
 
     public void FixedTick(float deltaTime)
     {
-        if (_isDead) return;
+        if (_isDying) return;
         foreach (EnemyAttribute a in _attributes)
         {
             a.UpdateAttribute(deltaTime);
@@ -73,7 +73,7 @@ public class Enemy : DamageHandler
 
     public override void OnObjectDestroy()
     {
-        _isDead = true;
+        _isDying = true;
 
         rb.simulated = false;
 
