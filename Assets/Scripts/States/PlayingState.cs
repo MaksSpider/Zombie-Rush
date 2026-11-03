@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayingState", menuName = "States/PlayingState")]
 public class PlayingState : State
 {
+    private KeysGuideMenuController _keysGuideMenuController => KeysGuideMenuController.Instance;
     private PlayerCombatController _playerCombatController => PlayerCombatController.Instance;
     private PauseMenuController _pauseMenuController => PauseMenuController.Instance;
     private InventoryController _inventoryController => InventoryController.Instance;
@@ -16,6 +17,7 @@ public class PlayingState : State
     private InputManager _inputManager => InputManager.Instance;
     private OrbsManager _orbsManager => OrbsManager.Instance;
 
+
     public override void OnEnterState()
     {
         _playerCombatController.OnEnterState();
@@ -27,6 +29,8 @@ public class PlayingState : State
         _cursorManager.SetDefault();
 
         _inputManager.InputActions.Menu.Escape.performed += _pauseMenuController.Open;
+
+        _keysGuideMenuController.AddKey("ESC", "Open pause menu", 10);
     }
 
     public override void OnExitState()
@@ -39,6 +43,8 @@ public class PlayingState : State
         _cursorManager.SetNormal();
 
         _inputManager.InputActions.Menu.Escape.performed -= _pauseMenuController.Open;
+
+        _keysGuideMenuController.ResetKeys();
     }
 
     public override void Tick()

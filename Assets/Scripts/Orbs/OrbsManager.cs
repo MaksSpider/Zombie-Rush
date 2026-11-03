@@ -18,6 +18,20 @@ public class OrbsManager : MonoBehaviour
         Instance = this;
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        Instance = null;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     public OrbController CreateOrb(GameObject orbPrefab, Vector2 spawnPosition, Vector2 targetPosition, bool bobbingEffect = true, bool instantCollect = false)
     {
         GameObject orbObject = Instantiate(orbPrefab, spawnPosition, Quaternion.identity, gameObject.transform);

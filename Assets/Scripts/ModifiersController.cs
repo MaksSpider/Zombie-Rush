@@ -36,8 +36,8 @@ public class Modifier
         {
             if (properties[i].name == name)
             {
-                _modifiersController.ExecuteOnChange(name);
                 properties.RemoveAt(i);
+                _modifiersController.ExecuteOnChange(name);
                 return;
             }
         }
@@ -93,12 +93,13 @@ public class ModifiersController : MonoBehaviour
         {
             if (modifiers[i].id == id)
             {
-                foreach (ModifierProperty property in modifiers[i].properties)
+                List<ModifierProperty> removedProperties = modifiers[i].properties;
+                modifiers.RemoveAt(i);
+
+                foreach (ModifierProperty property in removedProperties)
                 {
                     ExecuteOnChange(property.name);
                 }
-
-                modifiers.RemoveAt(i);
 
                 return true;
             }

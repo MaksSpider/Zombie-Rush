@@ -59,7 +59,7 @@ public class UpgradesMenuController : MonoBehaviour
         StartCoroutine(AddUpgradeCards(upgrades));
     }
 
-    public void CloseUpgradesPicker()
+    public void CloseUpgradesPicker(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
     {
         _statesManager.SwitchState<PlayingState>();
 

@@ -18,14 +18,14 @@ MonoBehaviour:
     <description>k__BackingField: Rifle desc
     <icon>k__BackingField: {fileID: 8271715202566429118, guid: fbc1fb056f84d1d498834ef91e2c5c28, type: 3}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
     <damage>k__BackingField: 4
     <attackRate>k__BackingField: 0.15
     <attackRange>k__BackingField: 25
     <attackAngle>k__BackingField: 25
     <bulletsPerShot>k__BackingField: 1
-    <accuracy>k__BackingField: 0.7
+    <accuracy>k__BackingField: 0
     <magazineSize>k__BackingField: 32
     <reloadTime>k__BackingField: 0.1
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}

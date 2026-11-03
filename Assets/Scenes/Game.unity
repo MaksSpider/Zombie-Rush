@@ -155,7 +155,6 @@ RectTransform:
   m_Children:
   - {fileID: 1385874198}
   - {fileID: 17520438}
-  - {fileID: 1782157710}
   - {fileID: 1801487383}
   - {fileID: 1960894510}
   - {fileID: 82406289}
@@ -867,6 +866,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 766042322}
+  - {fileID: 2129851659}
   m_Father: {fileID: 10756806}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4384,7 +4384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &766042322
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9639,8 +9639,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed3580a48ba6894595aed4531c838a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusesController
-  StatusPrefab: {fileID: 1574596665778808603, guid: 611f8dc86c944454383c96f7ad14f4a4, type: 3}
-  StatusesParent: {fileID: 1801487383}
+  _statusPrefab: {fileID: 1574596665778808603, guid: 611f8dc86c944454383c96f7ad14f4a4, type: 3}
+  _statusesParent: {fileID: 1801487383}
+  _upgradeStatusesParent: {fileID: 2129851659}
 --- !u!114 &1595515496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11272,42 +11273,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753238480}
   m_CullTransparentMesh: 1
---- !u!1 &1782157709
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1782157710}
-  m_Layer: 0
-  m_Name: Upgrades
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1782157710
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1782157709}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2128536193}
-  m_Father: {fileID: 10756806}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.000022888, y: -39.858}
-  m_SizeDelta: {x: 1044.321, y: 79.7164}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1801487382
 GameObject:
   m_ObjectHideFlags: 0
@@ -12816,7 +12781,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6691326536940167743, guid: cb00bfc790eac6247891c5d2655d500c, type: 3}
   m_PrefabInstance: {fileID: 2108457393}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2128536192
+--- !u!1 &2129851658
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12824,58 +12789,60 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2128536193}
-  - component: {fileID: 2128536194}
+  - component: {fileID: 2129851659}
+  - component: {fileID: 2129851660}
   m_Layer: 0
-  m_Name: UpgradesGrid
+  m_Name: UpgradesUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2128536193
+--- !u!224 &2129851659
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2128536192}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_GameObject: {fileID: 2129851658}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1782157710}
+  m_Father: {fileID: 154869051}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00024414, y: 0}
-  m_SizeDelta: {x: 1044.3, y: 75.9058}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -50.3398}
+  m_SizeDelta: {x: 791.4888, y: 73.1691}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2128536194
+--- !u!114 &2129851660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2128536192}
+  m_GameObject: {fileID: 2129851658}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
   m_Padding:
     m_Left: 0
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 100, y: 80}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: 80
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1001 &7488044698164518863
 PrefabInstance:
   m_ObjectHideFlags: 0

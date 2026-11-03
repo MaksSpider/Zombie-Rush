@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum StatusType
+{
+    normal,
+    upgrade
+}
+
 public class StatusesController : MonoBehaviour
 {
-    [SerializeField] private GameObject StatusPrefab;
-    [SerializeField] private Transform StatusesParent;
+    [SerializeField] private GameObject _statusPrefab;
+    [SerializeField] private Transform _statusesParent;
+    [SerializeField] private Transform _upgradeStatusesParent;
 
     private List<Status> statuses = new();
 
@@ -120,12 +127,27 @@ public class StatusesController : MonoBehaviour
     }
 
     // TODO: add priority
-    public int AddStatus(Status status, float duration, Sprite icon, Color color, int priority = 0)
+    public int AddStatus(Status status, float duration, Sprite icon, Color color, StatusType statusType = StatusType.normal, bool removeable = false, int priority = 0)
     {
         int currentId = nextId;
         nextId++;
 
-        GameObject statusObject = Instantiate(StatusPrefab, StatusesParent);
+        Transform parent = null;
+
+        switch (statusType)
+        {
+            case StatusType.normal:
+                parent = _statusesParent;
+                break;
+            case StatusType.upgrade:
+                parent = _upgradeStatusesParent;
+                break;
+            default:
+                parent = _statusesParent;
+                break;
+        }
+
+        GameObject statusObject = Instantiate(_statusPrefab, parent);
         statusObject.name = $"status_{currentId}";
 
         int slotIndex = statuses.Count;
@@ -142,6 +164,19 @@ public class StatusesController : MonoBehaviour
 
         Image statusIcon = statusObject.transform.Find("Icon").GetComponent<Image>();
         Image statusProgress = statusObject.transform.Find("Progress").GetComponent<Image>();
+        GameObject removeButton = statusObject.transform.Find("RemoveButton").gameObject;
+
+        if (removeable) 
+        {
+            removeButton.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                status.Remove();
+            });
+        }
+        else
+        {
+            removeButton.SetActive(false);
+        }
 
         statusIcon.sprite = icon;
         statusProgress.color = color;

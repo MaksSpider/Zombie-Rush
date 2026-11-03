@@ -7,7 +7,6 @@ public class UpgradesController : MonoBehaviour
 {
     private UpgradesMenuController _upgradesMenuController => UpgradesMenuController.Instance;
     private InventoryController _inventoryController => InventoryController.Instance;
-
     private PlayerController _playerController;
 
     private Dictionary<string, Upgrade> _upgradesDataBase = new();
@@ -61,7 +60,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("weapon_bat", 1);
         _inventoryController.AddItem("medkit", 3);
 
-        //OpenUpgrades(1);
+        OpenUpgrades(1);
     }
 
     public void OpenUpgrades(int level)
@@ -146,11 +145,11 @@ public class UpgradesController : MonoBehaviour
         return (true, upgradeList[0]);
     }
 
-    public bool AddUpgrade(string upgradeName)
+    public bool AddUpgrade(string upgradeId)
     {
-        if(_upgradesDataBase.ContainsKey(upgradeName))
+        if(_upgradesDataBase.ContainsKey(upgradeId))
         {
-            return AddUpgrade(_upgradesDataBase[upgradeName]);
+            return AddUpgrade(_upgradesDataBase[upgradeId]);
         }
 
         return false;
@@ -161,21 +160,25 @@ public class UpgradesController : MonoBehaviour
         if (playerUpgrades.Count >= maxUpgradesAmount) return false;
 
         upgrade.status = new UpgradeStatus(upgrade.id, upgrade.modifiers);
-        _playerController.statusesController.AddStatus(upgrade.status, 0f, upgrade.icon, RarityData.GetRarityColor(upgrade.rarity), 1000 - playerUpgrades.Count);
+        _playerController.statusesController.AddStatus(upgrade.status, 0f, upgrade.icon, RarityData.GetRarityColor(upgrade.rarity), StatusType.upgrade, true, 1000 - playerUpgrades.Count);
 
         playerUpgrades.Add(upgrade);
 
         return true;
     }
 
-    public bool RemoveUpgrade(string upgradeName)
+    public bool RemoveUpgrade(string upgradeId, bool removeStatus = true)
     {
         for (int i = 0; i < playerUpgrades.Count; i++)
         {
             Upgrade upgrade = playerUpgrades[i];
-            if (upgradeName == upgrade.name)
+            if (upgradeId == upgrade.id)
             {
-                upgrade.status.Remove();
+                if(removeStatus)
+                {
+                    upgrade.status.Remove();
+                }
+
                 playerUpgrades.RemoveAt(i);
                 return true;
             }

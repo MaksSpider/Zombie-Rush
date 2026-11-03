@@ -66,7 +66,8 @@ public class UpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerClick(PointerEventData eventData = null)
     {
-        _playerController.upgradesController.AddUpgrade(upgrade);
+        if(!_playerController.upgradesController.AddUpgrade(upgrade)) return;
+
         _upgradesMenuController.CloseUpgradesPicker();
     }
 }

@@ -113,8 +113,6 @@ public class InventoryController : MonoBehaviour
     private Dictionary<string, IItem> _itemsDatabase = new();
     private Dictionary<string, IWeapon> _weaponsDatabase = new();
 
-    private Action _inventorySlotsListener;
-
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
     public event Action OnSlotsAmountChange;
@@ -140,11 +138,6 @@ public class InventoryController : MonoBehaviour
         _interactionsManager = InteractionsManager.Instance;
 
         _playerController = gameObject.GetComponent<PlayerController>();
-
-        _inventorySlotsListener = () =>
-        {
-            ChangeSlotAmount((int)_playerController.modifiersController.GetModifierValue("base_inventory_slots"));
-        };
     }
 
     void Start()
@@ -154,12 +147,12 @@ public class InventoryController : MonoBehaviour
 
     void OnEnable()
     {
-        _playerController.modifiersController.AddOnChangeListener("base_inventory_slots", _inventorySlotsListener);
+        _playerController.modifiersController.AddOnChangeListener("base_inventory_slots", UpdateSlotsAmount);
     }
 
     void OnDisable()
     {
-        _playerController.modifiersController.RemoveOnChangeListener("base_inventory_slots", _inventorySlotsListener);
+        _playerController.modifiersController.RemoveOnChangeListener("base_inventory_slots", UpdateSlotsAmount);
     }
 
     public void OnEnterState()
@@ -208,17 +201,10 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        if (_upgradesController != null)
-        {
-            //_upgradesController.OnUpgradesChange -= () => ChangeSlotAmount(_baseSlotsAmount + (int)_upgradesController.GetBonusValues("bonusInventorySlot"));
-        }
-    }
 
     private void Init()
     {
-        _inventorySlotsListener();
+        UpdateSlotsAmount();
 
         ScriptableObject[] allItems = Resources.LoadAll<ScriptableObject>("Items");
 
@@ -321,8 +307,13 @@ public class InventoryController : MonoBehaviour
             UpdateSlot(i);
         }
 
-        if(selectedSlot >= amount) ChangeSlot(0);
+        if(selectedSlot >= amount) ChangeSlot(amount - 1);
         OnSlotsAmountChange?.Invoke();
+    }
+
+    private void UpdateSlotsAmount()
+    {
+        ChangeSlotAmount((int)_playerController.modifiersController.GetModifierValue("base_inventory_slots"));
     }
 
     public void ChangeSlotAmount(int amount)
@@ -336,11 +327,14 @@ public class InventoryController : MonoBehaviour
         if (inventoryBlocked) return;
         if (slot < 0 || slot >= slots.Count) return;
 
-
-        slots[selectedSlot].slotImage.sprite = _unselectedSlotSprite;
-        slots[selectedSlot].itemNameText.text = string.Empty;
+        if(slots.Count > selectedSlot)
+        {
+            slots[selectedSlot].slotImage.sprite = _unselectedSlotSprite;
+            slots[selectedSlot].itemNameText.text = string.Empty;
+        }
 
         slots[slot].slotImage.sprite = _selectedSlotSprite;
+
         if (inventory.ContainsKey(slot))
         {
             slots[slot].itemNameText.text = inventory[slot].item.name;
@@ -377,17 +371,13 @@ public class InventoryController : MonoBehaviour
 
     public bool AddItem(IItem item, int amount, bool force = false)
     {
-        foreach((int slot, SlotItem slotItem) in inventory)
+        (bool result, int firstFreeSlot) = GetFirstEmptySlot(item);
+
+        if (result)
         {
-            if(slotItem.item.id == item.id)
-            {
-                bool isAdded = AddItemOnSlot(slot, item, amount);
-                if (isAdded) return true;
-                break;
-            }
+            return AddItemOnSlot(firstFreeSlot, item, amount);
         }
 
-        (bool result, int firstFreeSlot) = GetFirstEmptySlot();
         if (!result && force)
         {
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
@@ -398,7 +388,7 @@ public class InventoryController : MonoBehaviour
             return false;
         }
 
-        return AddItemOnSlot(firstFreeSlot, item, amount);
+        return false;
     }
 
     public bool AddItem(string id, int amount)
@@ -539,17 +529,18 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.75f, dropedItem, new Vector2(0, 0.2f), 1.5f, true, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.75f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
         {
-            if (!inventory.ContainsKey(selectedSlot))
+            if (AddItemOnSlot(selectedSlot, item, amount))
             {
-                AddItemOnSlot(selectedSlot, item, amount);
+                _interactionsManager.RemoveInteraction(interactionId);
                 Destroy(dropedItem);
                 return;
             }
 
             if (AddItem(item, amount))
             {
+                _interactionsManager.RemoveInteraction(interactionId);
                 Destroy(dropedItem);
             }
         });

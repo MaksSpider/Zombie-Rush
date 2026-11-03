@@ -50,8 +50,6 @@ public class KeysGuideMenuController : MonoBehaviour
         Debug.Log($"Loaded {_keysDatabase.Count} keys images.");
 
         Hide();
-
-        Invoke(nameof(DebugFunc), 1f);
     }
 
     void DebugFunc()
@@ -148,6 +146,6 @@ public class KeysGuideMenuController : MonoBehaviour
     public Sprite GetKeySprite(string key)
     {
         if(!_keysDatabase.ContainsKey(key)) return null;
-        return _keysDatabase[key.ToLower()];
+        return _keysDatabase[key];
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ExlosiveObjectController : DamageHandler
+public class ExplosiveObjectController : DamageHandler
 {
     [SerializeField] private float explosionRange = 2f;
     [SerializeField] private int explosionDamage = 30;

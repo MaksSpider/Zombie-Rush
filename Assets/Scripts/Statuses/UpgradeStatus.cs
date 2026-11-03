@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class UpgradeStatus : Status
 {
+    private PlayerController _playerController => PlayerController.Instance;
+
     public string upgradeId;
 
     private Modifier modifier;
@@ -25,6 +26,7 @@ public class UpgradeStatus : Status
 
     public override void OnRemove()
     {
+        _playerController.upgradesController.RemoveUpgrade(upgradeId, false);
         modifier.Remove();
     }
 }

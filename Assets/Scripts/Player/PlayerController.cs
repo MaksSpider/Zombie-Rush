@@ -14,11 +14,10 @@ public class PlayerController : DamageHandler
     private InputManager _inputManager => InputManager.Instance;
     private GameSession _gameSession => GameSession.Instance;
 
-    private InventoryController _inventoryController;
-
     [NonSerialized] public ModifiersController modifiersController;
     [NonSerialized] public StatusesController statusesController;
     [NonSerialized] public UpgradesController upgradesController;
+    [NonSerialized] public InventoryController inventoryController;
 
     public event Action OnLevelUp;
 
@@ -71,11 +70,11 @@ public class PlayerController : DamageHandler
 
         Instance = this;
 
-        _inventoryController = gameObject.GetComponent<InventoryController>();
 
         modifiersController = GetComponent<ModifiersController>();
         statusesController = GetComponent<StatusesController>();
         upgradesController = GetComponent<UpgradesController>();
+        inventoryController = GetComponent<InventoryController>();
 
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -143,7 +142,7 @@ public class PlayerController : DamageHandler
 
     public void OnEnterState()
     {
-        _inventoryController.OnSlotsAmountChange += () => 
+        inventoryController.OnSlotsAmountChange += () => 
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
         };
@@ -151,7 +150,7 @@ public class PlayerController : DamageHandler
 
     public void OnExitState()
     {
-        _inventoryController.OnSlotsAmountChange -= () =>
+        inventoryController.OnSlotsAmountChange -= () =>
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
         };

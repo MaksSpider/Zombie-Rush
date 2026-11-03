@@ -51,6 +51,12 @@ public class PlayerCombatController : MonoBehaviour
         Instance = this;
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        Instance = null;
+    }
+
     private void Start()
     {
         _attackRange.GetComponent<MeshRenderer>().sortingOrder = 1000;
@@ -72,6 +78,11 @@ public class PlayerCombatController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+
         if (_inventoryController != null)
         {
             _inventoryController.OnSlotChanged -= GetNewWeapon;
