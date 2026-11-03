@@ -49,3 +49,7 @@ day_duration_multipler_modifier (float)
 
 base_night_time_duration (float 0-1)
 night_time_duration_multipler_modifier (float)
+day_time_duration_multipler_modifier (float)
+
+base_enemies_per_wave (int)
+additional_new_enemies_per_wave (int)

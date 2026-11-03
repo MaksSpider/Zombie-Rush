@@ -1,0 +1,24 @@
+{
+  "language": "en",
+  "displayName": "English",
+  "translations": {
+    "menu.play": "Play",
+    "menu.settings": "Settings",
+    "menu.quit": "Quit",
+
+    "settings.language": "Language",
+    "settings.sound": "Sound",
+    "settings.music": "Music",
+
+    "game.pause": "Pause",
+    "game.resume": "Resume",
+    "game.restart": "Restart",
+
+    "game.coins": "Coins: {0}",
+    "game.welcome": "Welcome, {0}!",
+
+    "common.yes": "Yes",
+    "common.no": "No",
+    "common.back": "Back"
+  }
+}

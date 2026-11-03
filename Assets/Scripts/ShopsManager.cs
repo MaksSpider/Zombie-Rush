@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -110,7 +111,7 @@ public class Shop
 
     public void Open()
     {
-        _shopsManager.Open(this);
+        _shopsManager.Open(index);
     }
 
     public void Close()
@@ -216,8 +217,11 @@ public class ShopsManager : MonoBehaviour
         return (true, shop);
     }
 
-    public void Open(Shop shop)
+    public void Open(string shopIndex)
     {
+        (bool result, Shop shop) = GetShop(shopIndex);
+        if (!result) return;
+
         _statesManager.SwitchState<ShopState>();
 
         _titleText.text = shop.name;
@@ -233,6 +237,16 @@ public class ShopsManager : MonoBehaviour
     {
         _shopMenu.SetActive(false);
         _statesManager.SwitchState<PlayingState>();
+    }
+
+    public (bool result, Shop shop) GetShop(string index)
+    {
+        foreach (Shop shop in _shops)
+        {
+            if (shop.index == index) return (true, shop);
+        }
+
+        return (false, null);
     }
 
     public bool ContainsShop(string index)

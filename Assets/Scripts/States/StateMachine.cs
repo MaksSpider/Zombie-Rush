@@ -68,7 +68,6 @@ public class StateMachine : MonoBehaviour
 
     public void SwitchState<aState>()
     {
-        print(typeof(aState));
         foreach(State s in _states)
         {
             if (s.GetType() == typeof(aState))

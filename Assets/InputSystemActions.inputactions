@@ -67,6 +67,16 @@
                     "priority": 0
                 },
                 {
+                    "name": "Open Shop",
+                    "type": "Button",
+                    "id": "ac730b7f-93c8-4f0a-a220-40658d37acb1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
                     "name": "Drop Item",
                     "type": "Button",
                     "id": "56fe8bd0-34ab-42af-8c73-81e7a1e67e7e",
@@ -557,6 +567,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelectX5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14c0fe08-c411-4f38-afd5-63797cc0e76c",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Shop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

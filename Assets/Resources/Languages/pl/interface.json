@@ -1,0 +1,25 @@
+
+{
+  "language": "pl",
+  "displayName": "Polski",
+  "translations": {
+    "menu.play": "Graj",
+    "menu.settings": "Ustawienia",
+    "menu.quit": "Wyjdź",
+
+    "settings.language": "Język",
+    "settings.sound": "Dźwięk",
+    "settings.music": "Muzyka",
+
+    "game.pause": "Pauza",
+    "game.resume": "Wznów",
+    "game.restart": "Restart",
+
+    "game.coins": "Monety: {0}",
+    "game.welcome": "Witaj, {0}!",
+
+    "common.yes": "Tak",
+    "common.no": "Nie",
+    "common.back": "Wróć"
+  }
+}

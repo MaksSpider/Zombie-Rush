@@ -58,7 +58,6 @@ public class EnemiesManager : MonoBehaviour
     private PlayerController _playerController => PlayerController.Instance;
     private InventoryController _inventoryController => InventoryController.Instance;
 
-    [SerializeField] private bool _isWave = false;
     [SerializeField] private float _minDistanceFromPlayer = 15f;
     [SerializeField] private float _maxDistanceFromPlayer = 35f;
 
@@ -71,11 +70,16 @@ public class EnemiesManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _daysCounter;
     [SerializeField] private float _dayTimeDuration = 300f;
     [SerializeField] private float _nightTimeDuration = 0.3f;
-    [SerializeField] private int _dayNumber = 1;
 
     [SerializeField] private int _spawningEnemiesAmount = 5;
     [SerializeField] private int _startingEnemiesAmount = 10;
     [SerializeField] private int _additionalNewEnemiesPerDay = 2;
+
+    public int dayNumber { get; private set; } = 1;
+    public Action OnDayStart;
+    public Action OnNightStart;
+
+    public bool _isWave { get; private set; } = false;
 
     private float _currentTime = 0;
     public List<EnemyData> _enemiesPool = new();
@@ -228,7 +232,7 @@ public class EnemiesManager : MonoBehaviour
 
             foreach (EnemyData enemy in _enemiesData.enemies)
             {
-                if (enemy.spawnDay <= _dayNumber)
+                if (enemy.spawnDay <= dayNumber)
                 {
                     enemies.Add(enemy);
                 }
@@ -243,7 +247,7 @@ public class EnemiesManager : MonoBehaviour
     {
         _nightPie.GetComponent<Image>().fillAmount = _nightTimeDuration;
         _dayPie.GetComponent<Image>().fillAmount = (1 - _nightTimeDuration);
-        _daysCounter.text = "Day " + _dayNumber.ToString();
+        _daysCounter.text = "Day " + dayNumber.ToString();
     }
 
     private void UpdateUI()
@@ -251,12 +255,12 @@ public class EnemiesManager : MonoBehaviour
         float rotation = -(_currentTime / _dayTimeDuration) * 360;
 
         _clockHand.transform.rotation = Quaternion.Euler(0, 0, rotation);
-        _daysCounter.text = "Day " + _dayNumber.ToString();
+        _daysCounter.text = "Day " + dayNumber.ToString();
     }
 
     public void SpawnEnemy(EnemyData enemyToSpawn, Vector2 spawnPosition)
     {
-        float difficultyModifier = 1f + Mathf.Round(_dayNumber / 5) * 0.05f;
+        float difficultyModifier = 1f + Mathf.Round(dayNumber / 5) * 0.05f;
 
         EnemyBuilder builder = new EnemyBuilder().SetBase(enemyToSpawn.prefab);
 
@@ -306,18 +310,22 @@ public class EnemiesManager : MonoBehaviour
 
         _isWave = true;
         SpawnEnemiesFromPool();
+
+        OnNightStart?.Invoke();
     }
 
     public void EndWave()
     {
         _isWave = false;
         _currentTime = 0f;
-        _playerController.Score += 5 * _dayNumber;
-        _dayNumber++;
+        _playerController.Score += 5 * dayNumber;
+        dayNumber++;
         _dayTimeDuration *= 1.05f;
         _nightTimeDuration *= 1.1f;
         _nightTimeDuration = Mathf.Min(_nightTimeDuration, 1f);
-        _spawningEnemiesAmount += 2;
+        _spawningEnemiesAmount += _additionalNewEnemiesPerDay;
         SetupUI();
+
+        OnDayStart?.Invoke();
     }
 }

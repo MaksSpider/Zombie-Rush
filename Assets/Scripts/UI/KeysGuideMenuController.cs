@@ -52,16 +52,6 @@ public class KeysGuideMenuController : MonoBehaviour
         Hide();
     }
 
-    void DebugFunc()
-    {
-        AddKey("k", "tesk k");
-        AddKey("space", "tesk space");
-        AddKey("w", "tesk w");
-        AddKey("mouse_0", "tesk mouse_0");
-        AddKey("mouse_0", "1 tesk mouse_0", 1000);
-        AddKey("mouse_0", "2 tesk mouse_0", 100);
-    }
-
     public void SwitchDisplay(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
     {
         _visible = !_visible;

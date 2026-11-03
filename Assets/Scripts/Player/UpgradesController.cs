@@ -39,7 +39,7 @@ public class UpgradesController : MonoBehaviour
 
         Debug.Log($"Loaded {_upgradesDataBase.Count} upgrades.");
 
-        Invoke(nameof(DebugFunc), 3f);
+        //Invoke(nameof(DebugFunc), 3f);
     }
 
     // for debuging

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7226243508543847449}
   - component: {fileID: 7787785177335300879}
   - component: {fileID: 6396320784415342184}
+  - component: {fileID: 3940180221951375985}
+  - component: {fileID: 2499195405192856277}
   - component: {fileID: 3624573333486237827}
   - component: {fileID: 5669125266478781863}
   - component: {fileID: 7327071331515963480}
@@ -74,6 +76,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fb94abbee4b5d4cbe9e58139dcc297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSession
+--- !u!114 &3940180221951375985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574443039834201028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8169855592930b479320ba4500a78a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsManager
+--- !u!114 &2499195405192856277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574443039834201028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032374edfda054f4a9e68dae17364896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LanguageManager
 --- !u!114 &3624573333486237827
 MonoBehaviour:
   m_ObjectHideFlags: 0

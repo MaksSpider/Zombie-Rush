@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
 public class PlayerController : DamageHandler
 {
@@ -9,9 +10,11 @@ public class PlayerController : DamageHandler
 
     private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
     private CameraController _cameraController => CameraController.Instance;
+    private EnemiesManager _enemiesManager => EnemiesManager.Instance;
     private StatesManager _stationsManager => StatesManager.Instance;
     private AudioManager _audioManager => AudioManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
+    private ShopsManager _shopsManager => ShopsManager.Instance;
     private GameSession _gameSession => GameSession.Instance;
 
     [NonSerialized] public ModifiersController modifiersController;
@@ -26,6 +29,8 @@ public class PlayerController : DamageHandler
     [SerializeField] private float _sprintBoost = 1.5f;
 
     [SerializeField] private float _collectExpRadius = 1.5f;
+
+    [SerializeField] private List<ShopCategory> _startingShopItems = new();
 
     [SerializeField] public Transform overlay;
 
@@ -43,6 +48,8 @@ public class PlayerController : DamageHandler
 
     private Animator animator;
     private Rigidbody2D rb;
+
+    [NonSerialized] public Shop playerShop;
 
     public int MaxHealth;
 
@@ -84,7 +91,7 @@ public class PlayerController : DamageHandler
     {
         rb.position = _spawnPosition;
 
-        ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
+        playerShop = _shopsManager.RegisterShop(ID + "_playerShop", "Shop", _startingShopItems).shop;
 
         modifiersController.AddOnChangeListener(new List<string>{ "base_max_health", "max_health_multiplier_modifier" }, () =>
         {
@@ -137,11 +144,15 @@ public class PlayerController : DamageHandler
 
         ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
+        _enemiesManager.OnDayStart += UpdateShopItems;
+
         SetupUI();
     }
 
     public void OnEnterState()
     {
+        _inputManager.InputActions.Player.OpenShop.performed += OpenShop;
+
         inventoryController.OnSlotsAmountChange += () => 
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
@@ -150,6 +161,8 @@ public class PlayerController : DamageHandler
 
     public void OnExitState()
     {
+        _inputManager.InputActions.Player.OpenShop.performed += CloseShop;
+
         inventoryController.OnSlotsAmountChange -= () =>
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
@@ -338,6 +351,23 @@ public class PlayerController : DamageHandler
         Score += value;
 
         cashTMP.text = Money.ToString();
+    }
+
+    private void OpenShop(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
+    {
+        if (_enemiesManager._isWave) return;
+
+        playerShop.Open();
+    }
+
+    private void CloseShop(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
+    {
+        playerShop.Close();
+    }
+
+    private void UpdateShopItems()
+    {
+        int currentDay = _enemiesManager.dayNumber;
     }
 
     private void HandleMovementControlls()
