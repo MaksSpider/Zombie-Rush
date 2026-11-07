@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ZombieRush.Framework;
 
 public class EnemyBuilder
 {
@@ -12,6 +13,7 @@ public class EnemyBuilder
     public EnemyBuilder SetBase(GameObject prefab)
     {
         _prefab = prefab;
+
         return this;
     }
 
@@ -56,12 +58,9 @@ public class EnemiesManager : MonoBehaviour
     public static EnemiesManager Instance { get; private set; }
 
     private PlayerController _playerController => PlayerController.Instance;
-    private InventoryController _inventoryController => InventoryController.Instance;
 
     [SerializeField] private float _minDistanceFromPlayer = 15f;
     [SerializeField] private float _maxDistanceFromPlayer = 35f;
-
-    [SerializeField] private EnemiesData _enemiesData;
 
     [SerializeField] private GameObject _clock;
     [SerializeField] private GameObject _clockHand;
@@ -70,10 +69,18 @@ public class EnemiesManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _daysCounter;
     [SerializeField] private float _dayTimeDuration = 300f;
     [SerializeField] private float _nightTimeDuration = 0.3f;
+    [SerializeField] private int _enemiesPoolMaxSize = 100;
 
     [SerializeField] private int _spawningEnemiesAmount = 5;
     [SerializeField] private int _startingEnemiesAmount = 10;
     [SerializeField] private int _additionalNewEnemiesPerDay = 2;
+
+    private Dictionary<string, EnemyData> _enemiesDatabase = new();
+
+    private ObjectPool<string, Enemy> _enemiesPool;
+    private List<string> _enemiesToSpawnPool = new();
+
+    private float _currentTime = 0;
 
     public int dayNumber { get; private set; } = 1;
     public Action OnDayStart;
@@ -81,8 +88,6 @@ public class EnemiesManager : MonoBehaviour
 
     public bool _isWave { get; private set; } = false;
 
-    private float _currentTime = 0;
-    public List<EnemyData> _enemiesPool = new();
 
     public List<Enemy> Enemies = new();
 
@@ -105,6 +110,33 @@ public class EnemiesManager : MonoBehaviour
 
     void Start()
     {
+        ScriptableObject[] allEnemies = Resources.LoadAll<ScriptableObject>("Enemies");
+
+        foreach (ScriptableObject asset in allEnemies)
+        {
+            if (asset is EnemyData enemyData)
+            {
+                _enemiesDatabase.Add(enemyData.id, enemyData);
+            }
+        }
+
+        Debug.Log($"Loaded {_enemiesDatabase.Count} enemies.");
+
+        _enemiesPool = new ObjectPool<string, Enemy>(
+            createFunc: (id) => CreateEnemy(id),
+            actionOnRelease: p => ReleaseEnemyFromPool(p),
+            actionOnGet: p => SpawnEnemy(p),
+            actionOnDestroy: p => Destroy(p.gameObject),
+            defaultCapacity: 50,
+            maxSize: _enemiesPoolMaxSize,
+            listOfIds : new List<string>
+            { 
+                "simple_zombie",
+                "axe_zombie",
+                "speed_zombie"
+            }
+        );
+
         AddToEnemyPool(_startingEnemiesAmount);
     }
 
@@ -142,158 +174,6 @@ public class EnemiesManager : MonoBehaviour
         SpawnEnemiesFromPool();
     }
 
-    private void AddAttributeByType(EnemyBuilder builder, EnemyAttributeType type)
-    {
-        switch (type)
-        {
-            case EnemyAttributeType.SimpleMovement:
-                builder.WithAttribute<SimpleMovement>();
-                break;
-
-            case EnemyAttributeType.CircleMovement:
-                builder.WithAttribute<CircleMovement>();
-                break;
-
-            case EnemyAttributeType.MeleeAttack:
-                builder.WithAttribute<MeleeAttack>();
-                break;
-
-            case EnemyAttributeType.RangedAttack:
-                builder.WithAttribute<RangedAttack>();
-                break;
-        }
-    }
-
-    private void SpawnEnemiesFromPool()
-    {
-        for (int i = 0; i < _spawningEnemiesAmount; i++)
-        {
-            (bool finded, EnemyData enemyToSpawn) = GetRandomEnemyFromPool();
-            if (!finded) continue;
-
-            Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
-            float distance = UnityEngine.Random.Range(_minDistanceFromPlayer, _maxDistanceFromPlayer);
-            Vector2 spawnPosition = (Vector2)_playerController.transform.position + direction * distance;
-
-            print("Spawned enemy: " + enemyToSpawn.name);
-
-            SpawnEnemy(enemyToSpawn, spawnPosition);
-            _enemiesPool.Remove(enemyToSpawn);
-        }
-    }
-
-    private (bool found, EnemyData enemyData) GetRandomEnemyFromPool()
-    {
-        if (_enemiesPool.Count == 0) return (false, new EnemyData());
-
-        float totalChance = 0f;
-
-        foreach (EnemyData enemy in _enemiesPool)
-        {
-            totalChance += Mathf.Max(0f, enemy.spawnChance);
-        }
-
-        if (totalChance <= 0f) return (false, new EnemyData());
-
-        float randomValue = UnityEngine.Random.Range(0f, totalChance);
-
-        foreach (EnemyData enemy in _enemiesPool)
-        {
-            randomValue -= Mathf.Max(0f, enemy.spawnChance);
-
-            if (randomValue <= 0f) return (true, enemy);
-        }
-
-        return (true, _enemiesPool[^1]);
-    }
-
-    public void AddToEnemyPool(string enemyName)
-    {
-        foreach (EnemyData enemy in _enemiesData.enemies)
-        {
-            if (enemy.name == enemyName)
-            {
-                _enemiesPool.Add(enemy);
-                return;
-            }
-        }
-    }
-
-    public void AddToEnemyPool(EnemyData enemyData)
-    {
-        _enemiesPool.Add(enemyData);
-    }
-
-    public void AddToEnemyPool(int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            List<EnemyData> enemies = new();
-
-            foreach (EnemyData enemy in _enemiesData.enemies)
-            {
-                if (enemy.spawnDay <= dayNumber)
-                {
-                    enemies.Add(enemy);
-                }
-            }
-
-            EnemyData newRandomEnemy = enemies[UnityEngine.Random.Range(0, enemies.Count)];
-            _enemiesPool.Add(newRandomEnemy);
-        }
-    }
-
-    private void SetupUI()
-    {
-        _nightPie.GetComponent<Image>().fillAmount = _nightTimeDuration;
-        _dayPie.GetComponent<Image>().fillAmount = (1 - _nightTimeDuration);
-        _daysCounter.text = "Day " + dayNumber.ToString();
-    }
-
-    private void UpdateUI()
-    {
-        float rotation = -(_currentTime / _dayTimeDuration) * 360;
-
-        _clockHand.transform.rotation = Quaternion.Euler(0, 0, rotation);
-        _daysCounter.text = "Day " + dayNumber.ToString();
-    }
-
-    public void SpawnEnemy(EnemyData enemyToSpawn, Vector2 spawnPosition)
-    {
-        float difficultyModifier = 1f + Mathf.Round(dayNumber / 5) * 0.05f;
-
-        EnemyBuilder builder = new EnemyBuilder().SetBase(enemyToSpawn.prefab);
-
-        foreach(EnemyAttributeType attribute in enemyToSpawn.attributes)
-        {
-            AddAttributeByType(builder, attribute);
-        }
-
-        Enemy enemy = builder.Build(spawnPosition, transform);
-        enemy.enemyName = enemyToSpawn.name;
-
-        (bool isWeapon, IWeapon iWeapon, _) = _inventoryController.GetWeapon(enemyToSpawn.weaponItemId);
-        if (isWeapon)
-        {
-            iWeapon.damage *= (int)difficultyModifier;
-            enemy.weapon = iWeapon;
-        }
-
-        enemy.Health = (int)(enemyToSpawn.health * difficultyModifier);
-        enemy.speed = (int)(enemyToSpawn.speed * difficultyModifier);
-        enemy.experience = (int)(enemyToSpawn.exp * difficultyModifier);
-        enemy.damageModifier = enemyToSpawn.damageModifier * difficultyModifier;
-        enemy.money = (int)(UnityEngine.Random.Range(enemyToSpawn.moneyDrop.x, enemyToSpawn.moneyDrop.y) * difficultyModifier);
-
-        if (enemyToSpawn.loot.Count > 0)
-        {
-            DropOnDestroyController dropCtr = enemy.gameObject.AddComponent<DropOnDestroyController>();
-            dropCtr.loot = enemyToSpawn.loot;
-        }
-
-        Enemies.Add(enemy);
-    }
-
     public void SkipToNight()
     {
         float nightStartTime = _dayTimeDuration - (_nightTimeDuration * _dayTimeDuration);
@@ -327,5 +207,167 @@ public class EnemiesManager : MonoBehaviour
         SetupUI();
 
         OnDayStart?.Invoke();
+    }
+
+    public void AddToEnemyPool(int amount)
+    {
+        for(int i = 0; i < amount; i++)
+        {
+            _enemiesToSpawnPool.Add("simple_zombie");
+        }
+    }
+
+    public void ReleaseEnemy(Enemy enemy) => _enemiesPool.Release(enemy.enemyId, enemy);
+
+    private void ReleaseEnemyFromPool(Enemy enemy)
+    {
+        enemy.gameObject.SetActive(false);
+        Enemies.Remove(enemy);
+    }
+
+    private Enemy CreateEnemy(string id)
+    {
+        (bool result, EnemyData enemyToSpawn) = GetEnemyData(id);
+        if (!result) return null;
+
+        EnemyBuilder builder = new EnemyBuilder().SetBase(enemyToSpawn.prefab);
+
+        foreach (EnemyAttributeType attribute in enemyToSpawn.attributes)
+        {
+            AddAttributeByType(builder, attribute);
+        }
+
+        Enemy enemy = builder.Build(new Vector2(0, 0), transform);
+        enemy.enemyId = enemyToSpawn.id;
+
+        if(enemyToSpawn.weapon != null)
+        {
+            if(enemyToSpawn.weapon is RangeWeaponData rangeWeaponData)
+            {
+                enemy.weapon = rangeWeaponData.weapon;
+            }
+            else if (enemyToSpawn.weapon is MeleeWeaponData meleeWeaponData)
+            {
+                enemy.weapon = meleeWeaponData.weapon;
+            }
+        }
+
+        //if (enemyToSpawn.loot.Count > 0)
+        //{
+        //    DropOnDestroyController dropCtr = enemy.gameObject.AddComponent<DropOnDestroyController>();
+        //    dropCtr.loot = enemyToSpawn.loot;
+        //}
+
+        enemy.gameObject.SetActive(false);
+
+        return enemy;
+    }
+
+    private (bool result, EnemyData data) GetEnemyData(string id)
+    {
+        if (!_enemiesDatabase.ContainsKey(id)) return (false, null);
+
+        return (true, _enemiesDatabase[id]);
+    }
+
+    private void SpawnEnemiesFromPool()
+    {
+        int toSpawn = Mathf.Min(_spawningEnemiesAmount, _enemiesToSpawnPool.Count);
+
+        for (int i = 0; i < toSpawn; i++)
+        {
+            float totalChance = 0f;
+
+            foreach (string id in _enemiesToSpawnPool)
+            {
+                var (ok, data) = GetEnemyData(id);
+                if (ok) totalChance += Mathf.Max(0f, data.spawnChance);
+            }
+
+            if (totalChance <= 0f) break;
+
+            float randomValue = UnityEngine.Random.Range(0f, totalChance);
+
+            for (int j = 0; j < _enemiesToSpawnPool.Count; j++)
+            {
+                var (ok, data) = GetEnemyData(_enemiesToSpawnPool[j]);
+                if (!ok) continue;
+
+                randomValue -= Mathf.Max(0f, data.spawnChance);
+
+                if (randomValue <= 0f)
+                {
+                    string id = _enemiesToSpawnPool[j];
+                    _enemiesToSpawnPool.RemoveAt(j);
+                    _enemiesPool.Get(id);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void SpawnEnemy(Enemy enemy)
+    {
+        EnemyData data = GetEnemyData(enemy.enemyId).data;
+
+        enemy.Initialize(data.startingModifiers);
+
+        int difficultyLevel = dayNumber / 5;
+
+        for (int i = 0; i < difficultyLevel; i++)
+        {
+            enemy.modifiersController.AddModifier(data.modifierPerDifficultyIncrease);
+        }
+
+        enemy.Health = enemy.MaxHealth;
+
+        Vector2 direction = UnityEngine.Random.insideUnitCircle;
+        if (direction.sqrMagnitude < 0.0001f) direction = Vector2.right;
+        direction.Normalize();
+
+        float distance = UnityEngine.Random.Range(_minDistanceFromPlayer, _maxDistanceFromPlayer);
+        Vector2 spawnPosition = (Vector2)_playerController.transform.position + direction * distance;
+
+        enemy.transform.position = spawnPosition;
+        enemy.gameObject.SetActive(true);
+
+        Enemies.Add(enemy);
+    }
+
+    private void AddAttributeByType(EnemyBuilder builder, EnemyAttributeType type)
+    {
+        switch (type)
+        {
+            case EnemyAttributeType.SimpleMovement:
+                builder.WithAttribute<SimpleMovement>();
+                break;
+
+            case EnemyAttributeType.CircleMovement:
+                builder.WithAttribute<CircleMovement>();
+                break;
+
+            case EnemyAttributeType.MeleeAttack:
+                builder.WithAttribute<MeleeAttack>();
+                break;
+
+            case EnemyAttributeType.RangedAttack:
+                builder.WithAttribute<RangedAttack>();
+                break;
+        }
+    }
+
+    private void SetupUI()
+    {
+        _nightPie.GetComponent<Image>().fillAmount = _nightTimeDuration;
+        _dayPie.GetComponent<Image>().fillAmount = (1 - _nightTimeDuration);
+        _daysCounter.text = "Day " + dayNumber.ToString();
+    }
+
+    private void UpdateUI()
+    {
+        float rotation = -(_currentTime / _dayTimeDuration) * 360;
+
+        _clockHand.transform.rotation = Quaternion.Euler(0, 0, rotation);
+        _daysCounter.text = "Day " + dayNumber.ToString();
     }
 }

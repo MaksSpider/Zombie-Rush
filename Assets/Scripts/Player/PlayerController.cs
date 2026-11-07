@@ -11,7 +11,7 @@ public class PlayerController : DamageHandler
     private GameOverMenuController _gameOverMenuController => GameOverMenuController.Instance;
     private CameraController _cameraController => CameraController.Instance;
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
-    private StatesManager _stationsManager => StatesManager.Instance;
+    private StatesManager _statesManager => StatesManager.Instance;
     private AudioManager _audioManager => AudioManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
     private ShopsManager _shopsManager => ShopsManager.Instance;
@@ -25,8 +25,6 @@ public class PlayerController : DamageHandler
     public event Action OnLevelUp;
 
     [SerializeField] private Vector3 _spawnPosition;
-    [SerializeField] private float _baseSpeed = 5f;
-    [SerializeField] private float _sprintBoost = 1.5f;
 
     [SerializeField] private float _collectExpRadius = 1.5f;
 
@@ -50,8 +48,6 @@ public class PlayerController : DamageHandler
     private Rigidbody2D rb;
 
     [NonSerialized] public Shop playerShop;
-
-    public int MaxHealth;
 
     public int Money = 0;
     public int Kills = 0;
@@ -107,13 +103,23 @@ public class PlayerController : DamageHandler
         {
             new ModifierProperty
             {
+                name = "base_speed",
+                value = 3
+            },
+            new ModifierProperty
+            {
+                name = "sprit_speed_modifier",
+                value = 0.4f
+            },
+            new ModifierProperty
+            {
                 name = "base_max_health",
-                value = 100
+                value = 250
             },
             new ModifierProperty
             {
                 name = "base_health_regeneration",
-                value = 1
+                value = 10
             },
             new ModifierProperty
             {
@@ -151,8 +157,6 @@ public class PlayerController : DamageHandler
 
     public void OnEnterState()
     {
-        _inputManager.InputActions.Player.OpenShop.performed += OpenShop;
-
         inventoryController.OnSlotsAmountChange += () => 
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
@@ -161,8 +165,6 @@ public class PlayerController : DamageHandler
 
     public void OnExitState()
     {
-        _inputManager.InputActions.Player.OpenShop.performed += CloseShop;
-
         inventoryController.OnSlotsAmountChange -= () =>
         {
             xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
@@ -218,19 +220,10 @@ public class PlayerController : DamageHandler
         statusesController.Tick1m();
     }
 
-    public override void OnDamageDealt(int damage)
-    {
-        base.OnDamageDealt(damage);
-
-        _cameraController.Shake(2f);
-
-        hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
-    }
-
     public override void OnObjectDestroy()
     {
         _audioManager.PlaySFX("lose");
-        _stationsManager.SwitchState<GameOverState>();
+        _statesManager.SwitchState<GameOverState>();
 
         _gameSession.playerProfile.kills = Kills;
         _gameSession.playerProfile.score = Score;
@@ -270,37 +263,14 @@ public class PlayerController : DamageHandler
         xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
     }
 
-    public void ChangeHealth(int value)
+    protected override void OnChangeHealth(int value)
     {
-        Health += value;
-
-        if (Health > MaxHealth)
+        if(value < 0)
         {
-            Health = MaxHealth;
-        }
-
-        if(Health <= 0)
-        {
-            OnObjectDestroy();
+            _cameraController.Shake(2f);
         }
 
         hpTMP.text = (int)((float)Health / (float)MaxHealth * 100f) + "%";
-    }
-
-    public void SetMaxHealth(int value)
-    {
-        MaxHealth = value;
-
-        if (value > 0)
-        {
-            ChangeHealth(value);
-            return;
-        }
-
-        if (Health > MaxHealth) 
-        {
-            Health = MaxHealth;
-        }
     }
 
     public void SetMaxStamina(int value)
@@ -341,28 +311,17 @@ public class PlayerController : DamageHandler
 
     public void ChangeMoney(int value)
     {
-        if(value > 0 )
-        {
-            float valueWithMultiplier = (float)value * (1 + modifiersController.GetModifierValue("money_gain_multiplier_modifier"));
-            value = (int)valueWithMultiplier;
-        }
-
         Money += value;
         Score += value;
 
         cashTMP.text = Money.ToString();
     }
 
-    private void OpenShop(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
+    public void OpenShop(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
     {
         if (_enemiesManager._isWave) return;
 
         playerShop.Open();
-    }
-
-    private void CloseShop(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
-    {
-        playerShop.Close();
     }
 
     private void UpdateShopItems()
@@ -388,11 +347,11 @@ public class PlayerController : DamageHandler
 
     private void HandleMovement(float deltaTime)
     {
-        float speed = _baseSpeed;
+        float speed = modifiersController.GetModifierValue("base_speed") * (1f + modifiersController.GetModifierValue("speed_multipler_modifier"));
 
         if (Stamina > 0 && !staminaRegeneration && _inputManager.InputActions.Player.Sprint.IsPressed())
         {
-            speed *= _sprintBoost;
+            speed *= (1f + modifiersController.GetModifierValue("sprit_speed_modifier"));
 
             animator.SetBool("Sprint", true);
 

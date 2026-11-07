@@ -1,0 +1,131 @@
+{
+  "translations": {
+    "base_max_health.name": "Base Max Health",
+    "base_max_health.display": "Base Max Health: {0}",
+    "base_max_health.desc": "The player's base maximum health.",
+
+    "max_health_multiplier_modifier.name": "Max Health Multiplier",
+    "max_health_multiplier_modifier.display": "Max Health Multiplier: {0}x",
+    "max_health_multiplier_modifier.desc": "Multiplies the player's maximum health.",
+
+    "godmode.name": "God Mode",
+    "godmode.display": "God Mode: {0}",
+    "godmode.desc": "Makes the player invulnerable to damage.",
+
+    "base_health_regeneration.name": "Base Health Regeneration",
+    "base_health_regeneration.display": "Base Health Regeneration: {0}",
+    "base_health_regeneration.desc": "The player's base health regeneration rate.",
+
+    "health_regeneration_multiplier_modifier.name": "Health Regeneration Multiplier",
+    "health_regeneration_multiplier_modifier.display": "Health Regeneration Multiplier: {0}%",
+    "health_regeneration_multiplier_modifier.desc": "Multiplies the player's health regeneration rate.",
+
+    "base_max_stamina.name": "Base Max Stamina",
+    "base_max_stamina.display": "Base Max Stamina: {0}",
+    "base_max_stamina.desc": "The player's base maximum stamina.",
+
+    "max_stamina_multiplier_modifier.name": "Max Stamina Multiplier",
+    "max_stamina_multiplier_modifier.display": "Max Stamina Multiplier: {0}%",
+    "max_stamina_multiplier_modifier.desc": "Multiplies the player's maximum stamina.",
+
+    "base_stamina_regeneration.name": "Base Stamina Regeneration",
+    "base_stamina_regeneration.display": "Base Stamina Regeneration: {0}",
+    "base_stamina_regeneration.desc": "The player's base stamina regeneration rate.",
+
+    "base_stamina_regeneration_multiplier_modifier.name": "Stamina Regeneration Multiplier",
+    "base_stamina_regeneration_multiplier_modifier.display": "Stamina Regeneration Multiplier: {0}%",
+    "base_stamina_regeneration_multiplier_modifier.desc": "Multiplies the player's stamina regeneration rate.",
+
+    "base_xp_to_next_level.name": "Base XP to Next Level",
+    "base_xp_to_next_level.display": "Base XP to Next Level: {0}",
+    "base_xp_to_next_level.desc": "The base amount of experience required to reach the next level.",
+
+    "xp_to_next_level_multipler_modifier.name": "XP Requirement Multiplier",
+    "xp_to_next_level_multipler_modifier.display": "XP Requirement Multiplier: {0}%",
+    "xp_to_next_level_multipler_modifier.desc": "Multiplies the amount of experience required to reach the next level.",
+
+    "level_xp_cost_multipler.name": "Level XP Cost Multiplier",
+    "level_xp_cost_multipler.display": "Level XP Cost Multiplier: {0}%",
+    "level_xp_cost_multipler.desc": "Multiplies the experience cost required for each level.",
+
+    "experience_gain_multipler_modifier.name": "Experience Gain Multiplier",
+    "experience_gain_multipler_modifier.display": "Experience Gain Multiplier: {0}%",
+    "experience_gain_multipler_modifier.desc": "Multiplies the amount of experience gained from all sources.",
+
+    "money_multipler_modifier.name": "Money Gain Multiplier",
+    "money_multipler_modifier.display": "Money Gain Multiplier: {0}%",
+    "money_multipler_modifier.desc": "Multiplies the amount of money earned.",
+
+    "bullets_damage_multipler_modifier.name": "Bullet Damage Multiplier",
+    "bullets_damage_multipler_modifier.display": "Bullet Damage Multiplier: {0}%",
+    "bullets_damage_multipler_modifier.desc": "Multiplies the damage dealt by bullets.",
+
+    "melee_damage_multipler_modifier.name": "Melee Damage Multiplier",
+    "melee_damage_multipler_modifier.display": "Melee Damage Multiplier: {0}%",
+    "melee_damage_multipler_modifier.desc": "Multiplies the damage dealt by melee attacks.",
+
+    "base_inventory_slots.name": "Base Inventory Slots",
+    "base_inventory_slots.display": "Base Inventory Slots: {0}",
+    "base_inventory_slots.desc": "The base number of available inventory slots.",
+
+    "shop_prices_multipler_modifier.name": "Shop Price Multiplier",
+    "shop_prices_multipler_modifier.display": "Shop Price Multiplier: {0}%",
+    "shop_prices_multipler_modifier.desc": "Multiplies the prices of items in shops.",
+
+    "base_retain_ammo_modifier.name": "Base Retain Ammo",
+    "base_retain_ammo_modifier.display": "Base Retain Ammo: {0}%",
+    "base_retain_ammo_modifier.desc": "The base percentage of ammo retained after using a weapon.",
+
+    "enemies.base_max_health.name": "Enemy Base Max Health",
+    "enemies.base_max_health.display": "Enemy Base Max Health: {0}",
+    "enemies.base_max_health.desc": "The base maximum health of enemies.",
+
+    "enemies.max_health_multiplier.name": "Enemy Max Health Multiplier",
+    "enemies.max_health_multiplier.display": "Enemy Max Health Multiplier: {0}%",
+    "enemies.max_health_multiplier.desc": "Multiplies the maximum health of enemies.",
+
+    "enemies.base_health_regeneration.name": "Enemy Base Health Regeneration",
+    "enemies.base_health_regeneration.display": "Enemy Base Health Regeneration: {0}",
+    "enemies.base_health_regeneration.desc": "The base health regeneration rate of enemies.",
+
+    "enemies.health_regeneration_multiplier.name": "Enemy Health Regeneration Multiplier",
+    "enemies.health_regeneration_multiplier.display": "Enemy Health Regeneration Multiplier: {0}%",
+    "enemies.health_regeneration_multiplier.desc": "Multiplies the health regeneration rate of enemies.",
+
+    "enemies.bullets_damage_multipler_modifier.name": "Enemy Bullet Damage Multiplier",
+    "enemies.bullets_damage_multipler_modifier.display": "Enemy Bullet Damage Multiplier: {0}%",
+    "enemies.bullets_damage_multipler_modifier.desc": "Multiplies the damage dealt by enemy bullets.",
+
+    "enemies.melee_damage_multipler_modifier.name": "Enemy Melee Damage Multiplier",
+    "enemies.melee_damage_multipler_modifier.display": "Enemy Melee Damage Multiplier: {0}%",
+    "enemies.melee_damage_multipler_modifier.desc": "Multiplies the damage dealt by enemy melee attacks.",
+
+    "world.base_day_duration.name": "Base Day Duration",
+    "world.base_day_duration.display": "Base Day Duration: {0}",
+    "world.base_day_duration.desc": "The base duration of a full day.",
+
+    "world.day_duration_multipler_modifier.name": "Day Duration Multiplier",
+    "world.day_duration_multipler_modifier.display": "Day Duration Multiplier: {0}%",
+    "world.day_duration_multipler_modifier.desc": "Multiplies the duration of the day.",
+
+    "world.base_night_time_duration.name": "Base Night Duration",
+    "world.base_night_time_duration.display": "Base Night Duration: {0}%",
+    "world.base_night_time_duration.desc": "The base proportion of the day cycle assigned to nighttime.",
+
+    "world.night_time_duration_multipler_modifier.name": "Night Duration Multiplier",
+    "world.night_time_duration_multipler_modifier.display": "Night Duration Multiplier: {0}%",
+    "world.night_time_duration_multipler_modifier.desc": "Multiplies the duration of nighttime.",
+
+    "world.day_time_duration_multipler_modifier.name": "Daytime Duration Multiplier",
+    "world.day_time_duration_multipler_modifier.display": "Daytime Duration Multiplier: {0}%",
+    "world.day_time_duration_multipler_modifier.desc": "Multiplies the duration of daytime.",
+
+    "world.base_enemies_per_wave.name": "Base Enemies Per Wave",
+    "world.base_enemies_per_wave.display": "Base Enemies Per Wave: {0}",
+    "world.base_enemies_per_wave.desc": "The base number of enemies spawned in each wave.",
+
+    "world.additional_new_enemies_per_wave.name": "Additional Enemies Per Wave",
+    "world.additional_new_enemies_per_wave.display": "Additional Enemies Per Wave: {0}",
+    "world.additional_new_enemies_per_wave.desc": "The number of additional enemies introduced in each new wave."
+  }
+}

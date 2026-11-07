@@ -35,8 +35,8 @@ public class UpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         this.upgrade = upgrade;
         icon.sprite = upgrade.icon;
         background.color = upgrade.GetRarityColor();
-        title.text = upgrade.name;
-        description.text = upgrade.description;
+        title.text = upgrade.GetName();
+        description.text = upgrade.GetDesc();
     }
 
     public void OnPointerEnter(PointerEventData eventData = null)

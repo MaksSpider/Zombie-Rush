@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsMenuController : MonoBehaviour
 {
@@ -12,14 +13,20 @@ public class SettingsMenuController : MonoBehaviour
 
     void Start()
     {
-        _volumeScrollbar.value = _settingsManager.GetSetting("volume");
+        if (_settingsManager.GetSetting("volume") is float volume)
+        {
+            _volumeScrollbar.value = volume;
+        }
 
         _volumeScrollbar.onValueChanged.AddListener(value =>
         {
             _settingsManager.SetSetting("volume", value);
         });
 
-        ChangeScreenType(_settingsManager.GetSetting("display"));
+        if (_settingsManager.GetSetting("display") is float display)
+        {
+            ChangeScreenType(display);
+        }
 
         _fullscreenToggle.onValueChanged.AddListener(isOn =>
         {

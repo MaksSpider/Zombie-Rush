@@ -14,13 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
   item:
     <id>k__BackingField: weapon_zombie_hands
-    <name>k__BackingField: Zombie Hands
-    <description>k__BackingField: 
     <icon>k__BackingField: {fileID: 0}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
-    <damage>k__BackingField: 2
+    <damage>k__BackingField: 8
     <attackRate>k__BackingField: 1
     <attackRange>k__BackingField: 0.4
     <attackAngle>k__BackingField: 10

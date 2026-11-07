@@ -14,13 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangeWeaponData
   item:
     <id>k__BackingField: weapon_throwable_axe
-    <name>k__BackingField: Throwable Axe
-    <description>k__BackingField: Throwable Axe desc
     <icon>k__BackingField: {fileID: 0}
     <maxStack>k__BackingField: 1
     <rarity>k__BackingField: 0
   weapon:
-    <damage>k__BackingField: 5
+    <damage>k__BackingField: 15
     <attackRate>k__BackingField: 3
     <attackRange>k__BackingField: 4
     <attackAngle>k__BackingField: 20

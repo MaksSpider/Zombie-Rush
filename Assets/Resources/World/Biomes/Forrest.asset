@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7bd8f63e5bf9d547bba0d8a629faaf7, type: 3}
+  m_Name: Forrest
+  m_EditorClassIdentifier: Assembly-CSharp::WorldBiomData
+  biom:
+    <id>k__BackingField: forrest
+    <frequency>k__BackingField: 1
+    <size>k__BackingField: 80
+    tileSprite: {fileID: 464745839, guid: ca72266c5b750984c88e5d8223a201c8, type: 3}
+    <vegetationDensity>k__BackingField: 0.1

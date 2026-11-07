@@ -1,0 +1,48 @@
+{
+  "translations": {
+    "bullet_damage_0.name": "Common Bullet Damage",
+    "bullet_damage_1.name": "Rare Bullet Damage",
+    "bullet_damage_2.name": "Epic Bullet Damage",
+    "bullet_damage_3.name": "Legendary Bullet Damage",
+
+    "melee_damage_0.name": "Common Melee Damage",
+    "melee_damage_1.name": "Rare Melee Damage",
+    "melee_damage_2.name": "Epic Melee Damage",
+    "melee_damage_3.name": "Legendary Melee Damage",
+
+    "experience_boost_0.name": "Common Experience Boost",
+    "experience_boost_1.name": "Rare Experience Boost",
+    "experience_boost_2.name": "Epic Experience Boost",
+    "experience_boost_3.name": "Legendary Experience Boost",
+
+    "more_slots_0.name": "Common More Slots",
+    "more_slots_1.name": "Rare More Slots",
+    "more_slots_2.name": "Epic More Slots",
+    "more_slots_3.name": "Legendary More Slots",
+
+    "retain_ammo_0.name": "Common Retain Ammo",
+    "retain_ammo_1.name": "Rare Retain Ammo",
+    "retain_ammo_2.name": "Epic Retain Ammo",
+    "retain_ammo_3.name": "Legendary Retain Ammo",
+
+    "money_boost_0.name": "Common Money Boost",
+    "money_boost_1.name": "Rare Money Boost",
+    "money_boost_2.name": "Epic Money Boost",
+    "money_boost_3.name": "Legendary Money Boost",
+
+    "health_regeneration_boost_0.name": "Common Health Regeneration Boost",
+    "health_regeneration_boost_1.name": "Rare Health Regeneration Boost",
+    "health_regeneration_boost_2.name": "Epic Health Regeneration Boost",
+    "health_regeneration_boost_3.name": "Legendary Health Regeneration Boost",
+
+    "additional_max_health_0.name": "Common Additional Max Health",
+    "additional_max_health_1.name": "Rare Additional Max Health",
+    "additional_max_health_2.name": "Epic Additional Max Health",
+    "additional_max_health_3.name": "Legendary Additional Max Health",
+
+    "stamina_regeneration_boost_0.name": "Common Stamina Regeneration Boost",
+    "stamina_regeneration_boost_1.name": "Rare Stamina Regeneration Boost",
+    "stamina_regeneration_boost_2.name": "Epic Stamina Regeneration Boost",
+    "stamina_regeneration_boost_3.name": "Legendary Stamina Regeneration Boost"
+  }
+}

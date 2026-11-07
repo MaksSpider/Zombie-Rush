@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c94413d7034e746981d315df35b312, type: 3}
+  m_Name: SimpleZombie
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  id: simple_zombie
+  prefab: {fileID: 6668317591216721449, guid: 8b841e718c312cd46a8bb33c304b45a9, type: 3}
+  spawnDay: 1
+  spawnChance: 0.9
+  attributes: 0000000002000000i
+  weapon: {fileID: 11400000, guid: 6e38c2b6e38391e468b9c2f39f675f0c, type: 2}
+  startingModifiers:
+  - name: base_max_health
+    value: 10
+  - name: base_speed
+    value: 0
+  - name: damage_multipler_modifier
+    value: 0
+  - name: base_experience_drop
+    value: 5
+  - name: base_money_drop
+    value: 2
+  modifierPerDifficultyIncrease:
+  - name: base_max_health
+    value: 5
+  - name: damage_multipler_modifier
+    value: 0.15
+  - name: base_experience_drop
+    value: 1
+  - name: base_money_drop
+    value: 1
+  loot: []

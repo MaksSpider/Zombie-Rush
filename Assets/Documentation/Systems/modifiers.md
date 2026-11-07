@@ -12,6 +12,11 @@ health_regeneration_multiplier_modifier (float) [IMPLEMENTED]
 base_max_stamina (int) [IMPLEMENTED]
 max_stamina_multiplier_modifier (float) [IMPLEMENTED]
 
+base_speed (float) [IMPLEMENTED]
+speed_multipler_modifier (float) [IMPLEMENTED]
+
+sprit_speed_modifier (float) [IMPLEMENTED]
+
 base_stamina_regeneration (int) [IMPLEMENTED]
 base_stamina_regeneration_multiplier_modifier (float) [IMPLEMENTED]
 
@@ -24,6 +29,8 @@ experience_gain_multipler_modifier [IMPLEMENTED]
 
 money_multipler_modifier (float) [IMPLEMENTED]
 
+damage_multipler_modifier (float) [IMPLEMENTED]
+
 bullets_damage_multipler_modifier (float) [IMPLEMENTED]
 melee_damage_multipler_modifier (float) [IMPLEMENTED]
 
@@ -31,16 +38,30 @@ base_inventory_slots (int) [IMPLEMENTED]
 
 shop_prices_multipler_modifier (float)
 
+base_retain_ammo_modifier (float) [IMPLEMENTED]
+base_retain_ammo_multipler_modifier (float) [IMPLEMENTED]
+
 ## Enemies
 
-base_max_health (int)
-max_health_multiplier (float)
+base_max_health (int) [IMPLEMENTED]
+max_health_multipler_modifier (float) [IMPLEMENTED]
 
 base_health_regeneration (int)
 health_regeneration_multiplier (float)
 
-bullets_damage_multipler_modifier (float)
-melee_damage_multipler_modifier (float)
+base_speed (float) [IMPLEMENTED]
+speed_multipler_modifier (float) [IMPLEMENTED]
+
+base_experience_drop (int) [IMPLEMENTED]
+experience_multipler_modifier (float) [IMPLEMENTED]
+
+base_money_drop (int) [IMPLEMENTED]
+money_drop_multipler_modifier (float) [IMPLEMENTED]
+
+damage_multipler_modifier (float) [IMPLEMENTED]
+
+bullets_damage_multipler_modifier (float) [IMPLEMENTED]
+melee_damage_multipler_modifier (float) [IMPLEMENTED]
 
 ## World
 

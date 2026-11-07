@@ -1,6 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+
+public class AttackOptions
+{
+    public float accuracy { get; set; } = 0.0f;
+    public float damageModifer { get; set; } = 1f;
+    public LayerMask targets { get; set; } = default;
+}
 
 public class AttacksManager : MonoBehaviour
 {
@@ -38,14 +44,12 @@ public class AttacksManager : MonoBehaviour
         }
     }
 
-    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, RangeWeapon weapon, float damageModifer = 1f, LayerMask targets = default)
+    public void CreateBullet(Vector2 spawnPosition, Vector2 baseDirection, RangeWeapon weapon, AttackOptions options = default)
     {
         for (int i = 0; i < weapon.bulletsPerShot; i++)
         {
-            float random = Random.Range(-1f, 1f);
-            float spread = Mathf.Sign(random) * Mathf.Pow(Mathf.Abs(random), weapon.accuracy / 1f) * weapon.attackAngle;
-            float randomAngleOffset = Random.Range(-weapon.attackAngle * 0.5f, weapon.attackAngle * 0.5f);
-
+            float spread = (weapon.attackAngle + options.accuracy) * (1f - Mathf.Clamp01(weapon.accuracy));
+            float randomAngleOffset = Random.Range(-spread * 0.5f, spread * 0.5f);
             Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
 
             Vector2 bulletPosition = spawnPosition + direction * weapon.bulletSpawnOffset;
@@ -58,24 +62,24 @@ public class AttacksManager : MonoBehaviour
 
             AttackController attackCtr = bulletGameObject.GetComponent<AttackController>();
 
-            attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * damageModifer);
+            attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * options.damageModifer);
             attackCtr.direction = direction.normalized;
             attackCtr.weapon = weapon;
 
-            if (targets.value != 0)
+            if (options.targets.value != 0)
             {
                 Collider2D collider = bulletGameObject.GetComponent<Collider2D>();
 
                 collider.layerOverridePriority = 10;
-                collider.includeLayers = targets;
-                collider.excludeLayers = ~targets;
+                collider.includeLayers = options.targets;
+                collider.excludeLayers = ~options.targets;
             }
 
             Bullets.Add(attackCtr);
         }
     }
 
-    public void CreateMeleeAttack(Vector2 spawnPosition, Vector2 baseDirection, MeleeWeapon weapon, float damageModifer = 1f, LayerMask targets = default)
+    public void CreateMeleeAttack(Vector2 spawnPosition, Vector2 baseDirection, MeleeWeapon weapon, AttackOptions options = default)
     {
         Vector2 bulletPosition = spawnPosition + baseDirection * 0.01f;
 
@@ -87,17 +91,17 @@ public class AttacksManager : MonoBehaviour
 
         AttackController attackCtr = bulletGameObject.GetComponent<AttackController>();
 
-        attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * damageModifer);
+        attackCtr.damage = Mathf.RoundToInt((float)weapon.damage * options.damageModifer);
         attackCtr.direction = baseDirection.normalized;
         attackCtr.weapon = weapon;
 
-        if (targets.value != 0)
+        if (options.targets.value != 0)
         {
             Collider2D collider = bulletGameObject.GetComponent<Collider2D>();
 
             collider.layerOverridePriority = 10;
-            collider.includeLayers = targets;
-            collider.excludeLayers = ~targets;
+            collider.includeLayers = options.targets;
+            collider.excludeLayers = ~options.targets;
         }
 
         Bullets.Add(attackCtr);

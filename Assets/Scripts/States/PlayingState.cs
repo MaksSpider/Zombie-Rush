@@ -29,7 +29,16 @@ public class PlayingState : State
         _cursorManager.SetDefault();
 
         _inputManager.InputActions.Menu.Escape.performed += _pauseMenuController.Open;
+        _inputManager.InputActions.Player.OpenShop.performed += _playerController.OpenShop;
 
+        _keysGuideMenuController.AddKey("MOUSEBUTTONLEFT", "Attack", 90);
+        _keysGuideMenuController.AddKey("R", "Reload weapon", 80);
+        _keysGuideMenuController.AddKey("MOUSEBUTTONMIDDLE", "Change Inventory Slot", 70);
+        _keysGuideMenuController.AddKey("WASD", "Movement", 60);
+        _keysGuideMenuController.AddKey("SHIFT", "Sprint", 50);
+        _keysGuideMenuController.AddKey("F", "Interact", 40);
+        _keysGuideMenuController.AddKey("E", "Use Item", 30);
+        _keysGuideMenuController.AddKey("B", "Open shop", 20);
         _keysGuideMenuController.AddKey("ESC", "Open pause menu", 10);
     }
 
@@ -43,6 +52,7 @@ public class PlayingState : State
         _cursorManager.SetNormal();
 
         _inputManager.InputActions.Menu.Escape.performed -= _pauseMenuController.Open;
+        _inputManager.InputActions.Player.OpenShop.performed -= _playerController.OpenShop;
 
         _keysGuideMenuController.ResetKeys();
     }

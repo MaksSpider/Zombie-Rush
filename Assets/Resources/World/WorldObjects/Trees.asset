@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e9d5ac381930e247a5b7648875a8076, type: 3}
+  m_Name: Trees
+  m_EditorClassIdentifier: Assembly-CSharp::WorldObjectsData
+  worldObjects:
+  - <gameObject>k__BackingField: {fileID: 2352693594689840949, guid: 4e3f0d8ac12d6624cbf0c8db6b8ae24d, type: 3}
+    <size>k__BackingField: {x: 1, y: 1}
+    <biomes>k__BackingField:
+    - <biomId>k__BackingField: forrest
+      <frequency>k__BackingField: 0.4
+  - <gameObject>k__BackingField: {fileID: 7034845803754660204, guid: 58929599f9b22bb4191ce4470fe97bff, type: 3}
+    <size>k__BackingField: {x: 1, y: 1}
+    <biomes>k__BackingField:
+    - <biomId>k__BackingField: forrest
+      <frequency>k__BackingField: 0.4

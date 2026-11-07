@@ -1,0 +1,30 @@
+{
+  "translations": {
+    "weapon_bat.name": "Baseball Bat",
+    "weapon_bat.desc": "A simple melee weapon with moderate damage.",
+
+    "weapon_pistol.name": "Pistol",
+    "weapon_pistol.desc": "A basic firearm with moderate firepower.",
+
+    "weapon_rifle.name": "Rifle",
+    "weapon_rifle.desc": "A firearm with long range and high accuracy.",
+
+    "weapon_shotgun.name": "Shotgun",
+    "weapon_shotgun.desc": "A firearm that fires multiple pellets, highly effective at close range.",
+
+    "bandage.name": "Bandage",
+    "bandage.desc": "A simple medical item that restores a small amount of health.",
+
+    "medkit.name": "Medkit",
+    "medkit.desc": "Restores a portion of the player's health.",
+
+    "ammo_pistol.name": "Pistol Ammo Box",
+    "ammo_pistol.desc": "A box containing ammunition for pistols.",
+
+    "ammo_shotgun.name": "Shotgun Ammo Box",
+    "ammo_shotgun.desc": "A box containing ammunition for shotguns.",
+
+    "ammo_rifle.name": "Rifle Ammo Box",
+    "ammo_rifle.desc": "A box containing ammunition for rifles."
+  }
+}

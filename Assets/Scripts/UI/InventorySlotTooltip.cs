@@ -7,6 +7,7 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
     [NonSerialized] public int slotIndex = 0;
 
     private InventoryController _inventoryController => InventoryController.Instance;
+    private TranslationManager _translationManager => TranslationManager.Instance;
     private TooltipController _tooltipController => TooltipController.Instance;
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -14,7 +15,7 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
         (bool empty, IItem item) = _inventoryController.GetItemOnSlot(slotIndex);
         if (empty) return;
 
-        string description = item.description;
+        string description = _translationManager.GetText(item.id + ".desc");
 
         (bool isWeapon, IWeapon weapon, _) = _inventoryController.GetWeapon(item.id);
 
@@ -30,7 +31,7 @@ public class InventorySlotTooltip : MonoBehaviour, IPointerEnterHandler, IPointe
             }
         }
 
-        _tooltipController.Show(item.name, description);
+        _tooltipController.Show(_translationManager.GetText(item.id + ".name"), description);
     }
 
     public void OnPointerExit(PointerEventData eventData)

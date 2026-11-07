@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class ModifierProperty
@@ -67,7 +68,7 @@ public class ModifiersController : MonoBehaviour
     private int _nextId = 0;
     private Dictionary<string, List<Action>> OnModifiersChange = new();
 
-    public List<Modifier> modifiers;
+    [SerializeField] private List<Modifier> modifiers = new();
 
     public Modifier AddModifier(List<ModifierProperty> modifierProperties)
     {
@@ -136,6 +137,24 @@ public class ModifiersController : MonoBehaviour
         return value;
     }
 
+    public void ClearModifiers()
+    {
+        foreach (Modifier modifier in modifiers)
+        {
+            foreach (ModifierProperty property in modifier.properties)
+            {
+                ExecuteOnChange(name);
+            }
+        }
+
+        modifiers.Clear();
+    }
+
+    public void ClearListeners()
+    {
+        OnModifiersChange.Clear();
+    }
+
     public void AddOnChangeListener(string name, Action action)
     {
         if (!OnModifiersChange.ContainsKey(name))
@@ -171,8 +190,8 @@ public class ModifiersController : MonoBehaviour
     {
         foreach(string name in names)
         {
-            if (!OnModifiersChange.ContainsKey(name)) return;
-            if (!OnModifiersChange[name].Contains(action)) return;
+            if (!OnModifiersChange.ContainsKey(name)) continue;
+            if (!OnModifiersChange[name].Contains(action)) continue;
 
             OnModifiersChange[name].Remove(action);
         }

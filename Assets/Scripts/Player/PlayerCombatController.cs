@@ -21,7 +21,6 @@ public class PlayerCombatController : MonoBehaviour
 {
     public static PlayerCombatController Instance { get; private set; }
 
-    private InventoryController _inventoryController => InventoryController.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private AttacksManager _attacksManager => AttacksManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
@@ -61,8 +60,8 @@ public class PlayerCombatController : MonoBehaviour
     {
         _attackRange.GetComponent<MeshRenderer>().sortingOrder = 1000;
 
-        _inventoryController.OnSlotChanged += GetNewWeapon;
-        _inventoryController.OnDropItemOnSlot += GetNewWeapon;
+        _playerController.inventoryController.OnSlotChanged += GetNewWeapon;
+        _playerController.inventoryController.OnDropItemOnSlot += GetNewWeapon;
         GetNewWeapon();
     }
 
@@ -83,10 +82,10 @@ public class PlayerCombatController : MonoBehaviour
             Instance = null;
         }
 
-        if (_inventoryController != null)
+        if (_playerController.inventoryController != null)
         {
-            _inventoryController.OnSlotChanged -= GetNewWeapon;
-            _inventoryController.OnDropItemOnSlot -= GetNewWeapon;
+            _playerController.inventoryController.OnSlotChanged -= GetNewWeapon;
+            _playerController.inventoryController.OnDropItemOnSlot -= GetNewWeapon;
         }
     }
 
@@ -104,7 +103,7 @@ public class PlayerCombatController : MonoBehaviour
         if (_inputManager.InputActions.Player.AttackShoot.IsPressed())
         {
             if (currentWeapon == null) return;
-            if (_inventoryController.inventoryBlocked) return;
+            if (_playerController.inventoryController.inventoryBlocked) return;
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
             Attack(currentWeapon);
@@ -113,7 +112,7 @@ public class PlayerCombatController : MonoBehaviour
 
     private void GetNewWeapon()
     {
-        (bool exist, IItem item) = _inventoryController.GetItemInHands();
+        (bool exist, IItem item) = _playerController.inventoryController.GetItemInHands();
 
         if(!exist)
         {
@@ -122,7 +121,7 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        (bool isWeapon, IWeapon weapon, _) = _inventoryController.GetWeapon(item.id);
+        (bool isWeapon, IWeapon weapon, _) = _playerController.inventoryController.GetWeapon(item.id);
         if(!isWeapon)
         {
             currentWeapon = null;
@@ -150,15 +149,19 @@ public class PlayerCombatController : MonoBehaviour
 
         if (weapon is MeleeWeapon meleeWeapon)
         {
-            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("melee_damage_multipler_modifier");
+            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("melee_damage_multipler_modifier") + _playerController.modifiersController.GetModifierValue("damage_multipler_modifier");
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
-            _attacksManager.CreateMeleeAttack(playerRb.position + new Vector2(0, 0.15f), baseDirection, meleeWeapon, damageMultiplier, include);
+            _attacksManager.CreateMeleeAttack(playerRb.position + new Vector2(0, 0.15f), baseDirection, meleeWeapon, new AttackOptions
+            {
+                damageModifer = damageMultiplier,
+                targets = include,
+            });
         }
         else if (weapon is RangeWeapon normalWeapon)
         {
-            bool result = RemoveAmmoFromMag(_inventoryController.GetWeaponItem(currentWeapon).item.id, 1);
+            bool result = RemoveAmmoFromMag(_playerController.inventoryController.GetWeaponItem(currentWeapon).item.id, 1);
             if (!result)
             {
                 ReloadWeapon(weapon);
@@ -167,9 +170,13 @@ public class PlayerCombatController : MonoBehaviour
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
-            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("bullets_damage_multipler_modifier");
+            float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("bullets_damage_multipler_modifier") + _playerController.modifiersController.GetModifierValue("damage_multipler_modifier");
 
-            _attacksManager.CreateBullet(playerRb.position + new Vector2(0, 0.15f), baseDirection, normalWeapon, damageMultiplier, include);
+            _attacksManager.CreateBullet(playerRb.position + new Vector2(0, 0.15f), baseDirection, normalWeapon, new AttackOptions
+            {
+                damageModifer = damageMultiplier,
+                targets = include,
+            });
 
             _audioManager.PlaySFX(normalWeapon.attackSound);
             UpdateUI();
@@ -180,7 +187,7 @@ public class PlayerCombatController : MonoBehaviour
     {
         if(_isReloading) return false;
 
-        IItem weaponItem = _inventoryController.GetWeaponItem(currentWeapon).item;
+        IItem weaponItem = _playerController.inventoryController.GetWeaponItem(currentWeapon).item;
 
         if (weapon is RangeWeapon normalWeapon)
         {
@@ -195,14 +202,14 @@ public class PlayerCombatController : MonoBehaviour
 
             _audioManager.PlaySFX("reload");
 
-            _inventoryController.inventoryBlocked = true;
-            _inventoryController.slots[_inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {
+            _playerController.inventoryController.inventoryBlocked = true;
+            _playerController.inventoryController.slots[_playerController.inventoryController.selectedSlot].SetAnimationDuration(amountToReload * normalWeapon.reloadTime, () => {
                 Ammo current = _ammoInventory[weaponItem.id];
                 current.inMagazine += amountToReload;
                 current.all -= amountToReload;
                 _ammoInventory[weaponItem.id] = current;
 
-                _inventoryController.inventoryBlocked = false;
+                _playerController.inventoryController.inventoryBlocked = false;
                 _isReloading = false;
                 UpdateUI();
             });
@@ -217,7 +224,7 @@ public class PlayerCombatController : MonoBehaviour
     {
         if (currentWeapon == null) return (false, 0, 0);
 
-        IItem weaponItem = _inventoryController.GetWeaponItem(currentWeapon).item;
+        IItem weaponItem = _playerController.inventoryController.GetWeaponItem(currentWeapon).item;
         if (!_ammoInventory.ContainsKey(weaponItem.id)) return (true, 0, 0);
 
         return (true, _ammoInventory[weaponItem.id].inMagazine, _ammoInventory[weaponItem.id].all);
@@ -240,6 +247,10 @@ public class PlayerCombatController : MonoBehaviour
     {
         if (!_ammoInventory.ContainsKey(weaponItemId)) return false;
         if (_ammoInventory[weaponItemId].inMagazine < amount) return false;
+
+        float ammoRetainChance = _playerController.modifiersController.GetModifierValue("base_retain_ammo_modifier") * (1f + _playerController.modifiersController.GetModifierValue("base_retain_ammo_multipler_modifier"));
+
+        if (UnityEngine.Random.value <= ammoRetainChance) return true;
 
         Ammo current = _ammoInventory[weaponItemId];
         current.inMagazine -= amount;

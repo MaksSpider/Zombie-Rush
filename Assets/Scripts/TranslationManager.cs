@@ -1,40 +1,31 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class LanguageData
+public class LanguageInfo
 {
     public string language;
     public string displayName;
-    public TranslationEntry[] translations;
 }
-
-[Serializable]
-public class TranslationEntry
+public class TranslationFile
 {
-    public string key;
-    public string value;
+    public Dictionary<string, string> translations;
 }
 
 public class TranslationManager : MonoBehaviour
 {
     public static TranslationManager Instance { get; private set; }
 
-    private const string DefaultLanguage = "en";
-    private const string LanguagePrefsKey = "SelectedLanguage";
+    [SerializeField] private string _defaultLanguage = "en";
 
-    private Dictionary<string, LanguageData> languages =
-        new Dictionary<string, LanguageData>();
+    private readonly Dictionary<string, Dictionary<string, string>> _languages = new();
 
-    private LanguageData currentLanguage;
-    private LanguageData fallbackLanguage;
+    private string _currentLanguage;
 
-    public string CurrentLanguage =>
-        currentLanguage != null ? currentLanguage.language : DefaultLanguage;
+    private bool _initialized;
 
-    public string CurrentLanguageName =>
-        currentLanguage != null ? currentLanguage.displayName : DefaultLanguage;
+    public string currentLanguage => !string.IsNullOrEmpty(_currentLanguage) ? _currentLanguage : _defaultLanguage;
 
     public event Action OnLanguageChanged;
 
@@ -49,87 +40,77 @@ public class TranslationManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        _defaultLanguage = _defaultLanguage.ToLowerInvariant();
         LoadLanguages();
-        SelectStartupLanguage();
+    }
+
+    public void Initialize()
+    {
+        if (_initialized) return;
+        _initialized = true;
+
+        SetLanguage(_defaultLanguage);
     }
 
     private void LoadLanguages()
     {
-        languages.Clear();
+        _languages.Clear();
 
-        TextAsset[] files =
-            Resources.LoadAll<TextAsset>("Languages");
+        TextAsset[] metadataFiles = Resources.LoadAll<TextAsset>("Languages");
+
+        foreach (TextAsset file in metadataFiles)
+        {
+            if (!file.name.Equals("language", StringComparison.OrdinalIgnoreCase)) continue;
+
+            LanguageInfo info = JsonConvert.DeserializeObject<LanguageInfo>(file.text);
+            if (info == null || string.IsNullOrWhiteSpace(info.language)) continue;
+
+            if (_languages.ContainsKey(info.language)) continue;
+
+            LoadLanguage(info.language, info.displayName);
+        }
+
+        if (!_languages.ContainsKey(_defaultLanguage))
+            Debug.LogError($"Default language '{_defaultLanguage}' was not found!");
+    }
+
+    private void LoadLanguage(string code, string displayName)
+    {
+        Dictionary<string, string> entries = new();
+        TextAsset[] files = Resources.LoadAll<TextAsset>($"Languages/{code}");
 
         foreach (TextAsset file in files)
         {
-            try
-            {
-                LanguageData data =
-                    JsonUtility.FromJson<LanguageData>(file.text);
+            if (file.name.Equals("language", StringComparison.OrdinalIgnoreCase)) continue;
 
-                if (data == null ||
-                    string.IsNullOrWhiteSpace(data.language))
+            TranslationFile translationFile = JsonConvert.DeserializeObject<TranslationFile>(file.text);
+
+            if (translationFile == null || translationFile.translations == null)
+            {
+                Debug.LogWarning($"Invalid translation file: {code}/{file.name}.json");
+                continue;
+            }
+
+            foreach ((string key, string value) in translationFile.translations)
+            {
+                if (string.IsNullOrEmpty(key)) continue;
+
+                if (entries.ContainsKey(key))
                 {
-                    Debug.LogWarning(
-                        $"Invalid language file: {file.name}");
+                    Debug.LogWarning($"Duplicate key: {code}/{file.name}/{key}");
                     continue;
                 }
 
-                data.language = data.language.ToLowerInvariant();
-
-                if (languages.ContainsKey(data.language))
-                {
-                    Debug.LogWarning(
-                        $"Duplicate language: {data.language}");
-                    continue;
-                }
-
-                languages.Add(data.language, data);
-
-                Debug.Log(
-                    $"Loaded language: {data.displayName} ({data.language})");
+                entries.Add(key, value ?? "");
             }
-            catch (Exception exception)
-            {
-                Debug.LogError(
-                    $"Failed to load {file.name}: {exception.Message}");
-            }
+
+            Debug.Log($"Loaded category: {code}/{file.name} ({entries.Count} translations)");
         }
 
-        if (languages.TryGetValue(DefaultLanguage, out fallbackLanguage))
-        {
-            Debug.Log("English fallback loaded.");
-        }
-        else
-        {
-            Debug.LogError(
-                "Default language 'en' was not found!");
-        }
-    }
+        entries.Add("language", displayName);
+        _languages.Add(code, entries);
 
-    private void SelectStartupLanguage()
-    {
-        string savedLanguage = PlayerPrefs.GetString(
-            LanguagePrefsKey,
-            "");
-
-        if (!string.IsNullOrEmpty(savedLanguage) &&
-            SetLanguage(savedLanguage))
-        {
-            return;
-        }
-
-        // Try the device language.
-        string systemLanguage =
-            Application.systemLanguage.ToString().ToLowerInvariant();
-
-        if (SetLanguage(systemLanguage))
-        {
-            return;
-        }
-
-        // Otherwise use English.
-        SetLanguage(DefaultLanguage);
+        Debug.Log($"Loaded language: {displayName} ({code})");
     }
 
     public bool SetLanguage(string languageCode)
@@ -139,18 +120,15 @@ public class TranslationManager : MonoBehaviour
 
         languageCode = languageCode.ToLowerInvariant();
 
-        if (!languages.TryGetValue(languageCode, out LanguageData data))
+        if (!_languages.ContainsKey(languageCode))
         {
-            Debug.LogWarning(
-                $"Language '{languageCode}' is not available.");
-
+            Debug.LogWarning($"Language '{languageCode}' is not available.");
             return false;
         }
 
-        currentLanguage = data;
+        if (_currentLanguage == languageCode) return true;
 
-        PlayerPrefs.SetString(LanguagePrefsKey, languageCode);
-        PlayerPrefs.Save();
+        _currentLanguage = languageCode;
 
         OnLanguageChanged?.Invoke();
 
@@ -159,86 +137,37 @@ public class TranslationManager : MonoBehaviour
         return true;
     }
 
+    public string GetSystemLanguageCode()
+    {
+        return Application.systemLanguage switch
+        {
+            SystemLanguage.English => "en",
+            SystemLanguage.Polish => "pl",
+            SystemLanguage.German => "de",
+            SystemLanguage.Spanish => "es",
+            _ => _defaultLanguage
+        };
+    }
+
     public string GetText(string key)
     {
-        if (string.IsNullOrEmpty(key))
-            return "";
+        if (string.IsNullOrEmpty(key)) return "";
 
-        // Current language first.
-        string value = FindTranslation(currentLanguage, key);
-
-        if (value != null)
-            return value;
-
-        // English fallback.
-        value = FindTranslation(fallbackLanguage, key);
-
-        if (value != null)
-            return value;
-
-        // Return the key so missing translations are visible.
-        Debug.LogWarning($"Missing translation: {key}");
-
-        return $"[{key}]";
-    }
-
-    public string GetText(string key, params object[] args)
-    {
-        string text = GetText(key);
-
-        if (args == null || args.Length == 0)
-            return text;
-
-        try
+        foreach((string k, string v) in _languages[currentLanguage])
         {
-            return string.Format(
-                System.Globalization.CultureInfo.CurrentCulture,
-                text,
-                args);
-        }
-        catch (FormatException)
-        {
-            Debug.LogWarning($"Invalid format in translation: {key}");
-            return text;
-        }
-    }
-
-    private string FindTranslation(
-        LanguageData language,
-        string key)
-    {
-        if (language == null || language.translations == null)
-            return null;
-
-        foreach (TranslationEntry entry in language.translations)
-        {
-            if (entry != null && entry.key == key)
-                return entry.value;
+            if (k == key) return v;
         }
 
-        return null;
-    }
-
-    public string[] GetLanguageCodes()
-    {
-        string[] result = new string[languages.Count];
-
-        languages.Keys.CopyTo(result, 0);
-
-        Array.Sort(result);
-
-        return result;
-    }
-
-    public string GetLanguageDisplayName(string languageCode)
-    {
-        if (languages.TryGetValue(
-            languageCode.ToLowerInvariant(),
-            out LanguageData data))
+        foreach ((string k, string v) in _languages[_defaultLanguage])
         {
-            return data.displayName;
+            if (k == key)
+            {
+                Debug.LogWarning($"Missing translation: {currentLanguage}/{key}");
+                return v;
+            }
         }
 
-        return languageCode;
+        Debug.LogWarning($"Missing translation: {currentLanguage}/{key}");
+        return $"{currentLanguage}.{key}";
     }
 }

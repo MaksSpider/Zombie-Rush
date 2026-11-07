@@ -10,41 +10,63 @@ public abstract class EnemyAttribute : MonoBehaviour
     public abstract void UpdateAttribute(float deltaTime);
 }
 
+[RequireComponent(typeof(ModifiersController))]
 public class Enemy : DamageHandler
 {
+    [NonSerialized] public string enemyId;
+
     private EnemiesManager _enemiesManager => EnemiesManager.Instance;
     private OrbsManager _orbsManager => OrbsManager.Instance;
 
     public PlayerController playerController => PlayerController.Instance;
     public AttacksManager attacksManager => AttacksManager.Instance;
+    public ModifiersController modifiersController;
 
     [SerializeField] private GameObject _killOrbPrefab;
 
     private readonly List<EnemyAttribute> _attributes = new();
 
     [NonSerialized] public Rigidbody2D rb;
-    [NonSerialized] public Transform target;
     [NonSerialized] public Animator animator;
 
-    public Vector2 movementDirection;
+    [NonSerialized] public Vector2 movementDirection;
 
-    [NonSerialized] public string enemyName;
-    [NonSerialized] public float speed;
-    [NonSerialized] public float damageModifier;
     [NonSerialized] public IWeapon weapon;
 
     protected override void Awake()
     {
         base.Awake();
 
+        destroy = false;
+
         animator = GetComponent<Animator>();
 
         rb = GetComponent<Rigidbody2D>();
-        target = playerController.transform;
+        modifiersController = GetComponent<ModifiersController>();
+
+        modifiersController.AddOnChangeListener(new List<string> { "base_max_health", "max_health_multipler_modifier" }, () =>
+        {
+            if (_isDying) return;
+            SetMaxHealth((int)(modifiersController.GetModifierValue("base_max_health") * (1f + modifiersController.GetModifierValue("max_health_multipler_modifier"))));
+        });
+    }
+
+    public void Initialize(List<ModifierProperty> startingModifiers)
+    {
+        modifiersController.ClearModifiers();
+        _isDying = false;
+
+        rb.simulated = true;
+        foreach (Collider2D col in GetComponents<Collider2D>()) col.enabled = true;
+
+        animator.Rebind();
+
+        modifiersController.AddModifier(startingModifiers);
     }
 
     public void FixedTick(float deltaTime)
     {
+        if (!gameObject.activeSelf) return;
         if (_isDying) return;
         foreach (EnemyAttribute a in _attributes)
         {
@@ -66,13 +88,15 @@ public class Enemy : DamageHandler
         yield return new WaitForSeconds(1.2f);
 
         _orbsManager.CreateOrb(_killOrbPrefab, transform.position, transform.position, false, true);
-        _enemiesManager.AddToEnemyPool(enemyName);
+        _enemiesManager.ReleaseEnemy(this);
 
         base.OnObjectDestroy();
     }
 
     public override void OnObjectDestroy()
     {
+        if (_isDying) return;
+
         _isDying = true;
 
         rb.simulated = false;

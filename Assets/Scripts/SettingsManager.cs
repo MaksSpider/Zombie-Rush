@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +7,13 @@ public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance;
 
-    Dictionary<string, float> playerSettings = new()
+    private TranslationManager _translationManager => TranslationManager.Instance;
+
+    private Dictionary<string, object> playerSettings = new()
     {
         ["display"] = 0f,
-        ["volume"] = 1f
+        ["volume"] = 1f,
+        ["language"] = "en",
     };
 
     private void Awake()
@@ -28,56 +30,101 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
-        Dictionary<string, float> settings = JsonFile.Load<Dictionary<string, float>>("settings");
+        Dictionary<string, object> settings =
+            JsonFile.Load<Dictionary<string, object>>("settings");
 
         if (settings != null)
         {
             playerSettings = settings;
         }
 
-        foreach ((string name, float value) in playerSettings)
+        foreach (var setting in playerSettings)
         {
-            HandleSettingChange(name, value);
+            HandleSettingChange(setting.Key, setting.Value);
         }
 
         JsonFile.Save("settings", "", playerSettings);
     }
 
-    private void HandleSettingChange(string name, float value)
+    private void HandleSettingChange(string name, object value)
     {
         switch (name)
         {
             case "volume":
-                AudioListener.volume = Mathf.Clamp01(value);
+                if (TryGetFloat(value, out float volume))
+                {
+                    AudioListener.volume = Mathf.Clamp01(volume);
+                }
                 break;
 
             case "display":
-                if (value == 0f)
+                if (TryGetFloat(value, out float display))
                 {
-                    Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                    if (display == 0f)
+                    {
+                        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                    }
+                    else if (display == 1f)
+                    {
+                        Screen.fullScreenMode = FullScreenMode.Windowed;
+                    }
                 }
-                else if (value == 1f)
+                break;
+
+            case "language":
+                if (value is string language)
                 {
-                    Screen.fullScreenMode = FullScreenMode.Windowed;
+                    //_translationManager.SetLanguage(language);
                 }
                 break;
         }
     }
 
-    public void SetSetting(string name, float value)
+    private bool TryGetFloat(object value, out float result)
+    {
+        try
+        {
+            result = Convert.ToSingle(value);
+            return true;
+        }
+        catch
+        {
+            result = 0f;
+            return false;
+        }
+    }
+
+    public void SetSetting(string name, object value)
     {
         if (!playerSettings.ContainsKey(name)) return;
 
         playerSettings[name] = value;
+
         JsonFile.Save("settings", "", playerSettings);
 
         HandleSettingChange(name, value);
     }
 
-    public float GetSetting(string name)
+    public object GetSetting(string name)
     {
-        if (!playerSettings.ContainsKey(name)) return 0f;
+        if (!playerSettings.ContainsKey(name))
+            return null;
 
         return playerSettings[name];
+    }
+
+    public T GetSetting<T>(string name, T defaultValue = default)
+    {
+        if (!playerSettings.TryGetValue(name, out object value))
+            return defaultValue;
+
+        try
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+        catch
+        {
+            return defaultValue;
+        }
     }
 }

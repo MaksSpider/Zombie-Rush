@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class DamageHandler : MonoBehaviour
 {
@@ -18,8 +17,7 @@ public class DamageHandler : MonoBehaviour
 
     [SerializeField] private AudioClip _deathSound;
 
-    [SerializeField] public int experience = 0;
-    [SerializeField] public int money = 0;
+    public bool destroy = true;
 
     protected bool _isDying = false;
 
@@ -27,6 +25,7 @@ public class DamageHandler : MonoBehaviour
     public int ID { get; private set; }
 
     [SerializeField] public int Health = 1;
+    [SerializeField] public int MaxHealth = 1;
 
     protected virtual void Awake()
     {
@@ -45,16 +44,42 @@ public class DamageHandler : MonoBehaviour
             if (attackController == null) return;
 
             if (!attackController.Hit(ID)) return;
-            OnDamageDealt(attackController.damage);
+            ChangeHealth(-attackController.damage);
+            DisplayDamage(attackController.damage);
         }
     }
 
-    public virtual void OnDamageDealt(int damage)
+    public void ChangeHealth(int value)
     {
-        Health -= damage;
-        DisplayDamage(damage);
-        if (Health <= 0) OnObjectDestroy();
+        Health += value;
+
+        if (Health > MaxHealth)
+        {
+            Health = MaxHealth;
+        }
+
+        OnChangeHealth(value);
+
+        if (Health <= 0)
+        {
+            OnObjectDestroy();
+        }
     }
+
+    protected virtual void OnChangeHealth(int value) { }
+
+    public void SetMaxHealth(int value)
+    {
+        int delta = value - MaxHealth;
+        MaxHealth = value;
+
+        if (delta > 0) Health += delta;
+        if (Health > MaxHealth) Health = MaxHealth;
+
+        OnChangeMaxHealth(value);
+    }
+
+    protected virtual void OnChangeMaxHealth(int value) { }
 
     public virtual void OnObjectDestroy()
     {
@@ -65,60 +90,70 @@ public class DamageHandler : MonoBehaviour
             AudioSource.PlayClipAtPoint(_deathSound, transform.position);
         }
 
-        int xpToSpawn = Mathf.RoundToInt((float)experience * (1 + _playerController.modifiersController.GetModifierValue("experience_gain_multipler_modifier")));
+        ModifiersController modifiersController = GetComponent<ModifiersController>();
 
-        for (int i = 0; i < xpToSpawn; i++)
+        if(modifiersController != null)
         {
-            Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
-            Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+            int xpToSpawn = Mathf.RoundToInt(modifiersController.GetModifierValue("base_experience_drop") * (1 + modifiersController.GetModifierValue("experience_multipler_modifier")) * (1 + _playerController.modifiersController.GetModifierValue("experience_gain_multipler_modifier")));
 
-            _orbsManager.CreateOrb(_expOrbPrefab, transform.position, targetPosition);
+            for (int i = 0; i < xpToSpawn; i++)
+            {
+                Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
+                Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+                _orbsManager.CreateOrb(_expOrbPrefab, transform.position, targetPosition);
+            }
+
+            int money = (int)(modifiersController.GetModifierValue("base_money_drop") * (1f + modifiersController.GetModifierValue("money_drop_multipler_modifier")) * (1f + _playerController.modifiersController.GetModifierValue("money_multipler_modifier")));
+
+            int cashPerOrb = 1;
+            int cashToDrop = money;
+
+            if (money >= 10)
+            {
+                cashPerOrb = 5;
+            }
+
+            int orbsToDrop = money / cashPerOrb;
+            cashToDrop = money % cashPerOrb;
+
+            for (int i = 0; i < orbsToDrop; i++)
+            {
+                Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
+                Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+                OrbController orbCtr = _orbsManager.CreateOrb(
+                    _cashOrbPrefab, transform.position, targetPosition
+                );
+
+                orbCtr.GetComponent<CashOrbController>().money = cashPerOrb;
+            }
+
+            while (cashToDrop > 0)
+            {
+                Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
+                Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+                OrbController orbCtr = _orbsManager.CreateOrb(
+                    _cashOrbPrefab, transform.position, targetPosition
+                );
+
+                orbCtr.GetComponent<CashOrbController>().money = 1;
+                cashToDrop--;
+            }
         }
 
         DropOnDestroyController dropCtr = gameObject.GetComponent<DropOnDestroyController>();
 
-        if(dropCtr != null)
+        if (dropCtr != null)
         {
             dropCtr.DropLoot();
         }
 
-        int cashPerOrb = 1;
-        int cashToDrop = money;
-
-        if (money >= 10)
+        if (destroy)
         {
-            cashPerOrb = 5;
+            Destroy(gameObject);
         }
-
-        int orbsToDrop = money / cashPerOrb;
-        cashToDrop = money % cashPerOrb;
-
-        for (int i = 0; i < orbsToDrop; i++)
-        {
-            Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
-            Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-
-            OrbController orbCtr = _orbsManager.CreateOrb(
-                _cashOrbPrefab, transform.position, targetPosition
-            );
-
-            orbCtr.GetComponent<CashOrbController>().money = cashPerOrb;
-        }
-
-        while (cashToDrop > 0)
-        {
-            Vector2 randomOffset = Random.insideUnitCircle * _expSpawnRadius;
-            Vector3 targetPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-
-            OrbController orbCtr = _orbsManager.CreateOrb(
-                _cashOrbPrefab, transform.position, targetPosition
-            );
-
-            orbCtr.GetComponent<CashOrbController>().money = 1;
-            cashToDrop--;
-        }
-
-        Destroy(gameObject);
     }
 
     private void DisplayDamage(int damage)

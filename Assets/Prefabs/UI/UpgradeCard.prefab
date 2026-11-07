@@ -171,8 +171,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000061035156, y: -22.5}
-  m_SizeDelta: {x: 60.286, y: 44.999}
+  m_AnchoredPosition: {x: 0.19992, y: -22.5}
+  m_SizeDelta: {x: 63.396, y: 44.999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3226436955342891451
 CanvasRenderer:
@@ -231,8 +231,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7
-  m_fontSizeBase: 7
+  m_fontSize: 5
+  m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 8
@@ -542,13 +542,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ece7c632d9b20484590ac5be53087aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeCard
-  upgrade:
-    <id>k__BackingField: 
-    <name>k__BackingField: 
-    <description>k__BackingField: 
-    <rarity>k__BackingField: 0
-    <modifiers>k__BackingField: []
-    <icon>k__BackingField: {fileID: 0}
   _cardButton: {fileID: 6025384105367797351}
   icon: {fileID: 9170233253915400135}
   background: {fileID: 3361239973312171603}

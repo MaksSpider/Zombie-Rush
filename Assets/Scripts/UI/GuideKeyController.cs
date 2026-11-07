@@ -32,17 +32,31 @@ public class GuideKeyController : MonoBehaviour
 
     public void Hide()
     {
-        _enterAnimations.ExitAnimation(() =>
+        if(gameObject.activeSelf)
         {
-            gameObject.SetActive(false);
-        });
+            _enterAnimations.ExitAnimation(() =>
+            {
+                gameObject.SetActive(false);
+            });
+
+            return;
+        }
+
+        gameObject.SetActive(false);
     }
 
     public void Remove()
     {
-        _enterAnimations.ExitAnimation(() =>
+        if(gameObject.activeSelf)
         {
-            Destroy(gameObject);
-        });
+            _enterAnimations.ExitAnimation(() =>
+            {
+                Destroy(gameObject);
+            });
+
+            return;
+        }
+
+        Destroy(gameObject);
     }
 }

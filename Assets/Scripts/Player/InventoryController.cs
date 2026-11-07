@@ -1,9 +1,6 @@
-using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -98,8 +95,8 @@ public class InventoryController : MonoBehaviour
 {
     public static InventoryController Instance { get; private set; }
 
+    private TranslationManager _translationManager => TranslationManager.Instance;
     private InteractionsManager _interactionsManager;
-    private UpgradesController _upgradesController;
     private PlayerController _playerController;
     private InputManager _inputManager;
 
@@ -337,7 +334,7 @@ public class InventoryController : MonoBehaviour
 
         if (inventory.ContainsKey(slot))
         {
-            slots[slot].itemNameText.text = inventory[slot].item.name;
+            slots[slot].itemNameText.text = _translationManager.GetText(inventory[slot].item.id + ".name");
         }
         else
         {
@@ -529,7 +526,7 @@ public class InventoryController : MonoBehaviour
             dropedItem.transform.Find("AmountText").GetComponent<TextMeshPro>().text = "";
         }
 
-        _interactionsManager.RegisterInteractionOnObject("Pickup " + item.name, 0.75f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
+        _interactionsManager.RegisterInteractionOnObject("Pickup " + _translationManager.GetText(item.id + ".name"), 0.75f, dropedItem, new Vector2(0, 0.2f), 1.5f, false, (int interactionId) =>
         {
             if (AddItemOnSlot(selectedSlot, item, amount))
             {
@@ -620,7 +617,7 @@ public class InventoryController : MonoBehaviour
         {
             if (inventory.ContainsKey(slot))
             {
-                slots[slot].itemNameText.text = inventory[slot].item.name;
+                slots[slot].itemNameText.text = _translationManager.GetText(inventory[slot].item.id + ".name");
             }
             else
             {

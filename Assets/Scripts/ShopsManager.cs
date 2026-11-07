@@ -97,6 +97,7 @@ public class Shop
 
     public Shop(string index, string name, List<ShopCategory> shopData, string defaultPage = null)
     {
+        this.name = name;
         this.shopData = shopData;
 
         if(defaultPage != null)
@@ -174,6 +175,7 @@ public class ShopsManager : MonoBehaviour
     public static ShopsManager Instance { get; private set; }
 
     private InventoryController _inventoryController => InventoryController.Instance;
+    private TranslationManager _translationManager => TranslationManager.Instance;
     private PlayerController _playerController => PlayerController.Instance;
     private StatesManager _statesManager => StatesManager.Instance;
     private InputManager _inputManager => InputManager.Instance;
@@ -227,7 +229,7 @@ public class ShopsManager : MonoBehaviour
         _titleText.text = shop.name;
         _shopMenu.SetActive(true);
 
-        GenerateCategory(shop.shopData);
+        GenerateCategory(shop);
 
         LoadCategoryItems(shop.GetCategory(shop.currentPage).shopCategory);
         Canvas.ForceUpdateCanvases();
@@ -259,8 +261,10 @@ public class ShopsManager : MonoBehaviour
         return false;
     }
 
-    private void GenerateCategory(List<ShopCategory> shop)
+    private void GenerateCategory(Shop shop)
     {
+        List<ShopCategory> shopData = shop.shopData;
+
         for (int i = _shopHeader.childCount - 1; i >= 0; i--)
         {
             Transform child = _shopHeader.GetChild(i);
@@ -269,13 +273,14 @@ public class ShopsManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (ShopCategory category in shop)
+        foreach (ShopCategory category in shopData)
         {
             GameObject categoryObject = Instantiate(_categoryPrefab, _shopHeader);
             categoryObject.name = $"category_{category.index}";
 
             categoryObject.GetComponent<Button>().onClick.AddListener(() => {
                 LoadCategoryItems(category);
+                shop.currentPage = category.index;
             });
 
             categoryObject.transform.Find("Icon").GetComponent<Image>().sprite = category.icon;
@@ -302,11 +307,11 @@ public class ShopsManager : MonoBehaviour
             }
 
             GameObject itemObject = Instantiate(_itemPrefab, _shopItems);
-            itemObject.name = $"item_{item.name}";
+            itemObject.name = $"item_{item.id}";
 
             UIShopItem uiShopItem = itemObject.GetComponent<UIShopItem>();
 
-            uiShopItem.title.text = item.name;
+            uiShopItem.title.text = _translationManager.GetText(item.id);
             uiShopItem.amount.text = shopItem.amount.ToString();
             uiShopItem.price.text = shopItem.price.ToString("#,0", CultureInfo.InvariantCulture).Replace(",", ".");
             uiShopItem.icon.sprite = item.icon;

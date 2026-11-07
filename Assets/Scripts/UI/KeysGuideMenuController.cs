@@ -58,7 +58,7 @@ public class KeysGuideMenuController : MonoBehaviour
 
         if(_visible)
         {
-            Display();
+            Show();
         }
         else
         {
@@ -66,7 +66,7 @@ public class KeysGuideMenuController : MonoBehaviour
         }
     }
 
-    public void Display(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
+    public void Show(UnityEngine.InputSystem.InputAction.CallbackContext ctx = default)
     {
         foreach(GuideKeyController keyController in _guideKeys.Values)
         {
@@ -115,12 +115,14 @@ public class KeysGuideMenuController : MonoBehaviour
         return index;
     }
 
-    public void RemoveKey(int index)
+    public bool RemoveKey(int index)
     {
-        if (!_guideKeys.ContainsKey(index)) return;
+        if (!_guideKeys.ContainsKey(index)) return false;
 
         _guideKeys[index].Remove();
         _guideKeys.Remove(index);
+
+        return true;
     }
 
     public void ResetKeys()

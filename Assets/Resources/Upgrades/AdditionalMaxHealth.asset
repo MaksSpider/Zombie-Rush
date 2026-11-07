@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630dcc6c48d58cd43b9b24f7dd028de0, type: 3}
+  m_Name: AdditionalMaxHealth
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgrade:
+  - <id>k__BackingField: additional_max_health_0
+    <rarity>k__BackingField: 0
+    <modifiers>k__BackingField:
+    - name: base_max_health
+      value: 50
+    <icon>k__BackingField: {fileID: -267064901, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+  - <id>k__BackingField: additional_max_health_1
+    <rarity>k__BackingField: 1
+    <modifiers>k__BackingField:
+    - name: base_max_health
+      value: 80
+    <icon>k__BackingField: {fileID: -267064901, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+  - <id>k__BackingField: additional_max_health_2
+    <rarity>k__BackingField: 2
+    <modifiers>k__BackingField:
+    - name: base_max_health
+      value: 175
+    <icon>k__BackingField: {fileID: -267064901, guid: 5108b914a619aab42a7d514f41bee824, type: 3}
+  - <id>k__BackingField: additional_max_health_3
+    <rarity>k__BackingField: 3
+    <modifiers>k__BackingField:
+    - name: base_max_health
+      value: 350
+    <icon>k__BackingField: {fileID: -267064901, guid: 5108b914a619aab42a7d514f41bee824, type: 3}

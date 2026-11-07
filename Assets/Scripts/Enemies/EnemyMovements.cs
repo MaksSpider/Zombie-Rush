@@ -4,9 +4,9 @@ public class SimpleMovement: EnemyAttribute
 {
     public override void UpdateAttribute(float deltaTime)
     {
-        Vector2 dir = (self.target.position - transform.position).normalized;
+        Vector2 dir = (self.playerController.transform.position - transform.position).normalized;
         self.movementDirection = dir;
-        self.rb.MovePosition(self.rb.position + dir * self.speed * deltaTime);
+        self.rb.MovePosition(self.rb.position + dir * self.modifiersController.GetModifierValue("base_speed") * (1f + self.modifiersController.GetModifierValue("speed_multipler_modifier")) * deltaTime);
     }
 }
 
@@ -24,12 +24,12 @@ public class CircleMovement : EnemyAttribute
 
         Vector2 circleOffset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * circleRadius;
 
-        Vector2 targetPosition = (Vector2)self.target.position + circleOffset;
+        Vector2 targetPosition = (Vector2)self.playerController.transform.position + circleOffset;
 
         Vector2 dir = (targetPosition - self.rb.position).normalized;
 
-        self.movementDirection = (self.target.position - transform.position).normalized;;
+        self.movementDirection = (self.playerController.transform.position - transform.position).normalized;;
 
-        self.rb.MovePosition(self.rb.position + dir * self.speed * deltaTime);
+        self.rb.MovePosition(self.rb.position + dir * self.modifiersController.GetModifierValue("base_speed") * (1f + self.modifiersController.GetModifierValue("speed_multipler_modifier")) * deltaTime);
     }
 }

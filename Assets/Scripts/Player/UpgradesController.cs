@@ -39,7 +39,7 @@ public class UpgradesController : MonoBehaviour
 
         Debug.Log($"Loaded {_upgradesDataBase.Count} upgrades.");
 
-        //Invoke(nameof(DebugFunc), 3f);
+        Invoke(nameof(DebugFunc), 3f);
     }
 
     // for debuging
@@ -60,7 +60,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("weapon_bat", 1);
         _inventoryController.AddItem("medkit", 3);
 
-        OpenUpgrades(1);
+        //OpenUpgrades(1);
     }
 
     public void OpenUpgrades(int level)
@@ -95,7 +95,7 @@ public class UpgradesController : MonoBehaviour
                 bool alreadyHave = false;
                 foreach (Upgrade playerUpgrade in playerUpgrades)
                 {
-                    if (playerUpgrade.name == upgrade.name)
+                    if (playerUpgrade.id == upgrade.id)
                     {
                         alreadyHave = true;
                         break;
@@ -111,7 +111,7 @@ public class UpgradesController : MonoBehaviour
             upgradeList.Add(upgrade);
 
             Debug.Log("==============================");
-            Debug.Log("Upgrade: " + upgrade.name);
+            Debug.Log("Upgrade: " + upgrade.GetName());
             Debug.Log("Chance: " + finalChance);
             Debug.Log("Rarity: " + upgrade.rarity);
 
@@ -135,7 +135,7 @@ public class UpgradesController : MonoBehaviour
 
             if (randomValue < 0f)
             {
-                Debug.Log("Upgrade: " + upgradeList[i].name);
+                Debug.Log("Upgrade: " + upgradeList[i].GetName());
                 Debug.Log("Chance: " + chances[i]);
                 Debug.Log("Rarity: " + upgradeList[i].rarity);
                 return (true, upgradeList[i]);

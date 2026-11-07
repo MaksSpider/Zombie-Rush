@@ -27,7 +27,7 @@ public class LoadingScreenController : MonoBehaviour
 
     public void Display()
     {
-        tilesToGenerate = _worldGenerator.tilesToLoadQueue.Count;
+        tilesToGenerate = _worldGenerator.chunksToLoadQueue.Count;
         _loadingScreenUI.SetActive(true);
         Tick05s();
     }
@@ -39,9 +39,7 @@ public class LoadingScreenController : MonoBehaviour
 
     public void Tick05s()
     {
-        float loadingState = (float)(tilesToGenerate - _worldGenerator.tilesToLoadQueue.Count) / (float)tilesToGenerate;
-
-        _progressBar.value = loadingState;
+        _progressBar.value = (float)(tilesToGenerate - _worldGenerator.chunksToLoadQueue.Count) / (float)tilesToGenerate;
 
         switch (loadingTextStage)
         {
