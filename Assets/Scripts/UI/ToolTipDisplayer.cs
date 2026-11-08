@@ -8,6 +8,11 @@ public class ToolTipDisplayer : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] public string title;
     [SerializeField] public string description;
 
+    void OnDestroy()
+    {
+        _tooltipController.Close();
+    }
+
     public ToolTipDisplayer SetTitle(string title)
     {
         this.title = title;

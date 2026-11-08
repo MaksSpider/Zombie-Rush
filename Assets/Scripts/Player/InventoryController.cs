@@ -112,6 +112,7 @@ public class InventoryController : MonoBehaviour
 
     public event Action OnSlotChanged;
     public event Action OnDropItemOnSlot;
+    public event Action OnItemAddInHand;
     public event Action OnSlotsAmountChange;
 
     public bool inventoryBlocked = false;
@@ -278,7 +279,6 @@ public class InventoryController : MonoBehaviour
 
             slotObject.GetComponent<Button>().onClick.AddListener(() => {
                 ChangeSlot(slotIndex);
-                print("change");
             });
 
             Image slotImage = slotObject.transform.Find("SlotImage").GetComponent<Image>();
@@ -342,6 +342,8 @@ public class InventoryController : MonoBehaviour
 
     public bool AddItemOnSlot(int slot, IItem item, int amount)
     {
+        if (slot == selectedSlot) OnItemAddInHand?.Invoke();
+
         if (inventory.ContainsKey(slot))
         {
             if (inventory[slot].item.id == item.id && inventory[slot].amount + amount <= item.maxStack)

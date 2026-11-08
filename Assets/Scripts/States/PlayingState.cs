@@ -38,6 +38,7 @@ public class PlayingState : State
         _keysGuideMenuController.AddKey("SHIFT", "Sprint", 50);
         _keysGuideMenuController.AddKey("F", "Interact", 40);
         _keysGuideMenuController.AddKey("E", "Use Item", 30);
+        _keysGuideMenuController.AddKey("Q", "Drop Item", 25);
         _keysGuideMenuController.AddKey("B", "Open shop", 20);
         _keysGuideMenuController.AddKey("ESC", "Open pause menu", 10);
     }

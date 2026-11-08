@@ -18,7 +18,7 @@ MonoBehaviour:
     <maxStack>k__BackingField: 1
     <rarity>k__BackingField: 0
   weapon:
-    <damage>k__BackingField: 8
+    <damage>k__BackingField: 5
     <attackRate>k__BackingField: 0.4
     <attackRange>k__BackingField: 0.4
     <attackAngle>k__BackingField: 30

@@ -62,6 +62,11 @@ public class PlayerCombatController : MonoBehaviour
 
         _playerController.inventoryController.OnSlotChanged += GetNewWeapon;
         _playerController.inventoryController.OnDropItemOnSlot += GetNewWeapon;
+        _playerController.inventoryController.OnItemAddInHand += GetNewWeapon;
+    }
+
+    public void OnGameStart()
+    {
         GetNewWeapon();
     }
 

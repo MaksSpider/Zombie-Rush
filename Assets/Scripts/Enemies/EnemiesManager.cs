@@ -170,7 +170,7 @@ public class EnemiesManager : MonoBehaviour
     public void Tick5s()
     {
         if (!_isWave) return;
-        if (_currentTime >= _dayTimeDuration * 0.8) return;
+        if (_currentTime >= _dayTimeDuration * 0.95) return;
         SpawnEnemiesFromPool();
     }
 
@@ -211,9 +211,36 @@ public class EnemiesManager : MonoBehaviour
 
     public void AddToEnemyPool(int amount)
     {
-        for(int i = 0; i < amount; i++)
+        List<EnemyData> availableEnemies = new List<EnemyData>();
+
+        foreach (EnemyData enemy in _enemiesDatabase.Values)
         {
-            _enemiesToSpawnPool.Add("simple_zombie");
+            if (enemy.spawnDay <= dayNumber && enemy.spawnChance > 0)
+                availableEnemies.Add(enemy);
+        }
+
+        if (availableEnemies.Count == 0)
+            return;
+
+        float totalChance = 0;
+
+        foreach (EnemyData enemy in availableEnemies)
+            totalChance += enemy.spawnChance;
+
+        for (int i = 0; i < amount; i++)
+        {
+            float randomValue = UnityEngine.Random.Range(0f, totalChance);
+
+            foreach (EnemyData enemy in availableEnemies)
+            {
+                randomValue -= enemy.spawnChance;
+
+                if (randomValue <= 0)
+                {
+                    _enemiesToSpawnPool.Add(enemy.id);
+                    break;
+                }
+            }
         }
     }
 

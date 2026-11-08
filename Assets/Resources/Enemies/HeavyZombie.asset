@@ -20,22 +20,22 @@ MonoBehaviour:
   weapon: {fileID: 11400000, guid: 6e38c2b6e38391e468b9c2f39f675f0c, type: 2}
   startingModifiers:
   - name: base_max_health
-    value: 10
+    value: 80
   - name: base_speed
-    value: 3.5
+    value: 1.3
   - name: damage_multipler_modifier
-    value: 1
+    value: 3
   - name: base_experience_drop
-    value: 10
+    value: 15
   - name: base_money_drop
-    value: 12
+    value: 30
   modifierPerDifficultyIncrease:
   - name: base_max_health
     value: 2
   - name: damage_multipler_modifier
     value: 4
   - name: base_experience_drop
-    value: 2
+    value: 5
   - name: base_money_drop
-    value: 4
+    value: 8
   loot: []

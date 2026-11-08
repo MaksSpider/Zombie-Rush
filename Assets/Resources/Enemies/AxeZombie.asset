@@ -20,7 +20,7 @@ MonoBehaviour:
   weapon: {fileID: 11400000, guid: 586b10076421ab14c842e78e59ddbc4c, type: 2}
   startingModifiers:
   - name: base_max_health
-    value: 5
+    value: 6
   - name: base_speed
     value: 1.5
   - name: damage_multipler_modifier

@@ -4,9 +4,10 @@ using UnityEngine;
 public class LoadingState : State
 {
     private LoadingScreenController _loadingScreenController => LoadingScreenController.Instance;
+    private PlayerController _playerController => PlayerController.Instance;
+    private PlayerCombatController _playerCombatController => PlayerCombatController.Instance;
     private WorldGenerator _worldGenerator => WorldGenerator.Instance;
     private StatesManager _statesManager => StatesManager.Instance;
-    private PlayerController _playerController => PlayerController.Instance;
 
     public override void OnEnterState()
     {
@@ -27,6 +28,7 @@ public class LoadingState : State
         {
             _statesManager.SwitchState<PlayingState>();
             _playerController.OnGameStart();
+            _playerCombatController.OnGameStart();
         }
     }
 

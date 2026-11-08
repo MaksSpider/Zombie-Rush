@@ -39,7 +39,7 @@ public class UpgradesController : MonoBehaviour
 
         Debug.Log($"Loaded {_upgradesDataBase.Count} upgrades.");
 
-        Invoke(nameof(DebugFunc), 1f);
+        //Invoke(nameof(DebugFunc), 1f);
     }
 
     // for debuging
@@ -109,11 +109,6 @@ public class UpgradesController : MonoBehaviour
             chances.Add(finalChance);
             upgradeList.Add(upgrade);
 
-            Debug.Log("==============================");
-            Debug.Log("Upgrade: " + upgrade.GetName());
-            Debug.Log("Chance: " + finalChance);
-            Debug.Log("Rarity: " + upgrade.rarity);
-
             totalChance += finalChance;
         }
 
@@ -124,19 +119,12 @@ public class UpgradesController : MonoBehaviour
 
         float randomValue = UnityEngine.Random.Range(0f, totalChance);
 
-        Debug.Log("==============================");
-        Debug.Log("totalChance: " + totalChance);
-        Debug.Log("randomValue: " + randomValue);
-
         for (int i = 0; i < upgradeList.Count; i++)
         {
             randomValue -= chances[i];
 
             if (randomValue < 0f)
             {
-                Debug.Log("Upgrade: " + upgradeList[i].GetName());
-                Debug.Log("Chance: " + chances[i]);
-                Debug.Log("Rarity: " + upgradeList[i].rarity);
                 return (true, upgradeList[i]);
             }
         }
