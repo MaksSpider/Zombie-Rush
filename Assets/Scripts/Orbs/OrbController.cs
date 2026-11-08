@@ -66,10 +66,7 @@ public class OrbController : MonoBehaviour
         }
     }
 
-    protected virtual void OnInitialized()
-    {
-
-    }
+    protected virtual void OnInitialized() { }
 
     public void Tick()
     {

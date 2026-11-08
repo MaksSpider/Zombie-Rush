@@ -3,6 +3,12 @@
     "weapon_bat.name": "Baseball Bat",
     "weapon_bat.desc": "A simple melee weapon with moderate damage.",
 
+    "weapon_knife.name": "Knife",
+    "weapon_knife.desc": "A small melee weapon with fast attack speed.",
+
+    "weapon_baton.name": "Baton",
+    "weapon_baton.desc": "A melee weapon used for self-defense and crowd control.",
+
     "weapon_pistol.name": "Pistol",
     "weapon_pistol.desc": "A basic firearm with moderate firepower.",
 

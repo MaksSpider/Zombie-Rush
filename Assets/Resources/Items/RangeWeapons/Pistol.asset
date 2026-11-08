@@ -14,22 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangeWeaponData
   item:
     <id>k__BackingField: weapon_pistol
-    <name>k__BackingField: Pistol
-    <description>k__BackingField: Pistol desc
     <icon>k__BackingField: {fileID: 4459829494417465688, guid: a381d72fe1df53f4998bb23bb6faa3e3, type: 3}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
     <damage>k__BackingField: 5
     <attackRate>k__BackingField: 0.5
     <attackRange>k__BackingField: 20
     <attackAngle>k__BackingField: 20
     <bulletsPerShot>k__BackingField: 1
-    <accuracy>k__BackingField: 0.8
+    <accuracy>k__BackingField: 0.9
     <magazineSize>k__BackingField: 8
     <reloadTime>k__BackingField: 0.2
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}
-    <bulletGameObject>k__BackingField: {fileID: 0}
+    <bulletGameObject>k__BackingField: {fileID: 8289093666636355571, guid: a72e1d8e1d41f3f4e8de81a534cc1269, type: 3}
     <attackSpeed>k__BackingField: 15
     <bulletSpawnOffset>k__BackingField: 0
     <bulletLifeTime>k__BackingField: 10

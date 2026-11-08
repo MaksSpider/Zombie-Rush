@@ -39,7 +39,7 @@ public class UpgradesController : MonoBehaviour
 
         Debug.Log($"Loaded {_upgradesDataBase.Count} upgrades.");
 
-        Invoke(nameof(DebugFunc), 3f);
+        Invoke(nameof(DebugFunc), 1f);
     }
 
     // for debuging
@@ -49,9 +49,9 @@ public class UpgradesController : MonoBehaviour
         //AddUpgrade("additional_xp_2");
 
         // debug
-        AddUpgrade("more_slots_0");
-        AddUpgrade("more_slots_1");
-        AddUpgrade("more_slots_2");
+        //AddUpgrade("more_slots_0");
+        //AddUpgrade("more_slots_1");
+        //AddUpgrade("more_slots_2");
 
         _inventoryController.AddItem("weapon_rifle", 1);
         _inventoryController.AddItem("weapon_shotgun", 1);
@@ -60,7 +60,7 @@ public class UpgradesController : MonoBehaviour
         _inventoryController.AddItem("weapon_bat", 1);
         _inventoryController.AddItem("medkit", 3);
 
-        //OpenUpgrades(1);
+        OpenUpgrades(1);
     }
 
     public void OpenUpgrades(int level)
@@ -77,7 +77,6 @@ public class UpgradesController : MonoBehaviour
 
         _upgradesMenuController.OpenUpgradesPicker(upgradesToPick);
     }
-
 
     public (bool finded, Upgrade upgrade) RandomUpgrade(int level, List<Upgrade> upgradesToExclude =  null, bool excludeOwned = false)
     {
@@ -145,6 +144,16 @@ public class UpgradesController : MonoBehaviour
         return (true, upgradeList[0]);
     }
 
+    public (bool result, Upgrade upgrade) GetUpgradeData(string upgradeId)
+    {
+        if (_upgradesDataBase.ContainsKey(upgradeId))
+        {
+            return (true, _upgradesDataBase[upgradeId]);
+        }
+
+        return (false, null);
+    }
+
     public bool AddUpgrade(string upgradeId)
     {
         if(_upgradesDataBase.ContainsKey(upgradeId))
@@ -159,7 +168,7 @@ public class UpgradesController : MonoBehaviour
     {
         if (playerUpgrades.Count >= maxUpgradesAmount) return false;
 
-        upgrade.status = new UpgradeStatus(upgrade.id, upgrade.modifiers);
+        upgrade.status = new UpgradeStatus(upgrade);
         _playerController.statusesController.AddStatus(upgrade.status, 0f, upgrade.icon, RarityData.GetRarityColor(upgrade.rarity), StatusType.upgrade, true, 1000 - playerUpgrades.Count);
 
         playerUpgrades.Add(upgrade);

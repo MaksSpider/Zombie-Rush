@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangeWeaponData
   item:
     <id>k__BackingField: weapon_rifle
-    <name>k__BackingField: Rifle
-    <description>k__BackingField: Rifle desc
     <icon>k__BackingField: {fileID: 8271715202566429118, guid: fbc1fb056f84d1d498834ef91e2c5c28, type: 3}
     <maxStack>k__BackingField: 1
     <rarity>k__BackingField: 0
@@ -25,7 +23,7 @@ MonoBehaviour:
     <attackRange>k__BackingField: 25
     <attackAngle>k__BackingField: 25
     <bulletsPerShot>k__BackingField: 1
-    <accuracy>k__BackingField: 0
+    <accuracy>k__BackingField: 0.7
     <magazineSize>k__BackingField: 32
     <reloadTime>k__BackingField: 0.1
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}

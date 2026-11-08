@@ -23,7 +23,7 @@ MonoBehaviour:
     <attackRange>k__BackingField: 4
     <attackAngle>k__BackingField: 20
     <bulletsPerShot>k__BackingField: 1
-    <accuracy>k__BackingField: 0.7
+    <accuracy>k__BackingField: 1
     <magazineSize>k__BackingField: 3
     <reloadTime>k__BackingField: 0.3
     <attackSound>k__BackingField: {fileID: 8300000, guid: ad9b7fae5e28b254cac6d7f7ee51d292, type: 3}

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8c94413d7034e746981d315df35b312, type: 3}
   m_Name: HeavyZombie
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  id: simple_zombie
-  prefab: {fileID: 6668317591216721449, guid: 8b841e718c312cd46a8bb33c304b45a9, type: 3}
-  spawnDay: 1
-  spawnChance: 0.9
+  id: heavy_zombie
+  prefab: {fileID: 6668317591216721449, guid: 82e24961933b56f4b9316f2e8d0b4490, type: 3}
+  spawnDay: 4
+  spawnChance: 0.3
   attributes: 0000000002000000i
   weapon: {fileID: 11400000, guid: 6e38c2b6e38391e468b9c2f39f675f0c, type: 2}
   startingModifiers:
@@ -33,7 +33,7 @@ MonoBehaviour:
   - name: base_max_health
     value: 2
   - name: damage_multipler_modifier
-    value: 0.25
+    value: 4
   - name: base_experience_drop
     value: 2
   - name: base_money_drop

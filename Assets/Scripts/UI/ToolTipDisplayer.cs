@@ -8,6 +8,18 @@ public class ToolTipDisplayer : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] public string title;
     [SerializeField] public string description;
 
+    public ToolTipDisplayer SetTitle(string title)
+    {
+        this.title = title;
+        return this;
+    }
+
+    public ToolTipDisplayer SetDesc(string description)
+    {
+        this.description = description;
+        return this;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         _tooltipController.Show(title, description);

@@ -43,6 +43,16 @@
     "stamina_regeneration_boost_0.name": "Common Stamina Regeneration Boost",
     "stamina_regeneration_boost_1.name": "Rare Stamina Regeneration Boost",
     "stamina_regeneration_boost_2.name": "Epic Stamina Regeneration Boost",
-    "stamina_regeneration_boost_3.name": "Legendary Stamina Regeneration Boost"
+    "stamina_regeneration_boost_3.name": "Legendary Stamina Regeneration Boost",
+
+    "speed_boost_0.name": "Common Speed Boost",
+    "speed_boost_1.name": "Rare Speed Boost",
+    "speed_boost_2.name": "Epic Speed Boost",
+    "speed_boost_3.name": "Legendary Speed Boost",
+
+    "damage_boost_0.name": "Common Damage Boost",
+    "damage_boost_1.name": "Rare Damage Boost",
+    "damage_boost_2.name": "Epic Damage Boost",
+    "damage_boost_3.name": "Legendary Damage Boost"
   }
 }

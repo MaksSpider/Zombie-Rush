@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UsableItemData
   usableItem:
     <id>k__BackingField: bandage
-    <name>k__BackingField: Bandage
-    <description>k__BackingField: Bandage desc
     <icon>k__BackingField: {fileID: 1734083152993632163, guid: 309ff6af1843f494f8064144d7929922, type: 3}
     <maxStack>k__BackingField: 4
     <rarity>k__BackingField: 1

@@ -108,8 +108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109fee1acffeff34ea80ae6c35bced72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExpOrbController
-  _speed: 5
-  _acceleration: 15
+  _speed: 3
+  _acceleration: 10
   _bobAmplitude: 0.15
   _bobFrequency: 4
   _burstDuration: 0.3

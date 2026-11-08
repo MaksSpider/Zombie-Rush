@@ -1444,7 +1444,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HordManager
   _minDistanceFromPlayer: 15
   _maxDistanceFromPlayer: 20
-  _enemiesData: {fileID: 11400000, guid: faf0678c05676784197c68561ff1dada, type: 2}
   _clock: {fileID: 17520437}
   _clockHand: {fileID: 1550593250}
   _nightPie: {fileID: 1700390018}
@@ -1452,10 +1451,10 @@ MonoBehaviour:
   _daysCounter: {fileID: 770418178}
   _dayTimeDuration: 120
   _nightTimeDuration: 0.3
+  _enemiesPoolMaxSize: 500
   _spawningEnemiesAmount: 8
-  _startingEnemiesAmount: 25
+  _startingEnemiesAmount: 15
   _additionalNewEnemiesPerDay: 5
-  _enemiesPool: []
   Enemies: []
 --- !u!1 &258891977
 GameObject:
@@ -3609,8 +3608,9 @@ MonoBehaviour:
   _chunkSize: 6
   _worldBackground: {fileID: 1322997618}
   _worldObjects: {fileID: 1183280990}
-  _biomesData: {fileID: 11400000, guid: 75d2b45615425f84585b293a62f83b49, type: 2}
-  _objectsData: {fileID: 11400000, guid: bf78d463c66cc8644ba0336a36f678e2, type: 2}
+  _tilesPoolCapacity: 2000
+  _tilesPoolMaxSize: 20000
+  _maxTickTime: 0.003
   isWorldLoaded: 0
 --- !u!1 &704455297
 GameObject:
@@ -9688,20 +9688,28 @@ MonoBehaviour:
   _cashOrbPrefab: {fileID: 0}
   _damagePopupPrefab: {fileID: 4235237536684519628, guid: 1a3fc757c7c62e648bb188f78d0e357e, type: 3}
   _deathSound: {fileID: 0}
-  experience: 0
-  money: 0
+  destroy: 1
   Health: 100
+  MaxHealth: 0
   _spawnPosition: {x: 0, y: 0, z: 0}
-  _baseSpeed: 3
-  _sprintBoost: 1.5
   _collectExpRadius: 0.7
   _startingShopItems:
-  - index: weapons
-    name: Weapons
+  - index: melee_weapons
+    name: Melee Weapons
+    icon: {fileID: 21300000, guid: 0b41e963cfe697a4a9898d44c8e159dc, type: 3}
+    items:
+    - itemId: weapon_baton
+      price: 200
+      amount: 1
+    - itemId: weapon_knife
+      price: 250
+      amount: 1
+  - index: range_weapons
+    name: Range Weapons
     icon: {fileID: 21300000, guid: 58d145cf82d32ad418429ebaa247a411, type: 3}
     items:
     - itemId: weapon_pistol
-      price: 200
+      price: 400
       amount: 1
     - itemId: weapon_rifle
       price: 1000
@@ -9715,23 +9723,23 @@ MonoBehaviour:
     items:
     - itemId: bandage
       price: 25
-      amount: 5
+      amount: 100
     - itemId: medkit
       price: 250
-      amount: 1
+      amount: 50
   - index: ammo
     name: Ammo
     icon: {fileID: 21300000, guid: b3ad84ed67ca4b940989aa23e61b8d95, type: 3}
     items:
     - itemId: ammo_pistol
       price: 15
-      amount: 20
+      amount: 1000
     - itemId: ammo_rifle
       price: 40
-      amount: 20
+      amount: 1000
     - itemId: ammo_shotgun
       price: 80
-      amount: 20
+      amount: 1000
   overlay: {fileID: 10756806}
   levelTMP: {fileID: 1355447843}
   xpTMP: {fileID: 1707826628}
@@ -9740,7 +9748,6 @@ MonoBehaviour:
   staminaTMP: {fileID: 572113763}
   cashTMP: {fileID: 1654041812}
   xpProgressBar: {fileID: 1407205515}
-  MaxHealth: 0
   Money: 0
   Kills: 0
   Stamina: 500
@@ -12383,7 +12390,7 @@ Transform:
   m_GameObject: {fileID: 1976318472}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -55,13 +55,13 @@ public class Upgrade
         switch (rarity)
         {
             case Rarity.Common:
-                return (0.5f, 1.05f);
+                return (0.65f, 1.05f);
             case Rarity.Rare:
-                return (0.3f, 1.15f);
+                return (0.25f, 1.15f);
             case Rarity.Epic:
-                return (0.15f, 1.2f);
+                return (0.075f, 1.2f);
             case Rarity.Legendary:
-                return (0.05f, 1.25f);
+                return (0.025f, 1.25f);
         }
 
         return (0f, 0f);
@@ -78,8 +78,7 @@ public class Upgrade
 
         foreach (ModifierProperty modifier in modifiers)
         {
-            string value = (modifier.value >= 0 ? "+" : "-") + Math.Abs(modifier.value) * 100;
-            builder.AppendLine(string.Format(TranslationManager.Instance.GetText(modifier.name + ".display"), value));
+            builder.AppendLine(string.Format(TranslationManager.Instance.GetText(modifier.name + ".display"), modifier.value));
         }
 
         return builder.ToString().TrimEnd();

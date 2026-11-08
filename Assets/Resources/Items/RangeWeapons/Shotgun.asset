@@ -14,18 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangeWeaponData
   item:
     <id>k__BackingField: weapon_shotgun
-    <name>k__BackingField: Shotgun
-    <description>k__BackingField: Shotgun desc
     <icon>k__BackingField: {fileID: 4161039767378812005, guid: 1d1928182aa05ec479674153c26bee15, type: 3}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
     <damage>k__BackingField: 15
     <attackRate>k__BackingField: 0.8
     <attackRange>k__BackingField: 6
     <attackAngle>k__BackingField: 60
     <bulletsPerShot>k__BackingField: 8
-    <accuracy>k__BackingField: 0.4
+    <accuracy>k__BackingField: 0.25
     <magazineSize>k__BackingField: 6
     <reloadTime>k__BackingField: 0.5
     <attackSound>k__BackingField: {fileID: 8300000, guid: be1355139767caf40b9d3eaa57b04956, type: 3}

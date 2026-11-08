@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UsableItemData
   usableItem:
     <id>k__BackingField: ammo_shotgun
-    <name>k__BackingField: Shotgun Ammo Box
-    <description>k__BackingField: Shotgun Ammo Box desc
     <icon>k__BackingField: {fileID: 158777831206505336, guid: 28eb11fbf0c66e44cbc8c4d23357a81c, type: 3}
     <maxStack>k__BackingField: 8
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
     <usageFunction>k__BackingField: {fileID: 11400000, guid: fba4cd07fc32a2b42a9434cd8d31669d, type: 2}

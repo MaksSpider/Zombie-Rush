@@ -14,14 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
   item:
     <id>k__BackingField: weapon_bat
-    <name>k__BackingField: Bat
-    <description>k__BackingField: Bat desc
     <icon>k__BackingField: {fileID: -8419024768148562069, guid: 043fb6874a711734087770642c724cc1, type: 3}
     <maxStack>k__BackingField: 1
-    <type>k__BackingField: common
+    <rarity>k__BackingField: 0
   weapon:
-    <damage>k__BackingField: 10
-    <attackRate>k__BackingField: 1
+    <damage>k__BackingField: 3
+    <attackRate>k__BackingField: 1.25
     <attackRange>k__BackingField: 0.75
     <attackAngle>k__BackingField: 60
     <attackSpeed>k__BackingField: 2

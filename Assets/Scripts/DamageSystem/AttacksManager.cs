@@ -48,7 +48,7 @@ public class AttacksManager : MonoBehaviour
     {
         for (int i = 0; i < weapon.bulletsPerShot; i++)
         {
-            float spread = (weapon.attackAngle + options.accuracy) * (1f - Mathf.Clamp01(weapon.accuracy));
+            float spread = (weapon.attackAngle) * (1f - Mathf.Clamp01(weapon.accuracy + options.accuracy));
             float randomAngleOffset = Random.Range(-spread * 0.5f, spread * 0.5f);
             Vector2 direction = Quaternion.Euler(0f, 0f, randomAngleOffset) * baseDirection;
 

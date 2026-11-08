@@ -99,6 +99,77 @@ public class PlayerController : DamageHandler
             SetMaxStamina((int)(modifiersController.GetModifierValue("base_max_stamina") * (1f + modifiersController.GetModifierValue("max_stamina_multiplier_modifier"))));
         });
 
+        _enemiesManager.OnDayStart += UpdateShopItems;
+
+        SetupUI();
+    }
+
+    public void OnEnterState()
+    {
+        inventoryController.OnSlotsAmountChange += () => 
+        {
+            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
+        };
+    }
+
+    public void OnExitState()
+    {
+        inventoryController.OnSlotsAmountChange -= () =>
+        {
+            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
+        };
+    }
+
+    public void Tick()
+    {
+        HandleMovementControlls();
+        statusesController.Tick();
+        CollectExperience();
+    }
+
+    public void FixedTick(float deltaTime)
+    {
+        HandleMovement(deltaTime);
+        statusesController.FixedTick();
+    }
+
+    public void Tick1s()
+    {
+        statusesController.Tick1s();
+
+        float staminaRegeneration = modifiersController.GetModifierValue("base_stamina_regeneration");
+        staminaRegeneration *= 1f + modifiersController.GetModifierValue("base_stamina_regeneration_multiplier_modifier");
+
+        ChangeStamina((int)staminaRegeneration);
+    }
+
+    public void Tick5s()
+    {
+        statusesController.Tick5s();
+
+        float healthRegeneration = modifiersController.GetModifierValue("base_health_regeneration");
+        healthRegeneration *= 1f + modifiersController.GetModifierValue("health_regeneration_multiplier_modifier");
+
+        ChangeHealth((int)healthRegeneration);
+    }
+
+    public void Tick10s()
+    {
+        statusesController.Tick10s();
+    }
+
+    public void Tick30s()
+    {
+        statusesController.Tick30s();
+    }
+
+    public void Tick1m()
+    {
+        statusesController.Tick1m();
+    }
+
+    public void OnGameStart()
+    {
         modifiersController.AddModifier(new List<ModifierProperty>
         {
             new ModifierProperty
@@ -150,74 +221,9 @@ public class PlayerController : DamageHandler
 
         ExperienceToNextLevel = (int)modifiersController.GetModifierValue("base_xp_to_next_level");
 
-        _enemiesManager.OnDayStart += UpdateShopItems;
-
-        SetupUI();
-    }
-
-    public void OnEnterState()
-    {
-        inventoryController.OnSlotsAmountChange += () => 
-        {
-            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
-        };
-    }
-
-    public void OnExitState()
-    {
-        inventoryController.OnSlotsAmountChange -= () =>
-        {
-            xpProgressBar.value = (float)Experience / (float)ExperienceToNextLevel;
-        };
-    }
-
-
-    public void Tick()
-    {
-        HandleMovementControlls();
-        statusesController.Tick();
-        CollectExperience();
-    }
-
-    public void FixedTick(float deltaTime)
-    {
-        HandleMovement(deltaTime);
-        statusesController.FixedTick();
-    }
-
-    public void Tick1s()
-    {
-        statusesController.Tick1s();
-
-        float staminaRegeneration = modifiersController.GetModifierValue("base_stamina_regeneration");
-        staminaRegeneration *= 1f + modifiersController.GetModifierValue("base_stamina_regeneration_multiplier_modifier");
-
-        ChangeStamina((int)staminaRegeneration);
-    }
-
-    public void Tick5s()
-    {
-        statusesController.Tick5s();
-
-        float healthRegeneration = modifiersController.GetModifierValue("base_health_regeneration");
-        healthRegeneration *= 1f + modifiersController.GetModifierValue("health_regeneration_multiplier_modifier");
-
-        ChangeHealth((int)healthRegeneration);
-    }
-
-    public void Tick10s()
-    {
-        statusesController.Tick10s();
-    }
-
-    public void Tick30s()
-    {
-        statusesController.Tick30s();
-    }
-
-    public void Tick1m()
-    {
-        statusesController.Tick1m();
+        // starting items
+        inventoryController.AddItem("weapon_bat", 1);
+        inventoryController.AddItem("bandage", 2);
     }
 
     public override void OnObjectDestroy()

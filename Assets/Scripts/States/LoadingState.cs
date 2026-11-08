@@ -6,6 +6,7 @@ public class LoadingState : State
     private LoadingScreenController _loadingScreenController => LoadingScreenController.Instance;
     private WorldGenerator _worldGenerator => WorldGenerator.Instance;
     private StatesManager _statesManager => StatesManager.Instance;
+    private PlayerController _playerController => PlayerController.Instance;
 
     public override void OnEnterState()
     {
@@ -25,6 +26,7 @@ public class LoadingState : State
         if(_worldGenerator.isWorldLoaded)
         {
             _statesManager.SwitchState<PlayingState>();
+            _playerController.OnGameStart();
         }
     }
 

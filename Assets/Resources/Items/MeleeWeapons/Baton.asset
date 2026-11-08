@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba6b826bdf5e82b4da93cd804d9a9b3f, type: 3}
+  m_Name: Baton
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
+  item:
+    <id>k__BackingField: weapon_baton
+    <icon>k__BackingField: {fileID: -8712778243190278716, guid: 0ab7882fe2e67ce42a7a82c0038116b9, type: 3}
+    <maxStack>k__BackingField: 1
+    <rarity>k__BackingField: 1
+  weapon:
+    <damage>k__BackingField: 6
+    <attackRate>k__BackingField: 1.2
+    <attackRange>k__BackingField: 0.75
+    <attackAngle>k__BackingField: 60
+    <attackSpeed>k__BackingField: 2
+    <multiTargeting>k__BackingField: 1
+    <attackSound>k__BackingField: {fileID: 8300000, guid: ad9b7fae5e28b254cac6d7f7ee51d292, type: 3}
+    <weaponUiSprite>k__BackingField: {fileID: -8712778243190278716, guid: 0ab7882fe2e67ce42a7a82c0038116b9, type: 3}

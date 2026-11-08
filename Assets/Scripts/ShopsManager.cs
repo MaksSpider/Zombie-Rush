@@ -311,7 +311,7 @@ public class ShopsManager : MonoBehaviour
 
             UIShopItem uiShopItem = itemObject.GetComponent<UIShopItem>();
 
-            uiShopItem.title.text = _translationManager.GetText(item.id);
+            uiShopItem.title.text = _translationManager.GetText(item.id + ".name");
             uiShopItem.amount.text = shopItem.amount.ToString();
             uiShopItem.price.text = shopItem.price.ToString("#,0", CultureInfo.InvariantCulture).Replace(",", ".");
             uiShopItem.icon.sprite = item.icon;

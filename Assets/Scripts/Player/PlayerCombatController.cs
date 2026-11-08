@@ -145,7 +145,8 @@ public class PlayerCombatController : MonoBehaviour
         mouseWorldPos.z = 0f;
 
         Rigidbody2D playerRb = _playerController.GetComponent<Rigidbody2D>();
-        Vector2 baseDirection = ((Vector2)mouseWorldPos - playerRb.position).normalized;
+        Vector2 playerPosition = (Vector2)playerRb.position + new Vector2(0, 0.15f);
+        Vector2 baseDirection = ((Vector2)mouseWorldPos - playerPosition).normalized;
 
         if (weapon is MeleeWeapon meleeWeapon)
         {
@@ -153,7 +154,7 @@ public class PlayerCombatController : MonoBehaviour
 
             LayerMask include = LayerMask.GetMask("Enemy");
 
-            _attacksManager.CreateMeleeAttack(playerRb.position + new Vector2(0, 0.15f), baseDirection, meleeWeapon, new AttackOptions
+            _attacksManager.CreateMeleeAttack(playerPosition, baseDirection, meleeWeapon, new AttackOptions
             {
                 damageModifer = damageMultiplier,
                 targets = include,
@@ -172,7 +173,7 @@ public class PlayerCombatController : MonoBehaviour
 
             float damageMultiplier = 1f + _playerController.modifiersController.GetModifierValue("bullets_damage_multipler_modifier") + _playerController.modifiersController.GetModifierValue("damage_multipler_modifier");
 
-            _attacksManager.CreateBullet(playerRb.position + new Vector2(0, 0.15f), baseDirection, normalWeapon, new AttackOptions
+            _attacksManager.CreateBullet(playerPosition, baseDirection, normalWeapon, new AttackOptions
             {
                 damageModifer = damageMultiplier,
                 targets = include,
@@ -283,8 +284,6 @@ public class PlayerCombatController : MonoBehaviour
         Rigidbody2D playerRb = _playerController.GetComponent<Rigidbody2D>();
         Vector2 playerPosition = playerRb.position + offset;
         Vector2 direction = ((Vector2)mouseWorldPos - playerPosition).normalized;
-
-        _attackRange.transform.position = playerPosition;
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         _attackRange.transform.rotation = Quaternion.Euler(0f, 0f, angle);

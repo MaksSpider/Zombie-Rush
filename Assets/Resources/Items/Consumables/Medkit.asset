@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UsableItemData
   usableItem:
     <id>k__BackingField: medkit
-    <name>k__BackingField: Medkit
-    <description>k__BackingField: Medkit desc
     <icon>k__BackingField: {fileID: -8350017915244704703, guid: 9f6f215c9dd6d6d449231526fb15b54e, type: 3}
     <maxStack>k__BackingField: 4
     <rarity>k__BackingField: 2

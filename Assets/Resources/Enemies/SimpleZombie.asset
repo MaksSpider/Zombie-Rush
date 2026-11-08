@@ -22,7 +22,7 @@ MonoBehaviour:
   - name: base_max_health
     value: 10
   - name: base_speed
-    value: 0
+    value: 1.5
   - name: damage_multipler_modifier
     value: 0
   - name: base_experience_drop
@@ -33,7 +33,7 @@ MonoBehaviour:
   - name: base_max_health
     value: 5
   - name: damage_multipler_modifier
-    value: 0.15
+    value: 0.5
   - name: base_experience_drop
     value: 1
   - name: base_money_drop

@@ -198,7 +198,6 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-
     private void Init()
     {
         UpdateSlotsAmount();
@@ -230,11 +229,6 @@ public class InventoryController : MonoBehaviour
         }
 
         Debug.Log($"Loaded {_itemsDatabase.Count} items.");
-
-        // starting items
-        AddItem("weapon_pistol", 1);
-        AddItem("ammo_pistol", 5);
-        AddItem("medkit", 2);
     }
 
     private void RegisterItem(IItem item)

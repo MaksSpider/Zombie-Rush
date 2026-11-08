@@ -166,7 +166,7 @@ public class StatusesController : MonoBehaviour
         Image statusProgress = statusObject.transform.Find("Progress").GetComponent<Image>();
         GameObject removeButton = statusObject.transform.Find("RemoveButton").gameObject;
 
-        if (removeable) 
+        if (removeable)
         {
             removeButton.GetComponent<Button>().onClick.AddListener(() =>
             {
