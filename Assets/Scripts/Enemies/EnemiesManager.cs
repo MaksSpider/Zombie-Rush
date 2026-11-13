@@ -78,7 +78,7 @@ public class EnemiesManager : MonoBehaviour
     private Dictionary<string, EnemyData> _enemiesDatabase = new();
 
     private ObjectPool<string, Enemy> _enemiesPool;
-    private List<string> _enemiesToSpawnPool = new();
+    [SerializeField] private List<string> _enemiesToSpawnPool = new();
 
     private float _currentTime = 0;
 
@@ -249,7 +249,8 @@ public class EnemiesManager : MonoBehaviour
     private void ReleaseEnemyFromPool(Enemy enemy)
     {
         enemy.gameObject.SetActive(false);
-        Enemies.Remove(enemy);
+        Enemies.Remove(enemy);  
+        _enemiesToSpawnPool.Add(enemy.enemyId);
     }
 
     private Enemy CreateEnemy(string id)

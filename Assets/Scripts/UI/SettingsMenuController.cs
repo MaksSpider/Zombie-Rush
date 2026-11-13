@@ -1,13 +1,17 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsMenuController : MonoBehaviour
 {
+    private TranslationManager _translationManager => TranslationManager.Instance;
     private SettingsManager _settingsManager => SettingsManager.Instance;
 
     [SerializeField] private Toggle _fullscreenToggle;
     [SerializeField] private Toggle _windowedToggle;
+    [SerializeField] private TMP_Dropdown _languageDropdown;
 
     [SerializeField] private Scrollbar _volumeScrollbar;
 
@@ -17,6 +21,26 @@ public class SettingsMenuController : MonoBehaviour
         {
             _volumeScrollbar.value = volume;
         }
+
+        List<string> languages = _translationManager.GetLanguagesList();
+        List<TMP_Dropdown.OptionData> languageOptions = new();
+        int languageDropdownValue = 0;
+
+        for(int i = 0; i < languages.Count; i++)
+        {
+            if (languages[i] == _translationManager.currentLanguage) languageDropdownValue = i;
+            languageOptions.Add(new TMP_Dropdown.OptionData(_translationManager.GetText("language", languages[i]), null, new Color(1, 1, 1)));
+        }
+
+        _languageDropdown.ClearOptions();
+        _languageDropdown.AddOptions(languageOptions);
+        _languageDropdown.value = languageDropdownValue;
+        _languageDropdown.RefreshShownValue();
+
+        _languageDropdown.onValueChanged.AddListener(value =>
+        {
+            _settingsManager.SetSetting("language", languages[value]);
+        });
 
         _volumeScrollbar.onValueChanged.AddListener(value =>
         {

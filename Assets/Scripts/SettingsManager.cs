@@ -74,7 +74,7 @@ public class SettingsManager : MonoBehaviour
             case "language":
                 if (value is string language)
                 {
-                    //_translationManager.SetLanguage(language);
+                    _translationManager.SetLanguage(language);
                 }
                 break;
         }

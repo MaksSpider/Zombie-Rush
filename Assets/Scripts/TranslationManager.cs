@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LanguageInfo
@@ -16,6 +17,8 @@ public class TranslationFile
 public class TranslationManager : MonoBehaviour
 {
     public static TranslationManager Instance { get; private set; }
+
+    private SettingsManager _settingsManager => SettingsManager.Instance;
 
     [SerializeField] private string _defaultLanguage = "en";
 
@@ -41,6 +44,12 @@ public class TranslationManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _defaultLanguage = _defaultLanguage.ToLowerInvariant();
+
+        if (_settingsManager.GetSetting("language") is string language)
+        {
+            _currentLanguage = language;
+        }
+
         LoadLanguages();
     }
 
@@ -169,5 +178,23 @@ public class TranslationManager : MonoBehaviour
 
         Debug.LogWarning($"Missing translation: {currentLanguage}/{key}");
         return $"{currentLanguage}.{key}";
+    }
+
+    public string GetText(string key, string language)
+    {
+        if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(language)) return "";
+
+        foreach ((string k, string v) in _languages[language])
+        {
+            if (k == key) return v;
+        }
+
+        Debug.LogWarning($"Missing translation: {language}/{key}");
+        return $"{language}.{key}";
+    }
+
+    public List<string> GetLanguagesList()
+    {
+        return _languages.Keys.ToList();
     }
 }

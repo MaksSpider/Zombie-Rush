@@ -1455,6 +1455,7 @@ MonoBehaviour:
   _spawningEnemiesAmount: 30
   _startingEnemiesAmount: 20
   _additionalNewEnemiesPerDay: 10
+  _enemiesToSpawnPool: []
   Enemies: []
 --- !u!1 &258891977
 GameObject:
@@ -3311,15 +3312,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.43120003
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1598862852008364669, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.23120001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4151562487793647162, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_Pivot.x
@@ -3401,13 +3402,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6075876029998751025, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6075876029998751025, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6075876029998751025, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6649197343486450617, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_Name
       value: Settings
       objectReference: {fileID: 0}
     - target: {fileID: 6649197343486450617, guid: e44bcf938415e3b468f3566f47f50e78, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

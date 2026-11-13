@@ -7,9 +7,6 @@ using UnityEngine;
 namespace ZombieRush.Framework
 {
 
-    using System;
-    using System.Collections.Generic;
-
     public class ObjectPool<TId, TValue> where TId : notnull
     {
         public Dictionary<TId, List<TValue>> pool { get; private set; }
@@ -22,7 +19,8 @@ namespace ZombieRush.Framework
         private readonly int defaultCapacity;
         private readonly int maxSize;
 
-        public ObjectPool(Func<TId, TValue> createFunc, List<TId> listOfIds = null, Action<TValue> actionOnRelease = null, Action<TValue> actionOnGet = null, Action<TValue> actionOnDestroy = null, int defaultCapacity = 1, int maxSize = 100)
+        public ObjectPool(Func<TId, TValue> createFunc, List<TId> listOfIds = null, Action<TValue> actionOnRelease = null, 
+            Action<TValue> actionOnGet = null, Action<TValue> actionOnDestroy = null, int defaultCapacity = 1, int maxSize = 100)
         {
             if (createFunc == null) throw new ArgumentNullException(nameof(createFunc));
             if (defaultCapacity < 0) throw new ArgumentOutOfRangeException(nameof(defaultCapacity));
